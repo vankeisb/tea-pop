@@ -1,4 +1,4 @@
-import {ListWithSelection, Maybe, maybeOf} from "react-tea-cup";
+import {ListWithSelection, Maybe, maybeOf, Task} from "react-tea-cup";
 
 export class Menu<T> {
   constructor(private readonly elements: ListWithSelection<MenuElement<T>>) {}
@@ -13,6 +13,19 @@ export class Menu<T> {
 
   isSelected(item: MenuItem<T>): boolean {
     return this.elements.isSelected(item)
+  }
+
+  moveSelectedItem(down: boolean = true): Menu<T> {
+    return new Menu(
+        this.elements.getSelectedIndex()
+            .map(selectedIndex => {
+              if (down) {
+                // const ne
+              }
+              return this.elements;
+            })
+            .withDefaultSupply(() => this.elements)
+    )
   }
 }
 
@@ -52,4 +65,22 @@ export function menuId(uuid: string): string {
 
 export function menuItemId(menuId: string, itemIndex: number): string {
   return `tm-item-${menuId}-${itemIndex}`;
+}
+
+export function menuTask(uuid: string): Task<Error, HTMLElement> {
+  return byId(menuId(uuid));
+}
+
+export function menuItemTask(menuId: string, itemIndex: number): Task<Error, HTMLElement> {
+  return byId(menuItemId(menuId, itemIndex));
+}
+
+function byId(id: string): Task<Error, HTMLElement> {
+  return Task.fromLambda(() => {
+    const e = document.getElementById(id);
+    if (e === null) {
+      throw new Error("element not found with id:" + id);
+    }
+    return e;
+  })
 }

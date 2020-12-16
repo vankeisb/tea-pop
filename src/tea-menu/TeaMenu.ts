@@ -1,7 +1,7 @@
 import {childMsg, gotItemBox, gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg} from "./Msg";
 import {Cmd, just, Maybe, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents} from "react-tea-cup";
 import {menuStateClosed, menuStatePlacing, Model} from "./Model";
-import {Menu, menuId, menuItemId} from "./Menu";
+import {Menu, menuId, MenuItem, menuItemId, menuItemTask, menuTask} from "./Menu";
 import {pos, Pos} from "../tea-popover/Pos";
 import {dim, Dim} from "../tea-popover/Dim";
 import {Box} from "../tea-popover/Box";
@@ -36,14 +36,7 @@ export function open<T>(model: Model<T>, position: Pos): [Model<T>, Cmd<Msg<T>>]
           state: menuStatePlacing(position)
         };
         const cmd: Cmd<Msg<T>> = Task.attempt(
-            Task.fromLambda(() => {
-              const id = menuId(uuid);
-              const e = document.getElementById(id);
-              if (!e) {
-                throw new Error("node not found for id " + id);
-              }
-              return Box.fromDomRect(e.getBoundingClientRect());
-            }),
+            menuTask(uuid).map(e => Box.fromDomRect(e.getBoundingClientRect())),
             x => gotMenuBox(x)
         );
         return Tuple.t2n(newModel, cmd);
@@ -91,29 +84,26 @@ export function update<T>(msg: Msg<T>, model: Model<T>): [Model<T>, Cmd<Msg<T>>]
       )
     }
     case "key-down": {
-      if (msg.key === 'Escape') {
-        return close(model);
+      switch (msg.key) {
+        case 'Escape':
+          return close(model);
+        case 'ArrowDown':
+        case 'ArrowUp': {
+          return mapLastMenu(model, lastModel => {
+
+            return noCmd(lastModel)
+          })
+        }
+        default:
+          return noCmd(model);
       }
-      return noCmd(model);
     }
     case "mouse-enter": {
       if (model.uuid.type === 'Nothing') {
         return noCmd(model);
       }
       const uuid = model.uuid.value;
-      return Tuple.t2n(
-          model,
-          Task.attempt(
-              Task.fromLambda(() => {
-                const e = document.getElementById(menuItemId(uuid, msg.itemIndex));
-                if (e === null) {
-                  throw new Error("menu item not found for id " + uuid);
-                }
-                return Box.fromDomRect(e.getBoundingClientRect());
-              }),
-              r => gotItemBox(msg.item, r)
-          )
-      )
+      return Tuple.t2n(model, openSubMenu(uuid, msg.item, msg.itemIndex));
     }
     case "got-item-box": {
       return msg.r.match(
@@ -148,7 +138,7 @@ export function update<T>(msg: Msg<T>, model: Model<T>): [Model<T>, Cmd<Msg<T>>]
                       .withDefaultSupply(() => noCmd(newModel))
                 });
           },
-          err => noCmd({...model, error: just(err) })
+          err => noCmd({...model, error: just(err)})
       )
     }
     case "child-msg": {
@@ -166,6 +156,13 @@ export function update<T>(msg: Msg<T>, model: Model<T>): [Model<T>, Cmd<Msg<T>>]
   }
 }
 
+function openSubMenu<T>(menuId: string, item: MenuItem<T>, itemIndex: number): Cmd<Msg<T>> {
+  return Task.attempt(
+      menuItemTask(menuId, itemIndex).map(e => Box.fromDomRect(e.getBoundingClientRect())),
+      r => gotItemBox(item, r)
+  )
+}
+
 const windowEvents = new WindowEvents();
 const documentEvents = new WindowEvents();
 
@@ -180,3 +177,19 @@ export function subscriptions<T>(model: Model<T>): Sub<Msg<T>> {
 
 
 const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() => dim(window.innerWidth, window.innerHeight));
+
+function mapLastMenu<T>(model: Model<T>, f: (m: Model<T>) => [Model<T>, Cmd<Msg<T>>]): [Model<T>, Cmd<Msg<T>>] {
+  switch (model.child.type) {
+    case "Nothing": {
+      // I'm the last model !
+      return f(model);
+    }
+    case "Just": {
+      const mac = mapLastMenu(model.child.value, f);
+      return [
+        {...model, child: just(mac[0])},
+        mac[1].map(childMsg)
+      ]
+    }
+  }
+}
