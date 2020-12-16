@@ -4,8 +4,8 @@ import {childMsg, Msg} from "./Msg";
 import {Dispatcher, map} from "react-tea-cup";
 import {ItemRenderer} from "./ItemRenderer";
 import {Model} from "./Model";
-import {stopEvent} from "../tea-popover/StopEvent";
-import {box} from "../tea-popover/Box";
+import {stopEvent} from "./StopEvent";
+import {box} from "./Box";
 
 export interface ViewMenuProps<T> {
   model: Model<T>;

@@ -1,8 +1,8 @@
 import {Menu} from "./Menu";
 import {Maybe} from "react-tea-cup";
-import {Dim} from "../tea-popover/Dim";
-import {Box} from "../tea-popover/Box";
-import {Pos} from "../tea-popover/Pos";
+import {Dim} from "./Dim";
+import {Box} from "./Box";
+import {Pos} from "./Pos";
 
 export interface Model<T> {
   readonly uuid: Maybe<string>;

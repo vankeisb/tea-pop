@@ -6,8 +6,8 @@ import {ViewMenu} from './tea-menu/ViewMenu';
 import {item, menu, Menu, separator} from "./tea-menu/Menu";
 import {ItemRenderer} from "./tea-menu/ItemRenderer";
 import * as TM from './tea-menu/TeaMenu';
-import {Pos, pos} from "./tea-popover/Pos";
-import {stopEvent} from "./tea-popover/StopEvent";
+import {Pos, pos} from "./tea-menu/Pos";
+import {stopEvent} from "./tea-menu/StopEvent";
 
 export interface Model {
   readonly menuModel: TModel<string>;

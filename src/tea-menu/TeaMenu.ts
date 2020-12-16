@@ -2,10 +2,10 @@ import {childMsg, gotItemBox, gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensio
 import {Cmd, just, Maybe, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents} from "react-tea-cup";
 import {menuStateClosed, menuStatePlacing, Model} from "./Model";
 import {Menu, menuId, MenuItem, menuItemId, menuItemTask, menuTask} from "./Menu";
-import {pos, Pos} from "../tea-popover/Pos";
-import {dim, Dim} from "../tea-popover/Dim";
-import {Box} from "../tea-popover/Box";
-import {adjustPopover} from "../tea-popover/Popover";
+import {pos, Pos} from "./Pos";
+import {dim, Dim} from "./Dim";
+import {Box} from "./Box";
+import {adjustPopover} from "./Popover";
 
 export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg<T>>] {
   return [

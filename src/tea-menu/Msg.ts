@@ -1,5 +1,5 @@
-import {Dim} from "../tea-popover/Dim";
-import {Box} from "../tea-popover/Box";
+import {Dim} from "./Dim";
+import {Box} from "./Box";
 import {Result} from "react-tea-cup";
 import {MenuItem} from "./Menu";
 
