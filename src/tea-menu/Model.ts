@@ -10,6 +10,7 @@ export interface Model<T> {
   readonly menu: Menu<T>;
   readonly state: MenuState;
   readonly error: Maybe<Error>;
+  readonly child: Maybe<Model<T>>
 }
 
 export type MenuState =

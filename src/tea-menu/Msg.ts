@@ -8,7 +8,8 @@ export type Msg<T>
     | { tag: 'got-uuid', uuid: string }
     | { tag: 'got-menu-box', r: Result<Error, Box> }
     | { tag: 'key-down', key: string }
-    | { tag: 'mouse-enter', item: MenuItem<T> };
+    | { tag: 'mouse-enter', item: MenuItem<T> }
+    | { tag: 'child-msg', m: Msg<T> };
 
 export function gotWindowDimensions<T>(d: Dim): Msg<T> {
   return {
@@ -35,5 +36,12 @@ export function gotKeyDown<T>(key: string): Msg<T> {
   return {
     tag: "key-down",
     key
+  }
+}
+
+export function childMsg<T>(m: Msg<T>): Msg<T> {
+  return {
+    tag: 'child-msg',
+    m
   }
 }

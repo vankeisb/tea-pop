@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Menu, MenuItem} from "./Menu";
-import {Msg} from "./Msg";
-import {Dispatcher} from "react-tea-cup";
+import {childMsg, Msg} from "./Msg";
+import {Dispatcher, map} from "react-tea-cup";
 import {ItemRenderer} from "./ItemRenderer";
 import {menuId, Model} from "./Model";
 import {stopEvent} from "../tea-popover/StopEvent";
@@ -13,7 +13,7 @@ export interface ViewMenuProps<T> {
 }
 
 export function ViewMenu<T>(props: ViewMenuProps<T>) {
-  const {model} = props;
+  const {model, dispatch, renderer} = props;
   const {menu, state, uuid, windowSize} = model;
   if (uuid.type === 'Nothing') {
     return <></>;
@@ -80,20 +80,28 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
       const {box} = state;
       const {p, d} = box;
       return (
-          <div
-              className="tm"
-              id={menuId(uuid.value)}
-              style={{
-                position: "absolute",
-                top: p.y,
-                left: p.x,
-                width: d.w,
-                height: d.h
-              }}
-              onContextMenu={stopEvent}
-          >
-            {renderItems()}
-          </div>
+          <>
+            <div
+                className="tm"
+                id={menuId(uuid.value)}
+                style={{
+                  position: "absolute",
+                  top: p.y,
+                  left: p.x,
+                  width: d.w,
+                  height: d.h
+                }}
+                onContextMenu={stopEvent}
+            >
+              {renderItems()}
+            </div>
+            {model.child
+                .map(child =>
+                  <ViewMenu model={child} dispatch={map(dispatch, childMsg)} renderer={renderer}/>
+                )
+                .withDefaultSupply(() => <></>)
+            }
+          </>
       )
     }
   }
