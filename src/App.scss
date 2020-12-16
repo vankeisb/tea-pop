@@ -1,0 +1,25 @@
+.tm {
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+  .tm--item {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .tm--item__content {
+      flex-grow: 1;
+      //flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    &.tm-selected {
+      background-color: #61dafb;
+    }
+  }
+}
+

@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Model as TModel} from './tea-menu/Model';
 import {Msg as TMsg} from './tea-menu/Msg';
 import {ViewMenu} from './tea-menu/ViewMenu';
-import {item, menu, Menu} from "./tea-menu/Menu";
+import {item, menu, Menu, separator} from "./tea-menu/Menu";
 import {ItemRenderer} from "./tea-menu/ItemRenderer";
 import * as TM from './tea-menu/TeaMenu';
 import {Pos, pos} from "./tea-popover/Pos";
@@ -13,21 +13,38 @@ export interface Model {
   readonly menuModel: TModel<string>;
 }
 
+export type MenuMsg = TMsg<string>
+
 export type Msg =
-    | { tag: 'menu-msg', msg: TMsg }
+    | { tag: 'menu-msg', msg: MenuMsg }
     | { tag: 'mouse-down', button: number, pos: Pos }
 
-function menuMsg(msg: TMsg): Msg {
+function menuMsg(msg: MenuMsg): Msg {
   return {
     tag: "menu-msg",
     msg
   }
 }
 
+const mySubMenu2: Menu<string> = menu([
+  item("Try"),
+  item("Finally")
+])
+
+const mySubMenu1: Menu<string> = menu([
+  item("Do this"),
+  item("Do that"),
+  separator,
+  item("Another sub menu...", mySubMenu2)
+])
+
 const myMenu: Menu<string> = menu([
-  item("item1"),
-  item("item2"),
-  item("item3")
+  item("Copy"),
+  item("Cut"),
+  item("Paste"),
+  separator,
+  item("Yalla", mySubMenu1),
+  item("I am a bit longer")
 ]);
 
 const myRenderer: ItemRenderer<string> = item => (
@@ -69,7 +86,7 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
   )
 }
 
-function withTeaMenu(model: Model, f: (mm: TModel<string>) => [TModel<string>, Cmd<TMsg>]): [Model, Cmd<Msg>] {
+function withTeaMenu(model: Model, f: (mm: TModel<string>) => [TModel<string>, Cmd<MenuMsg>]): [Model, Cmd<Msg>] {
   const mac = f(model.menuModel);
   return [{...model, menuModel: mac[0]}, mac[1].map(menuMsg)];
 }

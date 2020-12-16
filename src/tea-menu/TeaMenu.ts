@@ -1,16 +1,14 @@
 import {gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg} from "./Msg";
-import {Cmd, Dispatcher, just, noCmd, nothing, Sub, Task, WindowEvents, uuid, Tuple} from "react-tea-cup";
+import {Cmd, just, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents} from "react-tea-cup";
 import {menuId, menuStateClosed, menuStatePlacing, Model} from "./Model";
 import {Menu} from "./Menu";
-import * as React from 'react';
-import {ViewMenu} from "./ViewMenu";
-import {ItemRenderer} from "./ItemRenderer";
-import {pos, Pos} from "../tea-popover/Pos";
+import {Pos} from "../tea-popover/Pos";
 import {dim, Dim} from "../tea-popover/Dim";
 import {Box} from "../tea-popover/Box";
 import {adjustPopover} from "../tea-popover/Popover";
+import {emptyMenuPath, menuPath} from "./MenuPath";
 
-export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg>] {
+export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg<T>>] {
   return [
     {
       uuid: nothing,
@@ -18,22 +16,23 @@ export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg>] {
       menu,
       state: menuStateClosed,
       error: nothing,
+      selected: emptyMenuPath,
     },
     Cmd.batch([
-      Task.perform(getWindowDimensions, gotWindowDimensions),
-      Task.perform(uuid(), gotUuid)
+      Task.perform(getWindowDimensions, d => gotWindowDimensions(d)),
+      Task.perform(uuid(), u => gotUuid(u))
     ])
   ]
 }
 
-export function open<T>(model: Model<T>, position: Pos): [Model<T>, Cmd<Msg>] {
+export function open<T>(model: Model<T>, position: Pos): [Model<T>, Cmd<Msg<T>>] {
   return model.uuid
       .map(uuid => {
         const newModel: Model<T> = {
           ...model,
           state: menuStatePlacing(position)
         };
-        const cmd: Cmd<Msg> = Task.attempt(
+        const cmd: Cmd<Msg<T>> = Task.attempt(
             Task.fromLambda(() => {
               const id = menuId(uuid);
               const e = document.getElementById(id);
@@ -42,18 +41,18 @@ export function open<T>(model: Model<T>, position: Pos): [Model<T>, Cmd<Msg>] {
               }
               return Box.fromDomRect(e.getBoundingClientRect());
             }),
-            gotMenuBox
+            x => gotMenuBox(x)
         );
         return Tuple.t2n(newModel, cmd);
       })
       .withDefaultSupply(() => noCmd(model));
 }
 
-export function close<T>(model: Model<T>): [Model<T>, Cmd<Msg>] {
-  return noCmd({...model, state: menuStateClosed });
+export function close<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
+  return noCmd({...model, state: menuStateClosed});
 }
 
-export function update<T>(msg: Msg, model: Model<T>): [Model<T>, Cmd<Msg>] {
+export function update<T>(msg: Msg<T>, model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
   switch (msg.tag) {
     case "got-window-dimensions": {
       return noCmd({
@@ -93,15 +92,21 @@ export function update<T>(msg: Msg, model: Model<T>): [Model<T>, Cmd<Msg>] {
       }
       return noCmd(model);
     }
+    case "mouse-enter": {
+      return noCmd({
+        ...model,
+        selected: menuPath(model.menu, msg.item)
+      })
+    }
   }
 }
 
 const windowEvents = new WindowEvents();
 const documentEvents = new WindowEvents();
 
-export function subscriptions<T>(model: Model<T>): Sub<Msg> {
+export function subscriptions<T>(model: Model<T>): Sub<Msg<T>> {
   return Sub.batch([
-    windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight))),
+    windowEvents.on('resize', () => gotWindowDimensions(dim(window.innerWidth, window.innerHeight))),
     model.state.tag === 'open'
         ? documentEvents.on('keydown', e => gotKeyDown(e.key))
         : Sub.none()

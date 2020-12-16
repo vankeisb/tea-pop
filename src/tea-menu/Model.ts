@@ -3,6 +3,7 @@ import {Maybe} from "react-tea-cup";
 import {Dim} from "../tea-popover/Dim";
 import {Box} from "../tea-popover/Box";
 import {Pos} from "../tea-popover/Pos";
+import {MenuPath} from "./MenuPath";
 
 export interface Model<T> {
   readonly uuid: Maybe<string>;
@@ -10,6 +11,7 @@ export interface Model<T> {
   readonly menu: Menu<T>;
   readonly state: MenuState;
   readonly error: Maybe<Error>;
+  readonly selected: MenuPath;
 }
 
 export type MenuState =
@@ -27,5 +29,5 @@ export function menuStatePlacing(position: Pos): MenuState {
 }
 
 export function menuId(uuid: string): string {
-  return `tea-menu-${btoa(uuid)}`;
+  return `tm-${btoa(uuid)}`;
 }

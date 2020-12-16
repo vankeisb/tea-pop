@@ -1,15 +1,15 @@
 import * as React from 'react';
-import {MenuItem} from "./Menu";
+import {Menu, MenuItem} from "./Menu";
 import {Msg} from "./Msg";
 import {Dispatcher} from "react-tea-cup";
 import {ItemRenderer} from "./ItemRenderer";
 import {menuId, Model} from "./Model";
 import {stopEvent} from "../tea-popover/StopEvent";
-import {adjustPopover} from "../tea-popover/Popover";
+import {MenuPath, resolvePath} from "./MenuPath";
 
 export interface ViewMenuProps<T> {
   model: Model<T>;
-  dispatch: Dispatcher<Msg>;
+  dispatch: Dispatcher<Msg<T>>;
   renderer: ItemRenderer<T>;
 }
 
@@ -24,28 +24,33 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
   }
 
   const renderItems = () => menu.items.map((item, index) => {
-      switch (item.tag) {
-        case "item": {
-          return (
-              <ViewMenuItem key={`item-${index}`} item={item} {...props} />
-          )
-        }
-        case "separator": {
-          return (
-              <div key={`sep-${index}`} className="tea-menu--separator"/>
-          )
-        }
+    switch (item.tag) {
+      case "item": {
+        return (
+            <ViewMenuItem
+                key={`item-${index}`}
+                menu={menu}
+                item={item}
+                {...props}
+                selected={model.selected}/>
+        )
       }
-    });
+      case "separator": {
+        return (
+            <div key={`sep-${index}`} className="tm--separator"/>
+        )
+      }
+    }
+  });
 
   switch (state.tag) {
     case "closed":
       return <></>;
     case "placing": {
-      const { position } = state;
+      const {position} = state;
       return (
           <div
-              className="tea-menu-placer"
+              className="tm-placer"
               style={{
                 position: "absolute",
                 top: 0,
@@ -57,7 +62,7 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
               onContextMenu={stopEvent}
           >
             <div
-                className="tea-menu"
+                className="tm"
                 id={menuId(uuid.value)}
                 style={{
                   position: "absolute",
@@ -73,11 +78,11 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
       )
     }
     case "open": {
-      const { box } = state;
-      const { p, d } = box;
+      const {box} = state;
+      const {p, d} = box;
       return (
           <div
-              className="tea-menu"
+              className="tm"
               id={menuId(uuid.value)}
               style={{
                 position: "absolute",
@@ -96,16 +101,34 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
 }
 
 export interface ViewMenuItemProps<T> {
+  menu: Menu<T>;
   item: MenuItem<T>;
-  dispatch: Dispatcher<Msg>;
+  dispatch: Dispatcher<Msg<T>>;
   renderer: ItemRenderer<T>;
+  selected: MenuPath
 }
 
 export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
-  const {item, renderer} = props;
+  const {menu, item, renderer, dispatch, selected} = props;
+  const selectedItems = resolvePath(menu, selected);
+  const selectedClass = selectedItems.indexOf(item) === -1 ? '' : ' tm-selected';
   return (
-      <div className="tea-menu--item">
-        {renderer(item.userData)}
+      <div
+          className={"tm--item" + selectedClass}
+          onMouseEnter={() => dispatch({tag: 'mouse-enter', item})}
+      >
+        <div className="tm--item__content">
+          {renderer(item.userData)}
+        </div>
+        {item.subMenu
+            .map(subMenu =>
+                <div className="tm--item__submenu-trigger">
+                  ›
+                </div>
+            )
+            .withDefaultSupply(() => <></>)
+        }
       </div>
-  )
+  );
 }
+

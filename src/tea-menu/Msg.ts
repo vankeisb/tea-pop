@@ -1,35 +1,37 @@
 import {Dim} from "../tea-popover/Dim";
 import {Box} from "../tea-popover/Box";
 import {Result} from "react-tea-cup";
+import {MenuItem} from "./Menu";
 
-export type Msg
+export type Msg<T>
     = { tag: 'got-window-dimensions', d: Dim }
     | { tag: 'got-uuid', uuid: string }
     | { tag: 'got-menu-box', r: Result<Error, Box> }
-    | { tag: 'key-down', key: string };
+    | { tag: 'key-down', key: string }
+    | { tag: 'mouse-enter', item: MenuItem<T> };
 
-export function gotWindowDimensions(d: Dim): Msg {
+export function gotWindowDimensions<T>(d: Dim): Msg<T> {
   return {
     tag: 'got-window-dimensions',
     d
   }
 }
 
-export function gotUuid(uuid: string): Msg {
+export function gotUuid<T>(uuid: string): Msg<T> {
   return {
     tag: "got-uuid",
     uuid
   }
 }
 
-export function gotMenuBox(r: Result<Error, Box>): Msg {
+export function gotMenuBox<T>(r: Result<Error, Box>): Msg<T> {
   return {
     tag: 'got-menu-box',
     r
   }
 }
 
-export function gotKeyDown(key: string): Msg {
+export function gotKeyDown<T>(key: string): Msg<T> {
   return {
     tag: "key-down",
     key
