@@ -1,10 +1,11 @@
 import * as React from 'react';
-import {Menu, MenuItem} from "./Menu";
+import {Menu, menuId, MenuItem, menuItemId} from "./Menu";
 import {childMsg, Msg} from "./Msg";
 import {Dispatcher, map} from "react-tea-cup";
 import {ItemRenderer} from "./ItemRenderer";
-import {menuId, Model} from "./Model";
+import {Model} from "./Model";
 import {stopEvent} from "../tea-popover/StopEvent";
+import {box} from "../tea-popover/Box";
 
 export interface ViewMenuProps<T> {
   model: Model<T>;
@@ -28,6 +29,8 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
         return (
             <ViewMenuItem
                 key={`item-${index}`}
+                uuid={uuid.value}
+                itemIndex={index}
                 menu={menu}
                 item={element}
                 {...props}
@@ -97,7 +100,7 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
             </div>
             {model.child
                 .map(child =>
-                  <ViewMenu model={child} dispatch={map(dispatch, childMsg)} renderer={renderer}/>
+                    <ViewMenu model={child} dispatch={map(dispatch, childMsg)} renderer={renderer}/>
                 )
                 .withDefaultSupply(() => <></>)
             }
@@ -108,6 +111,8 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
 }
 
 export interface ViewMenuItemProps<T> {
+  uuid: string;
+  itemIndex: number;
   menu: Menu<T>;
   item: MenuItem<T>;
   dispatch: Dispatcher<Msg<T>>;
@@ -115,13 +120,14 @@ export interface ViewMenuItemProps<T> {
 }
 
 export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
-  const {menu, item, renderer, dispatch} = props;
+  const {menu, item, renderer, dispatch, uuid, itemIndex} = props;
   const selected = menu.isSelected(item);
   const selectedClass = selected ? ' tm-selected' : '';
   return (
       <div
+          id={menuItemId(uuid, itemIndex)}
           className={"tm--item" + selectedClass}
-          onMouseEnter={() => dispatch({tag: 'mouse-enter', item})}
+          onMouseEnter={() => dispatch({tag: 'mouse-enter', item, itemIndex })}
       >
         <div className="tm--item__content">
           {renderer(item.userData)}

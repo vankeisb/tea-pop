@@ -26,7 +26,3 @@ export function menuStatePlacing(position: Pos): MenuState {
     position
   }
 }
-
-export function menuId(uuid: string): string {
-  return `tm-${btoa(uuid)}`;
-}

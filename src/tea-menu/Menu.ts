@@ -45,3 +45,11 @@ export function item<T>(userData: T, subMenu?: Menu<T>): MenuItem<T> {
 export const separator: MenuSeparator = {
   tag: "separator"
 }
+
+export function menuId(uuid: string): string {
+  return `tm-${btoa(uuid)}`;
+}
+
+export function menuItemId(menuId: string, itemIndex: number): string {
+  return `tm-item-${menuId}-${itemIndex}`;
+}
