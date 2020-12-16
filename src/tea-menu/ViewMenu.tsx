@@ -108,7 +108,8 @@ export interface ViewMenuItemProps<T> {
 
 export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
   const {menu, item, renderer, dispatch} = props;
-  const selectedClass = menu.isSelected(item) ? ' tm-selected' : '';
+  const selected = menu.isSelected(item);
+  const selectedClass = selected ? ' tm-selected' : '';
   return (
       <div
           className={"tm--item" + selectedClass}
