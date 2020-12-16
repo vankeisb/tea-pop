@@ -256,8 +256,11 @@ function mapLastMenu<T>(
       return f(model);
     }
     case 'Just': {
-      const mac = mapLastMenu(model.child.value, f);
-      return [{ ...model, child: just(mac[0]) }, mac[1].map(childMsg)];
+      if (model.child.value.state.tag !== 'closed') {
+        const mac = mapLastMenu(model.child.value, f);
+        return [{ ...model, child: just(mac[0]) }, mac[1].map(childMsg)];
+      }
+      return f(model);
     }
   }
 }
