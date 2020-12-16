@@ -1,8 +1,11 @@
-export interface Dim {
-  readonly h: number;
-  readonly w: number;
+export class Dim {
+  constructor(
+      readonly w: number,
+      readonly h: number,
+  ) {
+  }
 }
 
-export function dim(w:number, h: number): Dim {
-  return {h,w};
+export function dim(w: number, h: number): Dim {
+  return new Dim(w, h);
 }

@@ -29,12 +29,14 @@ export function adjustPopover(viewport: Dim, elem: Box): Box {
   let newW = w;
   const overflowRight = (x + w) - vw;
   if (overflowRight > 0) {
-
-  }
-
-
-  if (newX === x && newY === y && newH === h && newW === w) {
-    return elem;
+    // would overflow on the right, check if we have enough space to move left
+    if (x > overflowRight) {
+      // enough space, move left
+      newX = x - overflowRight;
+    } else {
+      newX = 0;
+      newW = vw;
+    }
   }
 
   return box(pos(newX, newY), dim(newW, newH));
