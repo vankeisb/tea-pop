@@ -1,4 +1,4 @@
-import {gotMenuBox, gotUuid, gotWindowDimensions, Msg} from "./Msg";
+import {gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg} from "./Msg";
 import {Cmd, Dispatcher, just, noCmd, nothing, Sub, Task, WindowEvents, uuid, Tuple} from "react-tea-cup";
 import {menuId, menuStateClosed, menuStatePlacing, Model} from "./Model";
 import {Menu} from "./Menu";
@@ -49,11 +49,8 @@ export function open<T>(model: Model<T>, position: Pos): [Model<T>, Cmd<Msg>] {
       .withDefaultSupply(() => noCmd(model));
 }
 
-
-export function view<T>(renderer: ItemRenderer<T>, dispatch: Dispatcher<Msg>, model: Model<T>) {
-  return (
-      <ViewMenu model={model} dispatch={dispatch} renderer={renderer}/>
-  );
+export function close<T>(model: Model<T>): [Model<T>, Cmd<Msg>] {
+  return noCmd({...model, state: menuStateClosed });
 }
 
 export function update<T>(msg: Msg, model: Model<T>): [Model<T>, Cmd<Msg>] {
@@ -90,13 +87,25 @@ export function update<T>(msg: Msg, model: Model<T>): [Model<T>, Cmd<Msg>] {
               .withDefault(model)
       )
     }
+    case "key-down": {
+      if (msg.key === 'Escape') {
+        return close(model);
+      }
+      return noCmd(model);
+    }
   }
 }
 
 const windowEvents = new WindowEvents();
+const documentEvents = new WindowEvents();
 
 export function subscriptions<T>(model: Model<T>): Sub<Msg> {
-  return windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
+  return Sub.batch([
+    windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight))),
+    model.state.tag === 'open'
+        ? documentEvents.on('keydown', e => gotKeyDown(e.key))
+        : Sub.none()
+  ]);
 }
 
 

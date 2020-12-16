@@ -80,11 +80,9 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       return withTeaMenu(model, tm => TM.update(msg.msg, tm));
     }
     case "mouse-down": {
-      if (msg.button === 2) {
-        // right click : open the menu !
-        return withTeaMenu(model, tm => TM.open(tm, msg.pos));
-      }
-      return noCmd(model)
+      return withTeaMenu(model, tm =>
+          msg.button === 2 ? TM.open(tm, msg.pos) : TM.close(tm)
+      );
     }
   }
 }
