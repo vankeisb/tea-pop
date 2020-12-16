@@ -1,7 +1,19 @@
-import {just, Maybe, maybeOf, nothing} from "react-tea-cup";
+import {ListWithSelection, Maybe, maybeOf} from "react-tea-cup";
 
-export interface Menu<T> {
-  readonly items: ReadonlyArray<MenuElement<T>>;
+export class Menu<T> {
+  constructor(private readonly elements: ListWithSelection<MenuElement<T>>) {}
+
+  selectItem(item: MenuItem<T>): Menu<T> {
+    return new Menu(this.elements.select(e => e === item));
+  }
+
+  get elems(): ReadonlyArray<MenuElement<T>> {
+    return this.elements.toArray();
+  }
+
+  isSelected(item: MenuItem<T>): boolean {
+    return this.elements.isSelected(item)
+  }
 }
 
 export type MenuElement<T>
@@ -19,9 +31,7 @@ export interface MenuSeparator {
 }
 
 export function menu<T>(items: ReadonlyArray<MenuElement<T>>): Menu<T> {
-  return {
-    items,
-  }
+  return new Menu(ListWithSelection.fromArray(items));
 }
 
 export function item<T>(userData: T, subMenu?: Menu<T>): MenuItem<T> {
@@ -34,18 +44,4 @@ export function item<T>(userData: T, subMenu?: Menu<T>): MenuItem<T> {
 
 export const separator: MenuSeparator = {
   tag: "separator"
-}
-
-export function indexOfItem<T>(menu: Menu<T>, item: MenuItem<T>): number {
-  return getItems(menu).indexOf(item);
-}
-
-export function getItems<T>(menu: Menu<T>): ReadonlyArray<MenuItem<T>> {
-  const res: Array<MenuItem<T>> = [];
-  menu.items.forEach(item => {
-    if (item.tag === "item") {
-      res.push(item)
-    }
-  })
-  return res;
 }

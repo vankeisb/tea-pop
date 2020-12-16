@@ -6,7 +6,6 @@ import {Pos} from "../tea-popover/Pos";
 import {dim, Dim} from "../tea-popover/Dim";
 import {Box} from "../tea-popover/Box";
 import {adjustPopover} from "../tea-popover/Popover";
-import {emptyMenuPath, menuPath} from "./MenuPath";
 
 export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg<T>>] {
   return [
@@ -16,7 +15,6 @@ export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg<T>>] {
       menu,
       state: menuStateClosed,
       error: nothing,
-      selected: emptyMenuPath,
     },
     Cmd.batch([
       Task.perform(getWindowDimensions, d => gotWindowDimensions(d)),
@@ -95,7 +93,7 @@ export function update<T>(msg: Msg<T>, model: Model<T>): [Model<T>, Cmd<Msg<T>>]
     case "mouse-enter": {
       return noCmd({
         ...model,
-        selected: menuPath(model.menu, msg.item)
+        menu: model.menu.selectItem(msg.item)
       })
     }
   }

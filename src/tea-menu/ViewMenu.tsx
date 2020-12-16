@@ -5,7 +5,6 @@ import {Dispatcher} from "react-tea-cup";
 import {ItemRenderer} from "./ItemRenderer";
 import {menuId, Model} from "./Model";
 import {stopEvent} from "../tea-popover/StopEvent";
-import {MenuPath, resolvePath} from "./MenuPath";
 
 export interface ViewMenuProps<T> {
   model: Model<T>;
@@ -23,16 +22,16 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
     return <></>;
   }
 
-  const renderItems = () => menu.items.map((item, index) => {
-    switch (item.tag) {
+  const renderItems = () => menu.elems.map((element, index) => {
+    switch (element.tag) {
       case "item": {
         return (
             <ViewMenuItem
                 key={`item-${index}`}
                 menu={menu}
-                item={item}
+                item={element}
                 {...props}
-                selected={model.selected}/>
+            />
         )
       }
       case "separator": {
@@ -105,13 +104,11 @@ export interface ViewMenuItemProps<T> {
   item: MenuItem<T>;
   dispatch: Dispatcher<Msg<T>>;
   renderer: ItemRenderer<T>;
-  selected: MenuPath
 }
 
 export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
-  const {menu, item, renderer, dispatch, selected} = props;
-  const selectedItems = resolvePath(menu, selected);
-  const selectedClass = selectedItems.indexOf(item) === -1 ? '' : ' tm-selected';
+  const {menu, item, renderer, dispatch} = props;
+  const selectedClass = menu.isSelected(item) ? ' tm-selected' : '';
   return (
       <div
           className={"tm--item" + selectedClass}
