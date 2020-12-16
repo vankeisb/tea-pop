@@ -18,6 +18,14 @@ export class Menu<T> {
     return this.elements.toArray();
   }
 
+  get selectedItem(): Maybe<MenuItem<T>> {
+    const selected = this.elements.getSelected();
+    if (selected.type === 'Just' && selected.value.tag === 'item') {
+      return just(selected.value);
+    }
+    return nothing;
+  }
+
   isSelected(item: MenuItem<T>): boolean {
     return this.elements.isSelected(item);
   }
@@ -60,6 +68,14 @@ export class Menu<T> {
           this.elements.selectIndex(down ? 0 : this.elements.length() - 1),
         );
       });
+  }
+
+  indexOfItem(item: MenuItem<T>): Maybe<number> {
+    const i = this.elements.toArray().indexOf(item);
+    if (i === -1) {
+      return nothing;
+    }
+    return just(i);
   }
 }
 

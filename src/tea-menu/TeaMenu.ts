@@ -148,7 +148,7 @@ export function update<T>(
             })
             .withDefaultSupply(() => noCmd(model));
         case 'ArrowRight':
-          return noCmd(model);
+          return expandLastSubMenu(model);
         default:
           return noCmd(model);
       }
@@ -284,4 +284,43 @@ function collapseLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
       return [{ ...model, child: just(mac[0]) }, mac[1].map(childMsg)];
     }
   }
+}
+
+function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
+  return mapLastMenu(model, (lastModel) => {
+    return lastModel.menu.selectedItem
+      .map((selectedItem) => {
+        return selectedItem.subMenu
+          .map(() => {
+            console.log('selected item has sub menu...');
+            if (lastModel.uuid.type === 'Nothing') {
+              return noCmd<Model<T>, Msg<T>>(lastModel);
+            }
+            const uuid = lastModel.uuid.value;
+            const cmd = lastModel.menu
+              .indexOfItem(selectedItem)
+              .map((itemIndex) => {
+                console.log(
+                  'opening item #' +
+                    itemIndex +
+                    ' (' +
+                    selectedItem.userData +
+                    ')',
+                );
+                return openSubMenu(uuid, selectedItem, itemIndex);
+              })
+              .withDefaultSupply(() => Cmd.none<Msg<T>>());
+            return Tuple.t2n(lastModel, cmd);
+          })
+          .withDefaultSupply(() => {
+            console.log('selected item has no sub menu');
+            return noCmd(lastModel);
+          });
+        // return noCmd<Model<T>, Msg<T>>(lastModel);
+      })
+      .withDefaultSupply(() => {
+        console.log('no selected item in last model');
+        return noCmd(lastModel);
+      });
+  });
 }
