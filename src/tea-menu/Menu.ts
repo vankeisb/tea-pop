@@ -36,5 +36,3 @@ export const separator: MenuSeparator = {
   tag: "separator"
 }
 
-
-

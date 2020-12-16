@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+.tea-menu {
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tea-menu--item {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+.tea-menu--item:hover {
+  background-color: #61dafb;
+  cursor: pointer;
+}
+
+.tea-menu--item.active {
+  background: #4598ae;
+}
+
