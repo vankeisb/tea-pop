@@ -90,8 +90,10 @@ export function update<T>(msg: Msg<T>, model: Model<T>): [Model<T>, Cmd<Msg<T>>]
         case 'ArrowDown':
         case 'ArrowUp': {
           return mapLastMenu(model, lastModel => {
-
-            return noCmd(lastModel)
+            return noCmd({
+                ...lastModel,
+                menu: lastModel.menu.moveSelection(msg.key === 'ArrowDown')
+            })
           })
         }
         default:

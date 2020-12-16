@@ -1,4 +1,4 @@
-import {ListWithSelection, Maybe, maybeOf, Task} from "react-tea-cup";
+import {just, ListWithSelection, Maybe, maybeOf, nothing, Task} from "react-tea-cup";
 
 export class Menu<T> {
   constructor(private readonly elements: ListWithSelection<MenuElement<T>>) {}
@@ -15,18 +15,47 @@ export class Menu<T> {
     return this.elements.isSelected(item)
   }
 
-  moveSelectedItem(down: boolean = true): Menu<T> {
-    return new Menu(
-        this.elements.getSelectedIndex()
-            .map(selectedIndex => {
-              if (down) {
-                // const ne
-              }
-              return this.elements;
-            })
-            .withDefaultSupply(() => this.elements)
-    )
+  private findNextItemIndex(start: number): Maybe<number> {
+    const elems = this.elems;
+    const s = start === elems.length - 1 ? 0 : start + 1;
+    for (let i = s; i < elems.length; i++) {
+      if (elems[i].tag === "item") {
+        return just(i);
+      }
+    }
+    return nothing;
   }
+
+  private findPreviousItemIndex(start: number): Maybe<number> {
+    const elems = this.elems;
+    const s = start === 0 ? elems.length - 1 : start - 1;
+    for (let i = s; i >= 0; i--) {
+      if (elems[i].tag === "item") {
+        return just(i);
+      }
+    }
+    return nothing;
+  }
+
+  moveSelection(down: boolean): Menu<T> {
+    return this.elements.getSelectedIndex()
+        .map(selectedIndex => {
+          const mbNextIndex = down
+              ? this.findNextItemIndex(selectedIndex)
+              : this.findPreviousItemIndex(selectedIndex);
+          return mbNextIndex
+              .map(nextIndex => new Menu(this.elements.selectIndex(nextIndex)))
+              .withDefault(this)
+        })
+        .withDefaultSupply(() => {
+          return new Menu(
+              this.elements.selectIndex(
+                  down ? 0 : this.elements.length() - 1
+              )
+          )
+        });
+  }
+
 }
 
 export type MenuElement<T>
