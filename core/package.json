@@ -1,0 +1,30 @@
+{
+  "name": "tea-pop",
+  "version": "0.0.1",
+  "description": "Popup menu for react-tea-cup",
+  "author": "Rémi Van Keisbelck <remi@rvkb.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vankeisb/tea-pop.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "tsc-v": "tsc -v",
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "prettify": "prettier --write src",
+    "tsc": "tsc",
+    "compile": "rimraf dist && tsc"
+  },
+  "dependencies": {
+    "tea-cup-core": "1.5.2",
+    "react": "^16.7.0"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^16.2.5",
+    "@types/react": "^16.7.22",
+    "jsdom": "^16.4.0"
+  }
+}

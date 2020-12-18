@@ -1,49 +1,20 @@
 {
-  "name": "tea-context-menu",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.53",
-    "@types/react-dom": "^16.9.8",
-    "node-sass": "4.14.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1",
-    "react-tea-cup": "^1.5.2",
-    "typescript": "^4.0.3",
-    "web-vitals": "^0.2.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+    "name": "tea-pop-parent",
+    "private": true,
+    "workspaces": [
+        "core",
+        "demo"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "prettier": "2.0.5",
-    "ts-jest": "^26.4.4"
-  }
+    "devDependencies": {
+        "github-release-notes": "0.17.2",
+        "jest": "24.9.0",
+        "prettier": "2.0.5",
+        "rimraf": "^2.6.3",
+        "ts-jest": "24.0.2",
+        "typescript": "~3.9.7"
+    },
+    "scripts": {
+        "release:gh": "gren release",
+        "release:changelog": "gren changelog --tags all --generate --override"
+    }
 }
