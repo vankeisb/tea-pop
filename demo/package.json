@@ -2,6 +2,7 @@
   "name": "demo",
   "version": "0.0.1",
   "private": true,
+  "homepage": "/tea-pop/",
   "dependencies": {
     "@types/node": "10.12.19",
     "@types/react-dom": "16.0.11",
