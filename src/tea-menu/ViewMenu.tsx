@@ -5,7 +5,6 @@ import {Dispatcher, map} from "react-tea-cup";
 import {ItemRenderer} from "./ItemRenderer";
 import {Model} from "./Model";
 import {stopEvent} from "./StopEvent";
-import {box} from "./Box";
 
 export interface ViewMenuProps<T> {
   model: Model<T>;
@@ -46,8 +45,6 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
   });
 
   switch (state.tag) {
-    case "closed":
-      return <></>;
     case "placing": {
       const {position} = state;
       return (

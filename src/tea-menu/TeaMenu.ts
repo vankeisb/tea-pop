@@ -1,41 +1,15 @@
-import {
-  childMsg,
-  gotItemBox,
-  gotKeyDown,
-  gotMenuBox,
-  gotUuid,
-  gotWindowDimensions,
-  Msg,
-} from './Msg';
-import {
-  Cmd,
-  just,
-  Maybe,
-  noCmd,
-  nothing,
-  Sub,
-  Task,
-  Tuple,
-  uuid,
-  WindowEvents,
-} from 'react-tea-cup';
-import { menuStateClosed, menuStatePlacing, Model } from './Model';
-import {
-  Menu,
-  menuId,
-  MenuItem,
-  menuItemId,
-  menuItemTask,
-  menuTask,
-} from './Menu';
-import { pos, Pos } from './Pos';
-import { dim, Dim } from './Dim';
-import { Box } from './Box';
-import { adjustPopover } from './Popover';
+import {childMsg, gotItemBox, gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg,} from './Msg';
+import {Cmd, just, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents,} from 'react-tea-cup';
+import {initialModel, Model} from './Model';
+import {Menu, MenuItem, menuItemTask, menuTask,} from './Menu';
+import {pos, Pos} from './Pos';
+import {dim, Dim} from './Dim';
+import {Box} from './Box';
+import {adjustPopover} from './Popover';
 
-export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg<T>>] {
+export function open<T>(menu: Menu<T>, position: Pos): [Model<T>, Cmd<Msg<T>>] {
   return [
-    initialModel(menu),
+    initialModel(menu, position),
     Cmd.batch([
       Task.perform(getWindowDimensions, (d) => gotWindowDimensions(d)),
       Task.perform(uuid(), (u) => gotUuid(u)),
@@ -43,42 +17,20 @@ export function init<T>(menu: Menu<T>): [Model<T>, Cmd<Msg<T>>] {
   ];
 }
 
-export function initialModel<T>(
-  menu: Menu<T>,
-  uuid: Maybe<string> = nothing,
-  windowSize: Maybe<Dim> = nothing,
-): Model<T> {
-  return {
-    uuid,
-    windowSize,
-    menu,
-    state: menuStateClosed,
-    error: nothing,
-    child: nothing,
-  };
-}
-
-export function open<T>(
+function postOpen<T>(
   model: Model<T>,
-  position: Pos,
 ): [Model<T>, Cmd<Msg<T>>] {
-  return model.uuid
-    .map((uuid) => {
-      const newModel: Model<T> = {
-        ...model,
-        state: menuStatePlacing(position),
-      };
-      const cmd: Cmd<Msg<T>> = Task.attempt(
-        menuTask(uuid).map((e) => Box.fromDomRect(e.getBoundingClientRect())),
-        (x) => gotMenuBox(x),
-      );
-      return Tuple.t2n(newModel, cmd);
-    })
-    .withDefaultSupply(() => noCmd(model));
-}
-
-export function close<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
-  return noCmd({ ...model, state: menuStateClosed, child: nothing });
+  if (model.uuid.type === 'Nothing') {
+    return noCmd(model);
+  }
+  if (model.windowSize.type === 'Nothing') {
+    return noCmd(model);
+  }
+  const cmd: Cmd<Msg<T>> = Task.attempt(
+      menuTask(model.uuid.value).map((e) => Box.fromDomRect(e.getBoundingClientRect())),
+      (x) => gotMenuBox(x),
+  );
+  return [model, cmd];
 }
 
 export function update<T>(
@@ -88,13 +40,13 @@ export function update<T>(
   console.log('update', msg);
   switch (msg.tag) {
     case 'got-window-dimensions': {
-      return noCmd({
+      return postOpen({
         ...model,
         windowSize: just(msg.d),
       });
     }
     case 'got-uuid': {
-      return noCmd({
+      return postOpen({
         ...model,
         uuid: just(msg.uuid),
       });
@@ -126,7 +78,7 @@ export function update<T>(
     case 'key-down': {
       switch (msg.key) {
         case 'Escape': {
-          return collapseLastSubMenu(model);
+            return collapseLastSubMenu(model);
         }
         case 'ArrowDown':
         case 'ArrowUp': {
@@ -157,8 +109,14 @@ export function update<T>(
       if (model.uuid.type === 'Nothing') {
         return noCmd(model);
       }
+      // are we on an already selected item ?
+      if (model.menu.isSelected(msg.item)) {
+        return noCmd(model);
+      }
+      console.log("mouseEnter", model);
+      const menu = model.menu.selectItem(msg.item);
       const uuid = model.uuid.value;
-      return Tuple.t2n(model, openSubMenu(uuid, msg.item, msg.itemIndex));
+      return Tuple.t2n({...model, menu, child: nothing }, openSubMenu(uuid, msg.item, msg.itemIndex));
     }
     case 'got-item-box': {
       return msg.r.match(
@@ -171,12 +129,7 @@ export function update<T>(
             .map((subMenu) => {
               // we have a sub menu so we need
               // to open a new Menu !
-              const newChild: Model<T> = initialModel(
-                subMenu,
-                model.uuid.map((uuid) => uuid + '_sub'),
-                model.windowSize,
-              );
-              const mac = open(newChild, itemBox.p.add(pos(itemBox.d.w, 0)));
+              const mac = open(subMenu, itemBox.p.add(pos(itemBox.d.w, 0)));
               const newModel2: Model<T> = {
                 ...newModel,
                 child: just(mac[0]),
@@ -186,15 +139,8 @@ export function update<T>(
             .withDefaultSupply(() => {
               // close any existing child !
               return newModel.child
-                .map((child) => {
-                  const mac = close(child);
-                  const newModel2: Model<T> = {
-                    ...newModel,
-                    child: nothing,
-                  };
-                  return Tuple.t2n(newModel2, mac[1].map(childMsg));
-                })
-                .withDefaultSupply(() => noCmd(newModel));
+                .map(() => noCmd<Model<T>,Msg<T>>({...model, child: nothing }))
+                .withDefaultSupply(() => noCmd(model));
             });
         },
         (err) => noCmd({ ...model, error: just(err) }),
@@ -220,10 +166,13 @@ function openSubMenu<T>(
   item: MenuItem<T>,
   itemIndex: number,
 ): Cmd<Msg<T>> {
+  if (item.subMenu.isNothing()) {
+    return Cmd.none();
+  }
   return Task.attempt(
-    menuItemTask(menuId, itemIndex).map((e) =>
-      Box.fromDomRect(e.getBoundingClientRect()),
-    ),
+    menuItemTask(menuId, itemIndex).map((e) => {
+      return Box.fromDomRect(e.getBoundingClientRect());
+    }),
     (r) => gotItemBox(item, r),
   );
 }
@@ -256,34 +205,17 @@ function mapLastMenu<T>(
       return f(model);
     }
     case 'Just': {
-      if (model.child.value.state.tag !== 'closed') {
-        const mac = mapLastMenu(model.child.value, f);
-        return [{ ...model, child: just(mac[0]) }, mac[1].map(childMsg)];
-      }
-      return f(model);
+      const mac = mapLastMenu(model.child.value, f);
+      return [{ ...model, child: just(mac[0]) }, mac[1].map(childMsg)];
     }
   }
 }
 
 function collapseLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
   // check is my child has no child, and needs to be closed
-  const { child } = model;
-  switch (child.type) {
-    case 'Nothing': {
-      // I have no children, close myself
-      return close(model);
-    }
-    case 'Just': {
-      // is my child closed ?
-      if (child.value.state.tag === 'closed') {
-        // indeed !! close myself...
-        return close(model);
-      }
-      // child is open, recurse...
-      const mac = collapseLastSubMenu(child.value);
-      return [{ ...model, child: just(mac[0]) }, mac[1].map(childMsg)];
-    }
-  }
+  return model.child
+      .map(() => noCmd<Model<T>,Msg<T>>({...model, child: nothing }))
+      .withDefaultSupply(() => noCmd(model));
 }
 
 function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {

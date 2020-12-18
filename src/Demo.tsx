@@ -1,7 +1,7 @@
-import {Cmd, Dispatcher, noCmd, Sub, map} from "react-tea-cup";
+import {Cmd, Dispatcher, noCmd, Sub, map, Maybe, nothing, Tuple, just} from "react-tea-cup";
 import * as React from 'react';
 import {Model as TModel} from './tea-menu/Model';
-import {Msg as TMsg} from './tea-menu/Msg';
+import {childMsg, Msg as TMsg} from './tea-menu/Msg';
 import {ViewMenu} from './tea-menu/ViewMenu';
 import {item, menu, Menu, separator} from "./tea-menu/Menu";
 import {ItemRenderer} from "./tea-menu/ItemRenderer";
@@ -10,9 +10,10 @@ import {Pos, pos} from "./tea-menu/Pos";
 import {stopEvent} from "./tea-menu/StopEvent";
 
 export interface Model {
-  readonly menuModel: TModel<string>;
+  readonly menuModel: Maybe<TModel<string>>;
 }
 
+export type MenuModel = TModel<string>
 export type MenuMsg = TMsg<string>
 
 export type Msg =
@@ -52,13 +53,8 @@ const myRenderer: ItemRenderer<string> = item => (
 );
 
 export function init(): [Model, Cmd<Msg>] {
-  const mac = TM.init(myMenu)
-  return [
-    {menuModel: mac[0]},
-    mac[1].map(menuMsg)
-  ]
+  return noCmd({menuModel: nothing});
 }
-
 
 export function view(dispatch: Dispatcher<Msg>, model: Model) {
   return (
@@ -81,14 +77,27 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
         >
           Right-click anywhere to trigger the menu
         </div>
-        <ViewMenu model={model.menuModel} dispatch={map(dispatch, menuMsg)} renderer={myRenderer}/>
+        {model.menuModel
+            .map(menuModel =>
+                <ViewMenu model={menuModel} dispatch={map(dispatch, menuMsg)} renderer={myRenderer}/>
+            )
+            .withDefault(<></>)
+        }
       </>
   )
 }
 
+function updateMenu(model: Model, mac: [MenuModel, Cmd<MenuMsg>]): [Model, Cmd<Msg>] {
+  return Tuple.fromNative(mac)
+      .mapFirst(mm => ({...model, menuModel: just(mm)}))
+      .mapSecond(mc => mc.map(menuMsg))
+      .toNative();
+}
+
 function withTeaMenu(model: Model, f: (mm: TModel<string>) => [TModel<string>, Cmd<MenuMsg>]): [Model, Cmd<Msg>] {
-  const mac = f(model.menuModel);
-  return [{...model, menuModel: mac[0]}, mac[1].map(menuMsg)];
+  return model.menuModel
+      .map(menuModel => updateMenu(model, f(menuModel)))
+      .withDefaultSupply(() => noCmd(model));
 }
 
 export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
@@ -97,13 +106,19 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       return withTeaMenu(model, tm => TM.update(msg.msg, tm));
     }
     case "mouse-down": {
-      return withTeaMenu(model, tm =>
-          msg.button === 2 ? TM.open(tm, msg.pos) : TM.close(tm)
-      );
+      if (msg.button === 2) {
+        return updateMenu(model, TM.open(myMenu, msg.pos));
+      }
+      return noCmd({
+        ...model,
+        menuModel: nothing
+      });
     }
   }
 }
 
 export function subscriptions(model: Model): Sub<Msg> {
-  return TM.subscriptions(model.menuModel).map(menuMsg);
+  return model.menuModel
+      .map(mm => TM.subscriptions(mm).map(menuMsg))
+      .withDefaultSupply(() => Sub.none());
 }
