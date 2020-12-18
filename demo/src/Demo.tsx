@@ -117,6 +117,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       const mac: [Model, Cmd<Msg>] = [newModel, cmd];
       const outMsg: Maybe<TM.OutMsg<string>> = mco[2];
       return outMsg
+          // eslint-disable-next-line array-callback-return
           .map(out => {
             switch (out.tag) {
               case "request-close":

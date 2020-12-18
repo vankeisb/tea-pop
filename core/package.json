@@ -16,7 +16,9 @@
     "test-watch": "jest --watch",
     "prettify": "prettier --write src",
     "tsc": "tsc",
-    "compile": "rimraf dist && tsc"
+    "compile": "rimraf dist && tsc",
+    "lint": "eslint '**/*.{js,ts}'",
+    "lint:fix": "eslint '**/*.{js,ts}' --fix"
   },
   "dependencies": {
     "react-tea-cup": "^1.5.2",
