@@ -1,4 +1,1 @@
-cd ./core &&     \
-yarn publish &&  \
-cd ../tea-cup && \
-yarn publish
+cd ./core && yarn publish
