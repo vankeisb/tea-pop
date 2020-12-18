@@ -101,6 +101,14 @@ export function update<T>(
           return withOut(collapseLastSubMenu(keyboardNavigated(model)));
         case 'ArrowRight':
           return withOut(expandLastSubMenu(keyboardNavigated(model)));
+        case 'Enter':
+        case ' ': {
+          return model.menu.selectedItem
+              .map(item => {
+                return withOut(noCmd(model), just({tag: "item-selected", data: item.userData }))
+              })
+              .withDefaultSupply(() => withOut(noCmd(model)));
+        }
         default:
           return withOut(noCmd(model));
       }

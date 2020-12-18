@@ -86,7 +86,7 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
                 .map(() => "Menu is open")
                 .withDefaultSupply(() =>
                   model.lastClicked
-                      .map(lastClicked => "You clicked " + lastClicked)
+                      .map(lastClicked => "You selected '" + lastClicked + "'")
                       .withDefault("Right-click anywhere")
                 )
             }
