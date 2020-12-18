@@ -1,7 +1,7 @@
 import {Dim} from "./Dim";
 import {Box} from "./Box";
 import {Result} from "react-tea-cup";
-import {MenuItem} from "./Menu";
+import {Menu, MenuItem} from "./Menu";
 
 export type Msg<T>
     = { tag: 'got-window-dimensions', d: Dim }
@@ -10,6 +10,7 @@ export type Msg<T>
     | { tag: 'key-down', key: string }
     | { tag: 'mouse-move', item: MenuItem<T>, itemIndex: number }
     | { tag: 'got-item-box', item: MenuItem<T>, r: Result<Error,Box> }
+    | { tag: 'item-clicked', item: MenuItem<T> }
     | { tag: 'child-msg', m: Msg<T> };
 
 export function gotWindowDimensions<T>(d: Dim): Msg<T> {

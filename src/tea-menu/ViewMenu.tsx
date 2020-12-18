@@ -125,6 +125,7 @@ export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
           id={menuItemId(uuid, itemIndex)}
           className={"tm--item" + selectedClass}
           onMouseMove={() => dispatch({tag: 'mouse-move', item, itemIndex })}
+          onClick={() => dispatch({tag:'item-clicked', item})}
       >
         <div className="tm--item__content">
           {renderer(item.userData)}

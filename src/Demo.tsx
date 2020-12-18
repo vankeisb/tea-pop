@@ -8,9 +8,11 @@ import {ItemRenderer} from "./tea-menu/ItemRenderer";
 import * as TM from './tea-menu/TeaMenu';
 import {Pos, pos} from "./tea-menu/Pos";
 import {stopEvent} from "./tea-menu/StopEvent";
+import {OutMsg} from "./tea-menu/OutMsg";
 
 export interface Model {
   readonly menuModel: Maybe<TModel<string>>;
+  readonly lastClicked: Maybe<string>;
 }
 
 export type MenuModel = TModel<string>
@@ -53,7 +55,11 @@ const myRenderer: ItemRenderer<string> = item => (
 );
 
 export function init(): [Model, Cmd<Msg>] {
-  return noCmd({menuModel: nothing});
+  const model: Model = {
+    menuModel: nothing,
+    lastClicked: nothing,
+  }
+  return noCmd(model);
 }
 
 export function view(dispatch: Dispatcher<Msg>, model: Model) {
@@ -75,7 +81,16 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
               dispatch({tag: 'mouse-down', button: e.button, pos: pos(e.pageX, e.pageY)})
             }}
         >
-          Right-click anywhere to trigger the menu
+          <div>
+            {model.menuModel
+                .map(() => "Menu is open")
+                .withDefaultSupply(() =>
+                  model.lastClicked
+                      .map(lastClicked => "You clicked " + lastClicked)
+                      .withDefault("Right-click anywhere")
+                )
+            }
+          </div>
         </div>
         {model.menuModel
             .map(menuModel =>
@@ -94,16 +109,30 @@ function updateMenu(model: Model, mac: [MenuModel, Cmd<MenuMsg>]): [Model, Cmd<M
       .toNative();
 }
 
-function withTeaMenu(model: Model, f: (mm: TModel<string>) => [TModel<string>, Cmd<MenuMsg>]): [Model, Cmd<Msg>] {
-  return model.menuModel
-      .map(menuModel => updateMenu(model, f(menuModel)))
-      .withDefaultSupply(() => noCmd(model));
-}
-
 export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
   switch (msg.tag) {
     case "menu-msg": {
-      return withTeaMenu(model, tm => TM.update(msg.msg, tm));
+      if (model.menuModel.type === 'Nothing') {
+        return noCmd(model);
+      }
+      const menuModel = model.menuModel.value;
+      const mco = TM.update(msg.msg, menuModel);
+      const newModel: Model = {
+        ...model, menuModel: just(mco[0])
+      };
+      const cmd: Cmd<Msg> = mco[1].map(menuMsg);
+      const mac: [Model, Cmd<Msg>] = [newModel, cmd];
+      const outMsg: Maybe<OutMsg<string>> = mco[2];
+      return outMsg
+          .map(out => {
+            switch (out.tag) {
+              case "request-close":
+                return closeMenu(model);
+              case "item-selected":
+                return closeMenu(model, just(out.data));
+            }
+          })
+          .withDefault(mac);
     }
     case "mouse-down": {
       if (msg.button === 2) {
@@ -111,10 +140,15 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       }
       return noCmd({
         ...model,
-        menuModel: nothing
+        menuModel: nothing,
+        lastClicked: nothing
       });
     }
   }
+}
+
+function closeMenu(model: Model, lastClicked: Maybe<string> = nothing): [Model, Cmd<Msg>] {
+  return noCmd({...model, menuModel: nothing, lastClicked })
 }
 
 export function subscriptions(model: Model): Sub<Msg> {
