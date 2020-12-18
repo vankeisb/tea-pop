@@ -10,7 +10,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "3.4.3",
-    "tea-pop": "0.0.1"
+    "tea-pop": "^0"
   },
   "scripts": {
     "start": "react-scripts start",
