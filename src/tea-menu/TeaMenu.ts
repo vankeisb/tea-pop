@@ -1,6 +1,6 @@
 import {childMsg, gotItemBox, gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg,} from './Msg';
 import {Cmd, just, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents,} from 'react-tea-cup';
-import {initialModel, Model} from './Model';
+import {initialModel, keyboardNavigated, Model} from './Model';
 import {Menu, MenuItem, menuItemTask, menuTask,} from './Menu';
 import {pos, Pos} from './Pos';
 import {dim, Dim} from './Dim';
@@ -78,11 +78,11 @@ export function update<T>(
     case 'key-down': {
       switch (msg.key) {
         case 'Escape': {
-            return collapseLastSubMenu(model);
+            return collapseLastSubMenu(keyboardNavigated(model));
         }
         case 'ArrowDown':
         case 'ArrowUp': {
-          return mapLastMenu(model, (lastModel) => {
+          return mapLastMenu(keyboardNavigated(model), (lastModel) => {
             return noCmd({
               ...lastModel,
               menu: lastModel.menu.moveSelection(msg.key === 'ArrowDown'),
@@ -90,22 +90,17 @@ export function update<T>(
           });
         }
         case 'ArrowLeft':
-          return model.child
-            .map((child) => {
-              const mac = collapseLastSubMenu(child);
-              return Tuple.t2n(
-                { ...model, child: just(mac[0]) },
-                mac[1].map(childMsg),
-              );
-            })
-            .withDefaultSupply(() => noCmd(model));
+          return collapseLastSubMenu(keyboardNavigated(model));
         case 'ArrowRight':
-          return expandLastSubMenu(model);
+          return expandLastSubMenu(keyboardNavigated(model));
         default:
           return noCmd(model);
       }
     }
-    case 'mouse-enter': {
+    case 'mouse-move': {
+      if (model.navigatedWithKeyboard) {
+        return noCmd(keyboardNavigated(model, false));
+      }
       if (model.uuid.type === 'Nothing') {
         return noCmd(model);
       }
@@ -212,10 +207,25 @@ function mapLastMenu<T>(
 }
 
 function collapseLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
-  // check is my child has no child, and needs to be closed
-  return model.child
-      .map(() => noCmd<Model<T>,Msg<T>>({...model, child: nothing }))
-      .withDefaultSupply(() => noCmd(model));
+  switch (model.child.type) {
+    case "Nothing":
+      return noCmd(model);
+    case "Just": {
+      // I have a child : close it if he has no child !
+      const child = model.child.value;
+      if (child.child.isJust()) {
+        return Tuple.fromNative(collapseLastSubMenu(child))
+            .mapFirst(c => ({...model, child: just(c)}))
+            .mapSecond(cmd => cmd.map(childMsg))
+            .toNative();
+      } else {
+        return noCmd({
+          ...model,
+          child: nothing
+        })
+      }
+    }
+  }
 }
 
 function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {

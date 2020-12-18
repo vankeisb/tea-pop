@@ -11,6 +11,7 @@ export interface Model<T> {
   readonly state: MenuState;
   readonly error: Maybe<Error>;
   readonly child: Maybe<Model<T>>;
+  readonly navigatedWithKeyboard: boolean;
 }
 
 export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
@@ -21,6 +22,7 @@ export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
     state: menuStatePlacing(position),
     error: nothing,
     child: nothing,
+    navigatedWithKeyboard: false,
   }
 }
 
@@ -33,4 +35,8 @@ export function menuStatePlacing(position: Pos): MenuState {
     tag: 'placing',
     position
   }
+}
+
+export function keyboardNavigated<T>(model: Model<T>, navigatedWithKeyboard: boolean = true): Model<T> {
+  return {...model, navigatedWithKeyboard }
 }

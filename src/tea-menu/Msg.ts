@@ -8,7 +8,7 @@ export type Msg<T>
     | { tag: 'got-uuid', uuid: string }
     | { tag: 'got-menu-box', r: Result<Error, Box> }
     | { tag: 'key-down', key: string }
-    | { tag: 'mouse-enter', item: MenuItem<T>, itemIndex: number }
+    | { tag: 'mouse-move', item: MenuItem<T>, itemIndex: number }
     | { tag: 'got-item-box', item: MenuItem<T>, r: Result<Error,Box> }
     | { tag: 'child-msg', m: Msg<T> };
 
