@@ -1,14 +1,7 @@
 import {Cmd, Dispatcher, noCmd, Sub, map, Maybe, nothing, Tuple, just} from "react-tea-cup";
 import * as React from 'react';
-import {Model as TModel} from './tea-menu/Model';
-import {childMsg, Msg as TMsg} from './tea-menu/Msg';
-import {ViewMenu} from './tea-menu/ViewMenu';
-import {item, menu, Menu, separator} from "./tea-menu/Menu";
-import {ItemRenderer} from "./tea-menu/ItemRenderer";
-import * as TM from './tea-menu/TeaMenu';
-import {Pos, pos} from "./tea-menu/Pos";
-import {stopEvent} from "./tea-menu/StopEvent";
-import {OutMsg} from "./tea-menu/OutMsg";
+import {item, ItemRenderer, Menu, menu, Model as TModel, Msg as TMsg, Pos, separator, ViewMenu} from 'tea-pop';
+import * as TM from 'tea-pop';
 
 export interface Model {
   readonly menuModel: Maybe<TModel<string>>;
@@ -76,9 +69,9 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
               alignItems: "center",
               justifyContent: "center"
             }}
-            onContextMenu={stopEvent}
+            onContextMenu={TM.stopEvent}
             onMouseDown={e => {
-              dispatch({tag: 'mouse-down', button: e.button, pos: pos(e.pageX, e.pageY)})
+              dispatch({tag: 'mouse-down', button: e.button, pos: TM.pos(e.pageX, e.pageY)})
             }}
         >
           <div>
@@ -122,7 +115,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       };
       const cmd: Cmd<Msg> = mco[1].map(menuMsg);
       const mac: [Model, Cmd<Msg>] = [newModel, cmd];
-      const outMsg: Maybe<OutMsg<string>> = mco[2];
+      const outMsg: Maybe<TM.OutMsg<string>> = mco[2];
       return outMsg
           .map(out => {
             switch (out.tag) {

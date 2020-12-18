@@ -19,12 +19,7 @@
     "compile": "rimraf dist && tsc"
   },
   "dependencies": {
-    "tea-cup-core": "1.5.2",
+    "react-tea-cup": "^1.5.2",
     "react": "^16.7.0"
-  },
-  "devDependencies": {
-    "@types/jsdom": "^16.2.5",
-    "@types/react": "^16.7.22",
-    "jsdom": "^16.4.0"
   }
 }
