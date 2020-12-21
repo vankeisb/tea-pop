@@ -16,6 +16,15 @@ jobs:
           root: ~/repo
           paths: .
 
+  webtests:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run: cd webtests && mvn clean
+
   deploy:
     <<: *defaults
     steps:
@@ -34,6 +43,9 @@ workflows:
           filters:
             tags:
               only: /\d+\.\d+\.\d+/
+      - webtests :
+          requires:
+            - build
       - deploy:
           requires:
             - build
