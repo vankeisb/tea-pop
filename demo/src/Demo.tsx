@@ -1,7 +1,7 @@
 import {Cmd, Dispatcher, noCmd, Sub, map, Maybe, nothing, Tuple, just} from "react-tea-cup";
 import * as React from 'react';
 import {item, ItemRenderer, Menu, menu, Model as TModel, Msg as TMsg, Pos, separator, ViewMenu} from 'tea-pop';
-import * as TM from 'tea-pop';
+import * as TP from 'tea-pop';
 
 export interface Model {
   readonly menuModel: Maybe<TModel<string>>;
@@ -69,9 +69,9 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
               alignItems: "center",
               justifyContent: "center"
             }}
-            onContextMenu={TM.stopEvent}
+            onContextMenu={TP.stopEvent}
             onMouseDown={e => {
-              dispatch({tag: 'mouse-down', button: e.button, pos: TM.pos(e.pageX, e.pageY)})
+              dispatch({tag: 'mouse-down', button: e.button, pos: TP.pos(e.pageX, e.pageY)})
             }}
         >
           <div>
@@ -109,13 +109,13 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
         return noCmd(model);
       }
       const menuModel = model.menuModel.value;
-      const mco = TM.update(msg.msg, menuModel);
+      const mco = TP.update(msg.msg, menuModel);
       const newModel: Model = {
         ...model, menuModel: just(mco[0])
       };
       const cmd: Cmd<Msg> = mco[1].map(menuMsg);
       const mac: [Model, Cmd<Msg>] = [newModel, cmd];
-      const outMsg: Maybe<TM.OutMsg<string>> = mco[2];
+      const outMsg: Maybe<TP.OutMsg<string>> = mco[2];
       return outMsg
           // eslint-disable-next-line array-callback-return
           .map(out => {
@@ -130,7 +130,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
     }
     case "mouse-down": {
       if (msg.button === 2) {
-        return updateMenu(model, TM.open(myMenu, msg.pos));
+        return updateMenu(model, TP.open(myMenu, msg.pos));
       }
       return noCmd({
         ...model,
@@ -147,6 +147,6 @@ function closeMenu(model: Model, lastClicked: Maybe<string> = nothing): [Model, 
 
 export function subscriptions(model: Model): Sub<Msg> {
   return model.menuModel
-      .map(mm => TM.subscriptions(mm).map(menuMsg))
+      .map(mm => TP.subscriptions(mm).map(menuMsg))
       .withDefaultSupply(() => Sub.none());
 }
