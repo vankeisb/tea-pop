@@ -63,7 +63,7 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
       }
       case "separator": {
         return (
-            <div key={`sep-${index}`} className="tm--separator"/>
+            <div key={`sep-${index}`} className="tm-separator"/>
         )
       }
     }
