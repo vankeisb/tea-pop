@@ -191,9 +191,13 @@ export function update<T>(
           .withDefaultSupply(() => withOut(noCmd(model)));
     }
     case "item-clicked": {
-      return withOut(noCmd(model), just({tag:"item-selected", data: msg.item.userData}))
+      return withOut(noCmd(model), outItemSelected(msg.item))
     }
   }
+}
+
+function outItemSelected<T>(item: MenuItem<T>): Maybe<OutMsg<T>> {
+  return just({tag:"item-selected", data: item.userData});
 }
 
 function openSubMenu<T>(
@@ -308,5 +312,29 @@ function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<Ou
 }
 
 function toggleOrSelectItem<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
-  throw "TODO";
+  return mapLastMenu(model, (lastModel) => {
+    return lastModel.menu.selectedItem
+        .map(selectedItem => {
+          if (lastModel.uuid.type === 'Nothing') {
+            return withOut(noCmd<Model<T>,Msg<T>>(lastModel));
+          }
+          const uuid = lastModel.uuid.value;
+          // do we have a sub-menu ?
+          return selectedItem.subMenu
+              .map(() => {
+                // we have a sub-menu, expand it
+                const cmd = lastModel.menu
+                    .indexOfItem(selectedItem)
+                    .map(itemIndex => openSubMenu(uuid, selectedItem, itemIndex))
+                    .withDefaultSupply(() => Cmd.none())
+                return withOut(Tuple.t2n(lastModel, cmd));
+              })
+              .withDefaultSupply(() => {
+                // no sub-menu, select the item
+                return withOut(noCmd(lastModel), outItemSelected(selectedItem));
+              })
+
+        })
+        .withDefaultSupply(() => withOut(noCmd(lastModel)))
+  });
 }

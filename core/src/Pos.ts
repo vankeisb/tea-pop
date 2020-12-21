@@ -36,6 +36,8 @@ export class Pos {
       this.y + p.y
     )
   }
+
+  static origin: Pos = pos(0, 0)
 }
 
 export function pos(x: number, y: number): Pos {
