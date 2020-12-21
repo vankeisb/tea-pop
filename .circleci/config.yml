@@ -21,7 +21,7 @@ jobs:
   webtests:
     working_directory: ~/repo
     docker:
-      - image: circleci/openjdk:stretch
+      - image: 'cimg/node:13.12-browser'
     steps:
       - attach_workspace:
           at: ~/repo
