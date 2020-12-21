@@ -163,12 +163,13 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
                 .assertItemActive("Copy", false)
                 .assertItemActive("Cut", true);
 
-        fDemo().eval(e -> {
-            new Actions(getWebDriver()).moveToElement(e, 10, 10).click().perform();
+        $$(".tm").at(0).eval(e -> {
+            new Actions(getWebDriver()).moveToElement(e, -100, -100).perform();
+            new Actions(getWebDriver()).click().perform();
             return true;
         });
 
-        findMenus().count(0).eval();
+        assertNoMenu();
     }
 
     @Test
