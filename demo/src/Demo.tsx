@@ -92,9 +92,10 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
             onContextMenu={TM.stopEvent}
         >
           <div style={{
-            height: "100%",
+            height: "100%", // to test scrolling set a fixed size that's larger than viewport
             width: "100%",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center"
           }}>
