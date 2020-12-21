@@ -144,25 +144,19 @@ export interface ViewMenuItemProps<T> {
 export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
   const {menu, item, renderer, dispatch, uuid, itemIndex} = props;
   const selected = menu.isSelected(item);
-  const selectedClass = selected ? ' tm-selected' : '';
   return (
       <div
           id={menuItemId(uuid, itemIndex)}
-          className={"tm--item" + selectedClass}
           onMouseMove={() => dispatch({tag: 'mouse-move', item, itemIndex })}
-          onClick={() => dispatch({tag:'item-clicked', item})}
+          onClick={() => {
+            dispatch({tag: 'item-clicked', item})
+          }}
       >
-        <div className="tm--item__content">
-          {renderer(item.userData)}
-        </div>
-        {item.subMenu
-            .map(subMenu =>
-                <div className="tm--item__submenu-trigger">
-                  ›
-                </div>
-            )
-            .withDefaultSupply(() => <></>)
-        }
+        {renderer({
+          data: item.userData,
+          active: selected,
+          hasSubMenu: item.subMenu.isJust(),
+        })}
       </div>
   );
 }
