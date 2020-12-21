@@ -35,7 +35,7 @@ import {OutMsg} from "./OutMsg";
 
 export function open<T>(menu: Menu<T>, position: Pos): [Model<T>, Cmd<Msg<T>>] {
   return [
-    initialModel(menu, position),
+    initialModel(menu.selectFirstItem(), position),
     Cmd.batch([
       Task.perform(getWindowDimensions, (d) => gotWindowDimensions(d)),
       Task.perform(uuid(), (u) => gotUuid(u)),
@@ -67,7 +67,6 @@ export function update<T>(
     msg: Msg<T>,
     model: Model<T>,
 ): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
-  console.log('update', msg);
   switch (msg.tag) {
     case 'got-window-dimensions': {
       return withOut(postOpen({
@@ -145,7 +144,6 @@ export function update<T>(
       if (model.menu.isSelected(msg.item)) {
         return withOut(noCmd(model));
       }
-      console.log("mouseEnter", model);
       const menu = model.menu.selectItem(msg.item);
       const uuid = model.uuid.value;
       return withOut(Tuple.t2n({...model, menu, child: nothing}, openSubMenu(uuid, msg.item, msg.itemIndex)));
@@ -278,7 +276,6 @@ function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<Ou
         .map((selectedItem) => {
           return selectedItem.subMenu
               .map(() => {
-                console.log('selected item has sub menu...');
                 if (lastModel.uuid.type === 'Nothing') {
                   return withOut(noCmd<Model<T>, Msg<T>>(lastModel));
                 }
@@ -286,26 +283,16 @@ function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<Ou
                 const cmd = lastModel.menu
                     .indexOfItem(selectedItem)
                     .map((itemIndex) => {
-                      console.log(
-                          'opening item #' +
-                          itemIndex +
-                          ' (' +
-                          selectedItem.userData +
-                          ')',
-                      );
                       return openSubMenu(uuid, selectedItem, itemIndex);
                     })
                     .withDefaultSupply(() => Cmd.none<Msg<T>>());
                 return withOut(Tuple.t2n(lastModel, cmd));
               })
               .withDefaultSupply(() => {
-                console.log('selected item has no sub menu');
                 return withOut(noCmd(lastModel));
               });
-          // return noCmd<Model<T>, Msg<T>>(lastModel);
         })
         .withDefaultSupply(() => {
-          console.log('no selected item in last model');
           return withOut(noCmd(lastModel));
         });
   });

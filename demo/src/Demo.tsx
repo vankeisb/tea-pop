@@ -105,7 +105,7 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
                   .withDefaultSupply(() =>
                     model.lastClicked
                         .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
-                        .withDefault(<span>Right-click anywhere</span>)
+                        .withDefault(<span>Right-click anywhere, or use context-menu key.</span>)
                   )
               }
             </div>
@@ -168,7 +168,9 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       });
     }
     case "key-down": {
-      console.log(msg.key);
+      if (msg.key === 'ContextMenu') {
+        return updateMenu(model, TM.open(myMenu, model.mousePos));
+      }
       return noCmd(model);
     }
   }
