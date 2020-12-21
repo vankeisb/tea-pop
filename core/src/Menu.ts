@@ -35,6 +35,10 @@ import {
 export class Menu<T> {
   constructor(private readonly elements: ListWithSelection<MenuElement<T>>) {}
 
+  selectFirstItem(): Menu<T> {
+    return new Menu(this.elements.selectIndex(0));
+  }
+
   selectItem(item: MenuItem<T>): Menu<T> {
     return new Menu(this.elements.select((e) => e === item));
   }
