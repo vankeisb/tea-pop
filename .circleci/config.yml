@@ -40,6 +40,8 @@ jobs:
       - run: cd webtests && mvn clean install -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
       - store_artifacts:
           path: ~/repo/webtests/target/surefire-reports
+      - store_artifacts:
+          path: ~/repo/webtests/target/videos
 
   deploy:
     <<: *defaults
