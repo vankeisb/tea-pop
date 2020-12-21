@@ -147,7 +147,6 @@ export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
   return (
       <div
           id={menuItemId(uuid, itemIndex)}
-          // className={"tm--item" + selectedClass}
           onMouseMove={() => dispatch({tag: 'mouse-move', item, itemIndex })}
           onClick={() => {
             dispatch({tag: 'item-clicked', item})
@@ -158,14 +157,6 @@ export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
           active: selected,
           hasSubMenu: item.subMenu.isJust(),
         })}
-        {/*{item.subMenu*/}
-        {/*    .map(subMenu =>*/}
-        {/*        <div className="tm--item__submenu-trigger">*/}
-        {/*          ›*/}
-        {/*        </div>*/}
-        {/*    )*/}
-        {/*    .withDefaultSupply(() => <></>)*/}
-        {/*}*/}
       </div>
   );
 }
