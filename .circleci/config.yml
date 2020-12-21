@@ -43,6 +43,23 @@ jobs:
       - store_artifacts:
           path: ~/repo/webtests/target/videos
 
+  docs-deploy:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:erbium
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.0.1
+            git config user.email "ci-build@rvkb.com"
+            git config user.name "ci-build"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages --dist demo/build
+
   deploy:
     <<: *defaults
     steps:
@@ -61,12 +78,20 @@ workflows:
           filters:
             tags:
               only: /\d+\.\d+\.\d+/
-      - webtests :
+      - webtests:
           requires:
             - build
+      - docs-deploy:
+          requires:
+            - build
+            - webtests
+          filters:
+            branches:
+              only: master
       - deploy:
           requires:
             - build
+            - webtests
           filters:
             tags:
               only: /\d+\.\d+\.\d+/
