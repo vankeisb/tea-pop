@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 orbs:
   browser-tools: circleci/browser-tools@2.7.1
 
@@ -19,9 +19,8 @@ jobs:
           paths: .
 
   webtests:
-    working_directory: ~/repo
-    docker:
-      - image: 'cimg/node:13.12-browser'
+    <<: *defaults
+
     steps:
       - attach_workspace:
           at: ~/repo
