@@ -4,13 +4,21 @@ import {item, ItemRenderer, Menu, menu, Model as TModel, Msg as TMsg, Pos, separ
 import * as TM from 'tea-pop';
 
 export interface Model {
-  readonly menuModel: Maybe<TModel<string>>;
-  readonly lastClicked: Maybe<string>;
+  // keep track of mouse position
   readonly mousePos: Pos;
+  // ref to the tea-pop model
+  readonly menuModel: Maybe<TModel<string>>;
+  // keep last clicked item
+  readonly lastClicked: Maybe<string>;
 }
 
+// just to avoid too much typing
 export type MenuModel = TModel<string>
 export type MenuMsg = TMsg<string>
+
+/*
+ * Msg
+ */
 
 export type Msg =
     | { tag: 'menu-msg', msg: MenuMsg }
@@ -42,6 +50,12 @@ function onKeyDown(key: string): Msg {
     tag: "key-down", key
   }
 }
+
+/*
+ * We keep our menus as constants. Those are, like everything, immutable.
+ * They will serve as prototypes for when we open menus in reaction to clicks or
+ * keystrokes...
+ */
 
 const mySubMenu2: Menu<string> = menu([
   item("Try"),
