@@ -49,13 +49,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo
-      - run:
-          name: Install and configure dependencies
-          command: |
-            yarn global add gh-pages@2.0.1
-            which gh-pages
-            # git config user.email "ci-build@rvkb.com"
-            # git config user.name "ci-build"
+      - run: yarn global add gh-pages@2.0.1
+      - run: git config user.email "ci-build@rvkb.com"
+      - run: git config user.name "ci-build"
       - run:
           name: Deploy docs to gh-pages branch
           command: gh-pages --dist demo/build
