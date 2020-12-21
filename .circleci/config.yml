@@ -38,6 +38,8 @@ jobs:
             ps -efa | grep Xvfb
           name: Check install
       - run: cd webtests && mvn clean install -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
+      - store_artifacts:
+          path: ~/repo/webtests/target/surefire-reports
 
   deploy:
     <<: *defaults
