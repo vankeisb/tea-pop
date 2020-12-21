@@ -32,7 +32,7 @@ jobs:
             google-chrome --version
             chromedriver --version
           name: Check install
-            - run: cd webtests && mvn clean
+      - run: cd webtests && mvn clean
 
   deploy:
     <<: *defaults
