@@ -29,9 +29,6 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:
-          name: Xvfb install
-          command: sudo apt-get --assume-yes --quiet --no-install-suggests --no-install-recommends install xvfb
-      - run:
           command: |
             google-chrome --version
             chromedriver --version
