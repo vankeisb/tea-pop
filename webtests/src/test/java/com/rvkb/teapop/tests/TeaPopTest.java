@@ -60,7 +60,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
                 break;
             } catch (Exception e) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(200);
                 } catch (InterruptedException interruptedException) {
                     // try again
                 }
