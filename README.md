@@ -1,3 +1,24 @@
 Popup / Context Menu written in [react-tea-cup](https://github.com/vankeisb/react-tea-cup).
 
-[Demo](https://vankeisb.github.io/tea-pop/)
+Features :
+* Positioning / Sizing 
+* Sub-menus
+* Mouse + keyboard support  
+* Fully customizable loook and feel
+
+[Live Demo](https://vankeisb.github.io/tea-pop/)
+
+# Build / Run
+
+Build everything from the root folder :
+
+    ./build.sh 
+
+Run the demo app (CRA) :
+
+    cd demo
+    yarn start
+
+# Contribute
+
+Please submit PRs on `develop`.

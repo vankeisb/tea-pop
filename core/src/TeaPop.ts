@@ -26,7 +26,7 @@
 import {childMsg, gotItemBox, gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg,} from './Msg';
 import {Cmd, just, Maybe, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents,} from 'react-tea-cup';
 import {initialModel, keyboardNavigated, Model} from './Model';
-import {Menu, MenuItem, menuItemTask, menuTask,} from './Menu';
+import {item, Menu, MenuItem, menuItemTask, menuTask,} from './Menu';
 import {pos, Pos} from './Pos';
 import {dim, Dim} from './Dim';
 import {Box} from './Box';
@@ -35,7 +35,7 @@ import {OutMsg} from "./OutMsg";
 
 export function open<T>(menu: Menu<T>, position: Pos): [Model<T>, Cmd<Msg<T>>] {
   return [
-    initialModel(menu, position),
+    initialModel(menu.selectFirstItem(), position),
     Cmd.batch([
       Task.perform(getWindowDimensions, (d) => gotWindowDimensions(d)),
       Task.perform(uuid(), (u) => gotUuid(u)),
@@ -67,7 +67,6 @@ export function update<T>(
     msg: Msg<T>,
     model: Model<T>,
 ): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
-  console.log('update', msg);
   switch (msg.tag) {
     case 'got-window-dimensions': {
       return withOut(postOpen({
@@ -115,24 +114,20 @@ export function update<T>(
         }
         case 'ArrowDown':
         case 'ArrowUp': {
-          return withOut(mapLastMenu(keyboardNavigated(model), (lastModel) => {
-            return noCmd({
+          return mapLastMenu(keyboardNavigated(model), (lastModel) => {
+            return withOut(noCmd({
               ...lastModel,
               menu: lastModel.menu.moveSelection(msg.key === 'ArrowDown'),
-            });
-          }));
+            }));
+          });
         }
         case 'ArrowLeft':
           return withOut(collapseLastSubMenu(keyboardNavigated(model)));
         case 'ArrowRight':
-          return withOut(expandLastSubMenu(keyboardNavigated(model)));
+          return expandLastSubMenu(keyboardNavigated(model));
         case 'Enter':
         case ' ': {
-          return model.menu.selectedItem
-              .map(item => {
-                return withOut(noCmd(model), just({tag: "item-selected", data: item.userData }))
-              })
-              .withDefaultSupply(() => withOut(noCmd(model)));
+          return toggleOrSelectItem(model);
         }
         default:
           return withOut(noCmd(model));
@@ -149,7 +144,6 @@ export function update<T>(
       if (model.menu.isSelected(msg.item)) {
         return withOut(noCmd(model));
       }
-      console.log("mouseEnter", model);
       const menu = model.menu.selectItem(msg.item);
       const uuid = model.uuid.value;
       return withOut(Tuple.t2n({...model, menu, child: nothing}, openSubMenu(uuid, msg.item, msg.itemIndex)));
@@ -195,9 +189,13 @@ export function update<T>(
           .withDefaultSupply(() => withOut(noCmd(model)));
     }
     case "item-clicked": {
-      return withOut(noCmd(model), just({tag:"item-selected", data: msg.item.userData}))
+      return withOut(noCmd(model), outItemSelected(msg.item))
     }
   }
+}
+
+function outItemSelected<T>(item: MenuItem<T>): Maybe<OutMsg<T>> {
+  return just({tag:"item-selected", data: item.userData});
 }
 
 function openSubMenu<T>(
@@ -236,8 +234,8 @@ const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
 
 function mapLastMenu<T>(
     model: Model<T>,
-    f: (m: Model<T>) => [Model<T>, Cmd<Msg<T>>],
-): [Model<T>, Cmd<Msg<T>>] {
+    f: (m: Model<T>) => [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>],
+): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
   switch (model.child.type) {
     case 'Nothing': {
       // I'm the last model !
@@ -245,7 +243,7 @@ function mapLastMenu<T>(
     }
     case 'Just': {
       const mac = mapLastMenu(model.child.value, f);
-      return [{...model, child: just(mac[0])}, mac[1].map(childMsg)];
+      return [{...model, child: just(mac[0])}, mac[1].map(childMsg), mac[2]];
     }
   }
 }
@@ -272,41 +270,58 @@ function collapseLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
   }
 }
 
-function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
+function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
   return mapLastMenu(model, (lastModel) => {
     return lastModel.menu.selectedItem
         .map((selectedItem) => {
           return selectedItem.subMenu
               .map(() => {
-                console.log('selected item has sub menu...');
                 if (lastModel.uuid.type === 'Nothing') {
-                  return noCmd<Model<T>, Msg<T>>(lastModel);
+                  return withOut(noCmd<Model<T>, Msg<T>>(lastModel));
                 }
                 const uuid = lastModel.uuid.value;
                 const cmd = lastModel.menu
                     .indexOfItem(selectedItem)
                     .map((itemIndex) => {
-                      console.log(
-                          'opening item #' +
-                          itemIndex +
-                          ' (' +
-                          selectedItem.userData +
-                          ')',
-                      );
                       return openSubMenu(uuid, selectedItem, itemIndex);
                     })
                     .withDefaultSupply(() => Cmd.none<Msg<T>>());
-                return Tuple.t2n(lastModel, cmd);
+                return withOut(Tuple.t2n(lastModel, cmd));
               })
               .withDefaultSupply(() => {
-                console.log('selected item has no sub menu');
-                return noCmd(lastModel);
+                return withOut(noCmd(lastModel));
               });
-          // return noCmd<Model<T>, Msg<T>>(lastModel);
         })
         .withDefaultSupply(() => {
-          console.log('no selected item in last model');
-          return noCmd(lastModel);
+          return withOut(noCmd(lastModel));
         });
+  });
+}
+
+function toggleOrSelectItem<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
+  return mapLastMenu(model, (lastModel) => {
+    return lastModel.menu.selectedItem
+        .map(selectedItem => {
+          if (lastModel.uuid.type === 'Nothing') {
+            return withOut(noCmd<Model<T>,Msg<T>>(lastModel));
+          }
+          const uuid = lastModel.uuid.value;
+          // do we have a sub-menu ?
+          return selectedItem.subMenu
+              .map(() => {
+                // we have a sub-menu, expand it
+                const cmd = lastModel.menu
+                    .indexOfItem(selectedItem)
+                    .map(itemIndex => openSubMenu(uuid, selectedItem, itemIndex))
+                    .withDefaultSupply(() => Cmd.none())
+                return withOut(Tuple.t2n(lastModel, cmd));
+              })
+              .withDefaultSupply(() => {
+                // no sub-menu, select the item
+                return withOut(noCmd(lastModel), outItemSelected(selectedItem));
+              })
+
+        })
+        .withDefaultSupply(() => withOut(noCmd(lastModel)))
   });
 }
