@@ -87,7 +87,7 @@ workflows:
             - webtests
           filters:
             branches:
-              only: master
+              only: main
       - deploy:
           requires:
             - build
