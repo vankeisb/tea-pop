@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Install and configure dependencies
           command: |
-            npm install -g gh-pages@2.0.1
+            yarn global add gh-pages@2.0.1
             # git config user.email "ci-build@rvkb.com"
             # git config user.name "ci-build"
       - run:
