@@ -53,6 +53,7 @@ jobs:
           name: Install and configure dependencies
           command: |
             yarn global add gh-pages@2.0.1
+            which gh-pages
             # git config user.email "ci-build@rvkb.com"
             # git config user.name "ci-build"
       - run:
