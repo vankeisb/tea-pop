@@ -19,7 +19,9 @@ jobs:
           paths: .
 
   webtests:
-    <<: *defaults
+    working_directory: ~/repo
+    docker:
+      - image: circleci/openjdk:stretch
 
     steps:
       - attach_workspace:
@@ -31,7 +33,7 @@ jobs:
             google-chrome --version
             chromedriver --version
           name: Check install
-      - run: cd webtests && mvn clean
+      - run: cd webtests && mvn clean install -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
 
   deploy:
     <<: *defaults
