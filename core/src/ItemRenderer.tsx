@@ -25,4 +25,32 @@
 
 import * as React from "react";
 
-export type ItemRenderer<T> = (t:T) => React.ReactNode;
+export interface RendererInput<T> {
+  readonly data: T;
+  readonly active: boolean;
+  readonly hasSubMenu: boolean;
+}
+
+export type ItemRenderer<T> = (input: RendererInput<T>) => React.ReactNode;
+
+export function defaultItemRenderer<T>(contentRenderer: (t: T) => React.ReactNode): ItemRenderer<T> {
+  return (input) => {
+    const { data, active, hasSubMenu } = input;
+    const activeClass = active ? ' tm-active' : '';
+    return (
+        <div className={`tm-item${activeClass}`}>
+          <div className="tm-item__content">
+            {contentRenderer(data)}
+          </div>
+          { hasSubMenu
+              ? (
+                  <div className="tm-item__submenu">
+                    ›
+                  </div>
+              )
+              : <></>
+          }
+        </div>
+    )
+  }
+}

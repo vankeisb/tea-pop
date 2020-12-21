@@ -1,7 +1,7 @@
-import {Cmd, Dispatcher, noCmd, Sub, map, Maybe, nothing, Tuple, just, DocumentEvents} from "react-tea-cup";
+import {Cmd, Dispatcher, DocumentEvents, just, map, Maybe, noCmd, nothing, Sub, Tuple} from "react-tea-cup";
 import * as React from 'react';
-import {item, ItemRenderer, Menu, menu, Model as TModel, Msg as TMsg, Pos, separator, ViewMenu} from 'tea-pop';
 import * as TM from 'tea-pop';
+import {defaultItemRenderer, item, Menu, menu, Model as TModel, Msg as TMsg, Pos, separator, ViewMenu} from 'tea-pop';
 
 export interface Model {
   // keep track of mouse position
@@ -78,9 +78,7 @@ const myMenu: Menu<string> = menu([
   item("I am a bit longer")
 ]);
 
-const myRenderer: ItemRenderer<string> = item => (
-    <span>{item}</span>
-);
+const MyRenderer = defaultItemRenderer((s: string) => <span>{s}</span>);
 
 export function init(): [Model, Cmd<Msg>] {
   const model: Model = {
@@ -95,39 +93,24 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
   return (
       <>
         <div
+            className="demo"
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              overflow: "auto",
             }}
             onContextMenu={TM.stopEvent}
+            onMouseDown={e => dispatch(onMouseDown(e.button))}
         >
-          <div style={{
-            height: "100%", // to test scrolling set a fixed size that's larger than viewport
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
-            <div>
-              {model.menuModel
-                  .map(() => <span>Menu is open</span>)
-                  .withDefaultSupply(() =>
-                    model.lastClicked
-                        .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
-                        .withDefault(<span>Right-click anywhere, or use context-menu key.</span>)
-                  )
-              }
-            </div>
-          </div>
+          {model.menuModel
+              .map(() => <span>Menu is open</span>)
+              .withDefaultSupply(() =>
+                model.lastClicked
+                    .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
+                    .withDefault(<span>Right-click anywhere, or use context-menu key.</span>)
+              )
+          }
         </div>
         {model.menuModel
             .map(menuModel =>
-                <ViewMenu model={menuModel} dispatch={map(dispatch, menuMsg)} renderer={myRenderer}/>
+                <ViewMenu model={menuModel} dispatch={map(dispatch, menuMsg)} renderer={MyRenderer}/>
             )
             .withDefault(<></>)
         }
@@ -200,8 +183,7 @@ export function subscriptions(model: Model): Sub<Msg> {
   const menuSub: Sub<Msg> = model.menuModel
       .map(mm => TM.subscriptions(mm).map(menuMsg))
       .withDefaultSupply(() => Sub.none());
-  const mouseDown: Sub<Msg> = documentEvents.on('mousedown', e => onMouseDown(e.button));
   const mouseMove: Sub<Msg> = documentEvents.on('mousemove', e => onMouseMove(TM.pos(e.pageX, e.pageY)));
   const keyDown: Sub<Msg> = documentEvents.on('keydown', e => onKeyDown(e.key));
-  return Sub.batch([menuSub, mouseMove, mouseDown, keyDown]);
+  return Sub.batch([menuSub, mouseMove, keyDown]);
 }
