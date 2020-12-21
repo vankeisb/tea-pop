@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "https://vankeisb.github.io/tea-pop/precache-manifest.6c08fb2ae8ce970fa14279da8b05cb0a.js"
+  "https://vankeisb.github.io/tea-pop/precache-manifest.a9a787f25922b97e43d0214338fd6458.js"
 );
 
 self.addEventListener('message', (event) => {

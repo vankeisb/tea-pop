@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "https://vankeisb.github.io/tea-pop/static/css/main.25c945b2.chunk.css",
-    "main.js": "https://vankeisb.github.io/tea-pop/static/js/main.47d8d589.chunk.js",
-    "main.js.map": "https://vankeisb.github.io/tea-pop/static/js/main.47d8d589.chunk.js.map",
+    "main.css": "https://vankeisb.github.io/tea-pop/static/css/main.1a9def6d.chunk.css",
+    "main.js": "https://vankeisb.github.io/tea-pop/static/js/main.2f116432.chunk.js",
+    "main.js.map": "https://vankeisb.github.io/tea-pop/static/js/main.2f116432.chunk.js.map",
     "runtime-main.js": "https://vankeisb.github.io/tea-pop/static/js/runtime-main.c9d1acc6.js",
     "runtime-main.js.map": "https://vankeisb.github.io/tea-pop/static/js/runtime-main.c9d1acc6.js.map",
-    "static/js/2.b2cf48e0.chunk.js": "https://vankeisb.github.io/tea-pop/static/js/2.b2cf48e0.chunk.js",
-    "static/js/2.b2cf48e0.chunk.js.map": "https://vankeisb.github.io/tea-pop/static/js/2.b2cf48e0.chunk.js.map",
+    "static/js/2.7dd3c17f.chunk.js": "https://vankeisb.github.io/tea-pop/static/js/2.7dd3c17f.chunk.js",
+    "static/js/2.7dd3c17f.chunk.js.map": "https://vankeisb.github.io/tea-pop/static/js/2.7dd3c17f.chunk.js.map",
     "index.html": "https://vankeisb.github.io/tea-pop/index.html",
-    "precache-manifest.6c08fb2ae8ce970fa14279da8b05cb0a.js": "https://vankeisb.github.io/tea-pop/precache-manifest.6c08fb2ae8ce970fa14279da8b05cb0a.js",
+    "precache-manifest.a9a787f25922b97e43d0214338fd6458.js": "https://vankeisb.github.io/tea-pop/precache-manifest.a9a787f25922b97e43d0214338fd6458.js",
     "service-worker.js": "https://vankeisb.github.io/tea-pop/service-worker.js",
-    "static/css/main.25c945b2.chunk.css.map": "https://vankeisb.github.io/tea-pop/static/css/main.25c945b2.chunk.css.map",
-    "static/js/2.b2cf48e0.chunk.js.LICENSE.txt": "https://vankeisb.github.io/tea-pop/static/js/2.b2cf48e0.chunk.js.LICENSE.txt"
+    "static/css/main.1a9def6d.chunk.css.map": "https://vankeisb.github.io/tea-pop/static/css/main.1a9def6d.chunk.css.map",
+    "static/js/2.7dd3c17f.chunk.js.LICENSE.txt": "https://vankeisb.github.io/tea-pop/static/js/2.7dd3c17f.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.c9d1acc6.js",
-    "static/js/2.b2cf48e0.chunk.js",
-    "static/css/main.25c945b2.chunk.css",
-    "static/js/main.47d8d589.chunk.js"
+    "static/js/2.7dd3c17f.chunk.js",
+    "static/css/main.1a9def6d.chunk.css",
+    "static/js/main.2f116432.chunk.js"
   ]
 }
