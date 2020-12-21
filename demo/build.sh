@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-PUBLIC_URL=https://vankeisb.github.io/tea-pop/ yarn build && yarn copy-demo
+PUBLIC_URL=http://localhost:8080/ yarn build

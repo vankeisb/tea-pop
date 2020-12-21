@@ -18,7 +18,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "copy-demo": "rimraf ../docs && cp -R build ../docs"
+    "build-gh-pages": "PUBLIC_URL=https://vankeisb.github.io/tea-pop/ yarn build"
   },
   "eslintConfig": {
     "extends": "react-app"
