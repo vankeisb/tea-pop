@@ -21,7 +21,7 @@ jobs:
   webtests:
     working_directory: ~/repo
     docker:
-      - image: circleci/openjdk:stretch
+      - image: circleci/openjdk:8-jdk-browsers
 
     steps:
       - attach_workspace:
