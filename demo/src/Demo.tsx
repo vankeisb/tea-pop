@@ -1,11 +1,12 @@
-import {Cmd, Dispatcher, noCmd, Sub, map, Maybe, nothing, Tuple, just} from "react-tea-cup";
+import {Cmd, Dispatcher, noCmd, Sub, map, Maybe, nothing, Tuple, just, DocumentEvents} from "react-tea-cup";
 import * as React from 'react';
 import {item, ItemRenderer, Menu, menu, Model as TModel, Msg as TMsg, Pos, separator, ViewMenu} from 'tea-pop';
-import * as TP from 'tea-pop';
+import * as TM from 'tea-pop';
 
 export interface Model {
   readonly menuModel: Maybe<TModel<string>>;
   readonly lastClicked: Maybe<string>;
+  readonly mousePos: Pos;
 }
 
 export type MenuModel = TModel<string>
@@ -13,12 +14,32 @@ export type MenuMsg = TMsg<string>
 
 export type Msg =
     | { tag: 'menu-msg', msg: MenuMsg }
-    | { tag: 'mouse-down', button: number, pos: Pos }
+    | { tag: 'mouse-down', button: number }
+    | { tag: 'mouse-move', pos: Pos }
+    | { tag: 'key-down', key: string }
 
 function menuMsg(msg: MenuMsg): Msg {
   return {
     tag: "menu-msg",
     msg
+  }
+}
+
+function onMouseDown(button: number): Msg {
+  return {
+    tag: "mouse-down", button
+  }
+}
+
+function onMouseMove(pos: Pos): Msg {
+  return {
+    tag: "mouse-move", pos
+  }
+}
+
+function onKeyDown(key: string): Msg {
+  return {
+    tag: "key-down", key
   }
 }
 
@@ -51,6 +72,7 @@ export function init(): [Model, Cmd<Msg>] {
   const model: Model = {
     menuModel: nothing,
     lastClicked: nothing,
+    mousePos: Pos.origin
   }
   return noCmd(model);
 }
@@ -65,24 +87,28 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
               left: 0,
               bottom: 0,
               right: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
+              overflow: "auto",
             }}
-            onContextMenu={TP.stopEvent}
-            onMouseDown={e => {
-              dispatch({tag: 'mouse-down', button: e.button, pos: TP.pos(e.pageX, e.pageY)})
-            }}
+            onContextMenu={TM.stopEvent}
         >
-          <div>
-            {model.menuModel
-                .map(() => "Menu is open")
-                .withDefaultSupply(() =>
-                  model.lastClicked
-                      .map(lastClicked => "You selected '" + lastClicked + "'")
-                      .withDefault("Right-click anywhere")
-                )
-            }
+          <div style={{
+            height: "100%", // to test scrolling set a fixed size that's larger than viewport
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+            <div>
+              {model.menuModel
+                  .map(() => <span>Menu is open</span>)
+                  .withDefaultSupply(() =>
+                    model.lastClicked
+                        .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
+                        .withDefault(<span>Right-click anywhere</span>)
+                  )
+              }
+            </div>
           </div>
         </div>
         {model.menuModel
@@ -109,13 +135,13 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
         return noCmd(model);
       }
       const menuModel = model.menuModel.value;
-      const mco = TP.update(msg.msg, menuModel);
+      const mco = TM.update(msg.msg, menuModel);
       const newModel: Model = {
         ...model, menuModel: just(mco[0])
       };
       const cmd: Cmd<Msg> = mco[1].map(menuMsg);
       const mac: [Model, Cmd<Msg>] = [newModel, cmd];
-      const outMsg: Maybe<TP.OutMsg<string>> = mco[2];
+      const outMsg: Maybe<TM.OutMsg<string>> = mco[2];
       return outMsg
           // eslint-disable-next-line array-callback-return
           .map(out => {
@@ -128,15 +154,22 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           })
           .withDefault(mac);
     }
+    case "mouse-move": {
+      return noCmd({...model, mousePos: msg.pos })
+    }
     case "mouse-down": {
       if (msg.button === 2) {
-        return updateMenu(model, TP.open(myMenu, msg.pos));
+        return updateMenu(model, TM.open(myMenu, model.mousePos));
       }
       return noCmd({
         ...model,
         menuModel: nothing,
         lastClicked: nothing
       });
+    }
+    case "key-down": {
+      console.log(msg.key);
+      return noCmd(model);
     }
   }
 }
@@ -145,8 +178,14 @@ function closeMenu(model: Model, lastClicked: Maybe<string> = nothing): [Model, 
   return noCmd({...model, menuModel: nothing, lastClicked })
 }
 
+const documentEvents = new DocumentEvents();
+
 export function subscriptions(model: Model): Sub<Msg> {
-  return model.menuModel
-      .map(mm => TP.subscriptions(mm).map(menuMsg))
+  const menuSub: Sub<Msg> = model.menuModel
+      .map(mm => TM.subscriptions(mm).map(menuMsg))
       .withDefaultSupply(() => Sub.none());
+  const mouseDown: Sub<Msg> = documentEvents.on('mousedown', e => onMouseDown(e.button));
+  const mouseMove: Sub<Msg> = documentEvents.on('mousemove', e => onMouseMove(TM.pos(e.pageX, e.pageY)));
+  const keyDown: Sub<Msg> = documentEvents.on('keydown', e => onKeyDown(e.key));
+  return Sub.batch([menuSub, mouseMove, mouseDown, keyDown]);
 }
