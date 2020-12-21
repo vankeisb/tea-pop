@@ -44,12 +44,11 @@ jobs:
           path: ~/repo/webtests/target/videos
 
   docs-deploy:
-    working_directory: ~/repo
     docker:
       - image: circleci/node:erbium
     steps:
-      - attach_workspace:
-          at: ~/repo
+      - checkout
+      - run: ./build.sh
       - run:
           name: Install and configure dependencies
           command: |
