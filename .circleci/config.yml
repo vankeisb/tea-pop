@@ -22,8 +22,11 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: circleci/openjdk:8-jdk-browsers
+    environment:
+      DISPLAY: 99
 
     steps:
+      - run: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
       - attach_workspace:
           at: ~/repo
       - browser-tools/install-chrome
