@@ -23,7 +23,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
     environment:
-      DISPLAY: 99
+      DISPLAY: :99
 
     steps:
       - run: sudo Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
@@ -37,7 +37,7 @@ jobs:
             chromedriver --version
             ps -efa | grep Xvfb
           name: Check install
-      - run: cd webtests && sudo mvn clean install -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
+      - run: cd webtests && mvn clean install -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver
 
   deploy:
     <<: *defaults
