@@ -112,7 +112,7 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
               .withDefaultSupply(() =>
                 model.lastClicked
                     .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
-                    .withDefault(<span>Right-click anywhere, or use context-menu key.</span>)
+                    .withDefault(<span>Right-click anywhere, or use the <code>≣</code> key.</span>)
               )
           }
         </div>
