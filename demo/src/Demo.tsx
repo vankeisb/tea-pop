@@ -108,7 +108,7 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
             onMouseDown={e => dispatch(onMouseDown(e.button))}
         >
           {model.menuModel
-              .map(() => <span>Menu is open</span>)
+              .map(() => <span>Menu open</span>)
               .withDefaultSupply(() =>
                 model.lastClicked
                     .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
