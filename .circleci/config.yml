@@ -51,7 +51,7 @@ jobs:
           at: ~/repo
       - run:
           name: Add github.com to known hosts
-          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+          command: mkdir ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run: git config user.email "ci-build@rvkb.com"
       - run: git config user.name "ci-build"
       - run:
