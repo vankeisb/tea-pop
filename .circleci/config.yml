@@ -49,12 +49,11 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo
-      - run: npm install -g gh-pages@2.0.1
       - run: git config user.email "ci-build@rvkb.com"
       - run: git config user.name "ci-build"
       - run:
           name: Deploy docs to gh-pages branch
-          command: gh-pages --dist demo/build
+          command: cd demo && yarn gh-pages
 
   deploy:
     <<: *defaults
