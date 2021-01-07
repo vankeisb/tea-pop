@@ -23,8 +23,18 @@
  *
  */
 
-import {childMsg, gotItemBox, gotKeyDown, gotMenuBox, gotUuid, gotWindowDimensions, Msg,} from './Msg';
-import {Cmd, just, Maybe, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents,} from 'react-tea-cup';
+import {
+  childMsg,
+  docMouseDown,
+  gotItemBox,
+  gotKeyDown,
+  gotMenuBox,
+  gotUuid,
+  gotWindowDimensions,
+  Msg,
+  noop,
+} from './Msg';
+import {Cmd, DocumentEvents, just, Maybe, noCmd, nothing, Sub, Task, Tuple, uuid, WindowEvents,} from 'react-tea-cup';
 import {initialModel, keyboardNavigated, Model} from './Model';
 import {item, Menu, MenuItem, menuItemTask, menuTask,} from './Menu';
 import {pos, Pos} from './Pos';
@@ -191,6 +201,12 @@ export function update<T>(
     case "item-clicked": {
       return withOut(noCmd(model), outItemSelected(msg.item))
     }
+    case "doc-mouse-down": {
+      return withOut(noCmd(model), just({tag: 'request-close'}))
+    }
+    case "noop": {
+      return withOut(noCmd(model));
+    }
   }
 }
 
@@ -215,13 +231,27 @@ function openSubMenu<T>(
 }
 
 const windowEvents = new WindowEvents();
-const documentEvents = new WindowEvents();
+const documentEvents = new DocumentEvents();
 
 export function subscriptions<T>(model: Model<T>): Sub<Msg<T>> {
   return Sub.batch([
     windowEvents.on('resize', () =>
         gotWindowDimensions(dim(window.innerWidth, window.innerHeight)),
     ),
+    documentEvents.on('mousedown', (evt) => {
+      if (evt.button === 2) {
+        return noop();
+      }
+      let t: HTMLElement | null = evt.target as HTMLElement;
+      while (t) {
+        // move up and try to find if we are inside a tea-pop Menu !
+        if (t.classList.contains("tm")) {
+          return noop();
+        }
+        t = t.parentElement;
+      }
+      return docMouseDown();
+    }),
     model.state.tag === 'open'
         ? documentEvents.on('keydown', (e) => gotKeyDown(e.key))
         : Sub.none(),

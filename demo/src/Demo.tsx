@@ -164,12 +164,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       if (msg.button === 2) {
         return updateMenu(model, TM.open(myMenu, model.mousePos));
       }
-      // or close
-      return noCmd({
-        ...model,
-        menuModel: nothing,
-        lastClicked: nothing
-      });
+      return noCmd(model);
     }
     case "key-down": {
       // open menu on context menu key

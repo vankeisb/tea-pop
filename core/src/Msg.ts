@@ -36,7 +36,13 @@ export type Msg<T>
     | { tag: 'mouse-move', item: MenuItem<T>, itemIndex: number }
     | { tag: 'got-item-box', item: MenuItem<T>, r: Result<Error,Box> }
     | { tag: 'item-clicked', item: MenuItem<T> }
-    | { tag: 'child-msg', m: Msg<T> };
+    | { tag: 'child-msg', m: Msg<T> }
+    | { tag: 'doc-mouse-down' }
+    | { tag: 'noop' };
+
+export function noop<T>(): Msg<T> {
+  return { tag: 'noop' };
+}
 
 export function gotWindowDimensions<T>(d: Dim): Msg<T> {
   return {
@@ -78,5 +84,11 @@ export function gotItemBox<T>(item: MenuItem<T>, r: Result<Error,Box>): Msg<T> {
     tag: 'got-item-box',
     item,
     r
+  }
+}
+
+export function docMouseDown<T>(): Msg<T> {
+  return {
+    tag: 'doc-mouse-down'
   }
 }
