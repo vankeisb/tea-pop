@@ -75,7 +75,7 @@ workflows:
       - build:
           filters:
             branches:
-              ignore: /gh-pages/
+              ignore: /^gh-pages$/
       - webtests:
           requires:
             - build
@@ -93,6 +93,6 @@ workflows:
           filters:
             tags:
               only: /\d+\.\d+\.\d+/
-            branches:
-              ignore: /.*/
+#            branches:
+#              ignore: /.*/
 
