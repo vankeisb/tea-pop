@@ -313,6 +313,22 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
         assertNoMenu();
     }
 
+    @Test
+    public void mouseOutDeselectsItem() {
+        assertNoMenu();
+        fDemo().eval(contextClick); // no context menu key in Selenium ??
+        findMenus().count(1).eval();
+
+        TeaMenu menu = new TeaMenu(findMenus().at(0));
+        menu.mouseOverItem("Copy");
+        menu.assertSelectedItem(0, 5);
+
+        new Actions(getWebDriver()).moveByOffset(-100, 0).perform();
+
+        menu.assertNoSelectedItems();
+
+    }
+
     private void sendKeys(CharSequence... keys) {
         new Actions(getWebDriver()).sendKeys(keys).perform();
     }

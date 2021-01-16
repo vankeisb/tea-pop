@@ -43,6 +43,10 @@ export class Menu<T> {
     return new Menu(this.elements.select((e) => e === item));
   }
 
+  deselectAll(): Menu<T> {
+    return new Menu(ListWithSelection.fromArray(this.elements.toArray()));
+  }
+
   get elems(): ReadonlyArray<MenuElement<T>> {
     return this.elements.toArray();
   }
