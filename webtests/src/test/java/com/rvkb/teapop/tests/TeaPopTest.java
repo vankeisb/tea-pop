@@ -30,42 +30,47 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
     }
 
     @Before
-    public void start() throws Exception {
-        server = new Server(8080);
+    public void start() {
+        if (WEBAPP_DIR != null && !WEBAPP_DIR.equals("dev")) {
 
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{"index.html"});
-        resource_handler.setResourceBase(WEBAPP_DIR);
+            server = new Server(8080);
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resource_handler, new DefaultHandler()});
-        server.setHandler(handlers);
+            ResourceHandler resource_handler = new ResourceHandler();
+            resource_handler.setDirectoriesListed(true);
+            resource_handler.setWelcomeFiles(new String[]{"index.html"});
+            resource_handler.setResourceBase(WEBAPP_DIR);
 
-        executorService.submit(() -> {
-            try {
-                server.start();
-                server.join();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        int retries = 30;
-        while (retries > 0) {
-            System.out.println("Ping jetty #" + retries);
-            // wait for page to be up
-            try {
-                getWebDriver().get("http://localhost:8080");
-                System.out.println("Jetty responding");
-                break;
-            } catch (Exception e) {
+            HandlerList handlers = new HandlerList();
+            handlers.setHandlers(new Handler[]{resource_handler, new DefaultHandler()});
+            server.setHandler(handlers);
+
+            executorService.submit(() -> {
                 try {
-                    Thread.sleep(200);
-                } catch (InterruptedException interruptedException) {
-                    // try again
+                    server.start();
+                    server.join();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
+            });
+            int retries = 30;
+            while (retries > 0) {
+                System.out.println("Ping jetty #" + retries);
+                // wait for page to be up
+                try {
+                    getWebDriver().get("http://localhost:8080");
+                    System.out.println("Jetty responding");
+                    break;
+                } catch (Exception e) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException interruptedException) {
+                        // try again
+                    }
+                }
+                retries--;
             }
-            retries--;
+        } else {
+            getWebDriver().get("http://localhost:3000");
         }
         assertNoMenu();
     }

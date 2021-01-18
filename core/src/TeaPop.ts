@@ -45,7 +45,7 @@ import {OutMsg} from "./OutMsg";
 
 export function open<T>(menu: Menu<T>, position: Pos): [Model<T>, Cmd<Msg<T>>] {
   return [
-    initialModel(menu.selectFirstItem(), position),
+    initialModel(menu.deselectAll(), position),
     Cmd.batch([
       Task.perform(getWindowDimensions, (d) => gotWindowDimensions(d)),
       Task.perform(uuid(), (u) => gotUuid(u)),
@@ -143,20 +143,25 @@ export function update<T>(
           return withOut(noCmd(model));
       }
     }
-    case 'mouse-move': {
-      if (model.navigatedWithKeyboard) {
-        return withOut(noCmd(keyboardNavigated(model, false)));
-      }
+    case 'mouse-enter': {
+      // if (model.navigatedWithKeyboard) {
+      //   return withOut(noCmd(keyboardNavigated(model, false)));
+      // }
       if (model.uuid.type === 'Nothing') {
-        return withOut(noCmd(model));
-      }
-      // are we on an already selected item ?
-      if (model.menu.isSelected(msg.item)) {
         return withOut(noCmd(model));
       }
       const menu = model.menu.selectItem(msg.item);
       const uuid = model.uuid.value;
       return withOut(Tuple.t2n({...model, menu, child: nothing}, openSubMenu(uuid, msg.item, msg.itemIndex)));
+    }
+    case "mouse-leave": {
+      return withOut(
+          noCmd(
+              model.child.isJust()
+                ? model
+                : { ...model, menu: model.menu.deselectAll() }
+          )
+      );
     }
     case 'got-item-box': {
       return withOut(msg.r.match(
