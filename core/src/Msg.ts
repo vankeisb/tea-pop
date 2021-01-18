@@ -33,8 +33,9 @@ export type Msg<T>
     | { tag: 'got-uuid', uuid: string }
     | { tag: 'got-menu-box', r: Result<Error, Box> }
     | { tag: 'key-down', key: string }
-    | { tag: 'mouse-move', item: MenuItem<T>, itemIndex: number }
-    | { tag: 'got-item-box', item: MenuItem<T>, r: Result<Error,Box> }
+    | { tag: 'mouse-enter', item: MenuItem<T>, itemIndex: number }
+    | { tag: 'mouse-leave', item: MenuItem<T>, itemIndex: number }
+    | { tag: 'got-item-box', item: MenuItem<T>, r: Result<Error,Box>, selectFirst: boolean, subMenuCounter: number }
     | { tag: 'item-clicked', item: MenuItem<T> }
     | { tag: 'child-msg', m: Msg<T> }
     | { tag: 'doc-mouse-down' }
@@ -79,11 +80,13 @@ export function childMsg<T>(m: Msg<T>): Msg<T> {
   }
 }
 
-export function gotItemBox<T>(item: MenuItem<T>, r: Result<Error,Box>): Msg<T> {
+export function gotItemBox<T>(item: MenuItem<T>, r: Result<Error,Box>, subMenuCounter: number, selectFirst: boolean): Msg<T> {
   return {
     tag: 'got-item-box',
     item,
-    r
+    selectFirst,
+    r,
+    subMenuCounter
   }
 }
 

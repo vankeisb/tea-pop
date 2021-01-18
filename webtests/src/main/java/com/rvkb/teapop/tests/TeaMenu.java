@@ -77,4 +77,11 @@ public class TeaMenu extends AbstractPageObject {
         }
         return this;
     }
+
+    public TeaMenu assertNoSelectedItems() {
+        $$(".tm-item")
+                .whereAll(not(isActive))
+                .eval();
+        return this;
+    }
 }

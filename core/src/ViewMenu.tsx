@@ -147,7 +147,8 @@ export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
   return (
       <div
           id={menuItemId(uuid, itemIndex)}
-          onMouseMove={() => dispatch({tag: 'mouse-move', item, itemIndex })}
+          onMouseEnter={() => dispatch({ tag: 'mouse-enter', item, itemIndex })}
+          onMouseLeave={() => dispatch({ tag: 'mouse-leave', item, itemIndex })}
           onClick={() => {
             dispatch({tag: 'item-clicked', item})
           }}
