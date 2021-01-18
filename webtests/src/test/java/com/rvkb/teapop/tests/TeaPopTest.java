@@ -125,7 +125,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
 
         menu2
                 .assertItems("Do this", "Do that", "Another sub menu...")
-                .assertSelectedItem(0, 3)
+                .assertNoSelectedItems()
                 .mouseOverItem("Do that")
                 .assertSelectedItem(1, 3);
 
@@ -144,8 +144,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
                 .assertItems("Try", "Finally")
                 .assertItemHasSubMenu("Try", false)
                 .assertItemHasSubMenu("Finally", false)
-                .assertItemActive("Try", true)
-                .assertItemActive("Finally", false)
+                .assertNoSelectedItems()
                 .mouseOverItem("Try")
                 .assertItemActive("Try", true)
                 .assertItemActive("Finally", false)
