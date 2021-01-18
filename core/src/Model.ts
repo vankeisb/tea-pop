@@ -37,6 +37,7 @@ export interface Model<T> {
   readonly error: Maybe<Error>;
   readonly child: Maybe<Model<T>>;
   readonly navigatedWithKeyboard: boolean;
+  readonly subMenuCounter: number;
 }
 
 export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
@@ -48,6 +49,7 @@ export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
     error: nothing,
     child: nothing,
     navigatedWithKeyboard: false,
+    subMenuCounter: 0,
   }
 }
 
