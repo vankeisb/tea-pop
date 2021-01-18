@@ -144,16 +144,17 @@ export function update<T>(
       }
     }
     case 'mouse-enter': {
+      const newModel = { ...model, subMenuCounter: model.subMenuCounter + 1 };
       if (model.navigatedWithKeyboard) {
-        return withOut(noCmd(keyboardNavigated(model, false)));
+        return withOut(noCmd(keyboardNavigated(newModel, false)));
       }
       if (model.uuid.type === 'Nothing') {
-        return withOut(noCmd(model));
+        return withOut(noCmd(newModel));
       }
       const menu = model.menu.selectItem(msg.item);
       const uuid = model.uuid.value;
       return withOut(
-          openSubMenu({...model, menu, child: nothing}, uuid, msg.item, msg.itemIndex, false)
+          openSubMenu({...newModel, menu, child: nothing}, uuid, msg.item, msg.itemIndex, false)
       );
     }
     case "mouse-leave": {
