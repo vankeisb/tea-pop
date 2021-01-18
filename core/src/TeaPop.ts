@@ -43,9 +43,9 @@ import {Box} from './Box';
 import {adjustPopover} from './Popover';
 import {OutMsg} from "./OutMsg";
 
-export function open<T>(menu: Menu<T>, position: Pos): [Model<T>, Cmd<Msg<T>>] {
+export function open<T>(menu: Menu<T>, position: Pos, selectFirst: boolean = false): [Model<T>, Cmd<Msg<T>>] {
   return [
-    initialModel(menu.selectFirstItem(), position),
+    initialModel(selectFirst ? menu.selectFirstItem() : menu.deselectAll(), position),
     Cmd.batch([
       Task.perform(getWindowDimensions, (d) => gotWindowDimensions(d)),
       Task.perform(uuid(), (u) => gotUuid(u)),
@@ -143,20 +143,25 @@ export function update<T>(
           return withOut(noCmd(model));
       }
     }
-    case 'mouse-move': {
+    case 'mouse-enter': {
       if (model.navigatedWithKeyboard) {
         return withOut(noCmd(keyboardNavigated(model, false)));
       }
       if (model.uuid.type === 'Nothing') {
         return withOut(noCmd(model));
       }
-      // are we on an already selected item ?
-      if (model.menu.isSelected(msg.item)) {
-        return withOut(noCmd(model));
-      }
       const menu = model.menu.selectItem(msg.item);
       const uuid = model.uuid.value;
-      return withOut(Tuple.t2n({...model, menu, child: nothing}, openSubMenu(uuid, msg.item, msg.itemIndex)));
+      return withOut(Tuple.t2n({...model, menu, child: nothing}, openSubMenu(uuid, msg.item, msg.itemIndex, false)));
+    }
+    case "mouse-leave": {
+      return withOut(
+          noCmd(
+              model.child.isJust()
+                ? model
+                : { ...model, menu: model.menu.deselectAll() }
+          )
+      );
     }
     case 'got-item-box': {
       return withOut(msg.r.match(
@@ -169,7 +174,11 @@ export function update<T>(
                 .map((subMenu) => {
                   // we have a sub menu so we need
                   // to open a new Menu !
-                  const mac = open(subMenu, itemBox.p.add(pos(itemBox.d.w, 0)));
+                  const mac = open(
+                      subMenu,
+                      itemBox.p.add(pos(itemBox.d.w, 0)),
+                      msg.selectFirst
+                  );
                   const newModel2: Model<T> = {
                     ...newModel,
                     child: just(mac[0]),
@@ -218,6 +227,7 @@ function openSubMenu<T>(
     menuId: string,
     item: MenuItem<T>,
     itemIndex: number,
+    selectFirst: boolean,
 ): Cmd<Msg<T>> {
   if (item.subMenu.isNothing()) {
     return Cmd.none();
@@ -226,7 +236,7 @@ function openSubMenu<T>(
       menuItemTask(menuId, itemIndex).map((e) => {
         return Box.fromDomRect(e.getBoundingClientRect());
       }),
-      (r) => gotItemBox(item, r),
+      (r) => gotItemBox(item, r, selectFirst),
   );
 }
 
@@ -313,7 +323,7 @@ function expandLastSubMenu<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<Ou
                 const cmd = lastModel.menu
                     .indexOfItem(selectedItem)
                     .map((itemIndex) => {
-                      return openSubMenu(uuid, selectedItem, itemIndex);
+                      return openSubMenu(uuid, selectedItem, itemIndex, true);
                     })
                     .withDefaultSupply(() => Cmd.none<Msg<T>>());
                 return withOut(Tuple.t2n(lastModel, cmd));
@@ -342,7 +352,7 @@ function toggleOrSelectItem<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>, Maybe<O
                 // we have a sub-menu, expand it
                 const cmd = lastModel.menu
                     .indexOfItem(selectedItem)
-                    .map(itemIndex => openSubMenu(uuid, selectedItem, itemIndex))
+                    .map(itemIndex => openSubMenu(uuid, selectedItem, itemIndex, true))
                     .withDefaultSupply(() => Cmd.none())
                 return withOut(Tuple.t2n(lastModel, cmd));
               })

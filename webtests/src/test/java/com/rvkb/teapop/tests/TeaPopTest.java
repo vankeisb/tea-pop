@@ -30,42 +30,47 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
     }
 
     @Before
-    public void start() throws Exception {
-        server = new Server(8080);
+    public void start() {
+        if (WEBAPP_DIR != null && !WEBAPP_DIR.equals("dev")) {
 
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{"index.html"});
-        resource_handler.setResourceBase(WEBAPP_DIR);
+            server = new Server(8080);
 
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[]{resource_handler, new DefaultHandler()});
-        server.setHandler(handlers);
+            ResourceHandler resource_handler = new ResourceHandler();
+            resource_handler.setDirectoriesListed(true);
+            resource_handler.setWelcomeFiles(new String[]{"index.html"});
+            resource_handler.setResourceBase(WEBAPP_DIR);
 
-        executorService.submit(() -> {
-            try {
-                server.start();
-                server.join();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        int retries = 30;
-        while (retries > 0) {
-            System.out.println("Ping jetty #" + retries);
-            // wait for page to be up
-            try {
-                getWebDriver().get("http://localhost:8080");
-                System.out.println("Jetty responding");
-                break;
-            } catch (Exception e) {
+            HandlerList handlers = new HandlerList();
+            handlers.setHandlers(new Handler[]{resource_handler, new DefaultHandler()});
+            server.setHandler(handlers);
+
+            executorService.submit(() -> {
                 try {
-                    Thread.sleep(200);
-                } catch (InterruptedException interruptedException) {
-                    // try again
+                    server.start();
+                    server.join();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
+            });
+            int retries = 30;
+            while (retries > 0) {
+                System.out.println("Ping jetty #" + retries);
+                // wait for page to be up
+                try {
+                    getWebDriver().get("http://localhost:8080");
+                    System.out.println("Jetty responding");
+                    break;
+                } catch (Exception e) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException interruptedException) {
+                        // try again
+                    }
+                }
+                retries--;
             }
-            retries--;
+        } else {
+            getWebDriver().get("http://localhost:3000");
         }
         assertNoMenu();
     }
@@ -120,7 +125,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
 
         menu2
                 .assertItems("Do this", "Do that", "Another sub menu...")
-                .assertSelectedItem(0, 3)
+                .assertNoSelectedItems()
                 .mouseOverItem("Do that")
                 .assertSelectedItem(1, 3);
 
@@ -139,8 +144,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
                 .assertItems("Try", "Finally")
                 .assertItemHasSubMenu("Try", false)
                 .assertItemHasSubMenu("Finally", false)
-                .assertItemActive("Try", true)
-                .assertItemActive("Finally", false)
+                .assertNoSelectedItems()
                 .mouseOverItem("Try")
                 .assertItemActive("Try", true)
                 .assertItemActive("Finally", false)
@@ -311,6 +315,22 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
         // and close with ESC
         sendKeys(Keys.ESCAPE);
         assertNoMenu();
+    }
+
+    @Test
+    public void mouseOutDeselectsItem() {
+        assertNoMenu();
+        fDemo().eval(contextClick); // no context menu key in Selenium ??
+        findMenus().count(1).eval();
+
+        TeaMenu menu = new TeaMenu(findMenus().at(0));
+        menu.mouseOverItem("Copy");
+        menu.assertSelectedItem(0, 5);
+
+        new Actions(getWebDriver()).moveByOffset(-100, 0).perform();
+
+        menu.assertNoSelectedItems();
+
     }
 
     private void sendKeys(CharSequence... keys) {
