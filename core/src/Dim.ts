@@ -31,6 +31,6 @@ export class Dim {
   }
 }
 
-export function dim(w: number, h: number): Dim {
-  return new Dim(w, h);
+export function dim(w: number, h?: number): Dim {
+  return new Dim(w, h ?? w);
 }
