@@ -26,10 +26,7 @@
 import {dim, Dim} from "./Dim";
 import {Box, box} from "./Box";
 import {pos} from "./Pos";
-
-function place(viewport: Dim, refBox: Box, elem: Dim): Box {
-  throw "fuck"
-}
+import { place } from "./Popover2";
 
 describe("popover 2 tests", () => {
 
@@ -53,6 +50,9 @@ describe("popover 2 tests", () => {
       expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)))
     })
 
+    test("should translate up and left if doesn't fit", () => {
+      expect(doPlace(dim(85, 95))).toEqual(box(pos(15, 5), dim(85, 95)));
+    })
   })
 
   describe("bottom left", () => {

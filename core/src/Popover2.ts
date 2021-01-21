@@ -23,16 +23,10 @@
  *
  */
 
-export class Dim {
-  constructor(
-      readonly w: number,
-      readonly h: number,
-  ) {
-  }
+import {box, Box} from "./Box";
+import {dim, Dim} from "./Dim";
+import {pos} from "./Pos";
 
-  static zero: Dim = dim(0)
-}
-
-export function dim(w: number, h?: number): Dim {
-  return new Dim(w, h ?? w);
+export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
+  throw "fuck"
 }

@@ -33,4 +33,4 @@ export * from './StopEvent'
 export * from './Pos'
 export * from './Dim'
 export * from './ItemRenderer'
-
+export * from './Popover2'
