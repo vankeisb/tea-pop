@@ -23,46 +23,73 @@
  *
  */
 
-import {box, Box} from "./Box";
-import {dim, Dim} from "./Dim";
-import {pos} from "./Pos";
+import { box, Box } from './Box';
+import { dim, Dim } from './Dim';
+import { pos } from './Pos';
 
-export function adjustPopover(viewport: Dim, elem: Box): Box {
+export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
+  const pX = place1DEnd(viewport.w, refBox.p.x, refBox.d.w, elem.w);
+  const pY = place1DStart(viewport.h, refBox.p.y, refBox.d.h, elem.h);
+  return box(pos(pX.offset, pY.offset), dim(pX.len, pY.len));
+}
 
-  // display above or below and shrink size if necessary
+interface Placed1D {
+  readonly offset: number;
+  readonly len: number;
+}
 
-  const {x, y} = elem.p;
-  const {h, w} = elem.d;
-  const { h:vh, w:vw } = viewport;
-
-  let newY = y;
-  let newH = h;
-  const overflowDown = (y + h) - vh;
-  if (overflowDown > 0) {
-    // would overflow the bottom, check if we have enough space to move up
-    if (y > overflowDown) {
-      // enough space, move pos up
-      newY = y - overflowDown;
+function place1DEnd(
+  viewportW: number,
+  refX: number,
+  refW: number,
+  elemW: number,
+): Placed1D {
+  if (refX + refW + elemW > viewportW) {
+    // not enough space after, try before
+    if (elemW < refX) {
+      // ok, prepend
+      return { offset: refX - elemW, len: elemW };
     } else {
-      // not enough space, shrink the box to the viewport's height
-      newY = 0;
-      newH = vh;
+      // not enough space before or after, we have to translate and/or expand !
+      if (elemW < viewportW) {
+        // can't append or prepend, but no need to shrink... translate only
+        const delta = refX + refW + elemW - viewportW;
+        return { offset: refX + refW - delta, len: elemW };
+      }
+      return { offset: 0, len: viewportW };
     }
+  } else {
+    // enough space to append
+    return { offset: refX + refW, len: elemW };
   }
+}
 
-  let newX = x;
-  let newW = w;
-  const overflowRight = (x + w) - vw;
-  if (overflowRight > 0) {
-    // would overflow on the right, check if we have enough space to move left
-    if (x > overflowRight) {
-      // enough space, move left
-      newX = x - overflowRight;
+function place1DStart(
+  viewportW: number,
+  refX: number,
+  refW: number,
+  elemW: number,
+): Placed1D {
+  if (elemW > viewportW) {
+    return { offset: 0, len: viewportW };
+  }
+  if (refX + elemW > viewportW) {
+    // not enough space after, try before
+    if (elemW < refX + refW) {
+      // ok, prepend
+      return { offset: refX + refW - elemW, len: elemW };
     } else {
-      newX = 0;
-      newW = vw;
+      // not enough space before or after, we have to translate and/or expand !
+      if (elemW < viewportW) {
+        console.log('shrink');
+        // can't append or prepend, but no need to shrink... translate only
+        const delta = refX + refW + elemW - viewportW;
+        return { offset: refX + refW - delta, len: elemW };
+      }
+      return { offset: 0, len: 10 };
     }
+  } else {
+    // enough space to append
+    return { offset: refX, len: elemW };
   }
-
-  return box(pos(newX, newY), dim(newW, newH));
 }

@@ -24,12 +24,12 @@
  */
 
 import * as React from 'react';
-import {Menu, menuId, MenuItem, menuItemId} from "./Menu";
-import {childMsg, Msg} from "./Msg";
-import {Dispatcher, map} from "react-tea-cup";
-import {ItemRenderer} from "./ItemRenderer";
-import {Model} from "./Model";
-import {stopEvent} from "./StopEvent";
+import { Menu, menuId, MenuItem, menuItemId } from './Menu';
+import { childMsg, Msg } from './Msg';
+import { Dispatcher, map } from 'react-tea-cup';
+import { ItemRenderer } from './ItemRenderer';
+import { Model } from './Model';
+import { stopEvent } from './StopEvent';
 
 export interface ViewMenuProps<T> {
   model: Model<T>;
@@ -38,8 +38,8 @@ export interface ViewMenuProps<T> {
 }
 
 export function ViewMenu<T>(props: ViewMenuProps<T>) {
-  const {model, dispatch, renderer} = props;
-  const {menu, state, uuid, windowSize} = model;
+  const { model, dispatch, renderer } = props;
+  const { menu, state, uuid, windowSize } = model;
   if (uuid.type === 'Nothing') {
     return <></>;
   }
@@ -47,87 +47,91 @@ export function ViewMenu<T>(props: ViewMenuProps<T>) {
     return <></>;
   }
 
-  const renderItems = () => menu.elems.map((element, index) => {
-    switch (element.tag) {
-      case "item": {
-        return (
+  const renderItems = () =>
+    menu.elems.map((element, index) => {
+      switch (element.tag) {
+        case 'item': {
+          return (
             <ViewMenuItem
-                key={`item-${index}`}
-                uuid={uuid.value}
-                itemIndex={index}
-                menu={menu}
-                item={element}
-                {...props}
+              key={`item-${index}`}
+              uuid={uuid.value}
+              itemIndex={index}
+              menu={menu}
+              item={element}
+              {...props}
             />
-        )
+          );
+        }
+        case 'separator': {
+          return <div key={`sep-${index}`} className="tm-separator" />;
+        }
       }
-      case "separator": {
-        return (
-            <div key={`sep-${index}`} className="tm-separator"/>
-        )
-      }
-    }
-  });
+    });
 
   switch (state.tag) {
-    case "placing": {
-      const {position} = state;
+    case 'placing': {
+      const { refBox } = state;
       return (
+        <div
+          className="tm-placer"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            overflow: 'hidden',
+          }}
+          onContextMenu={stopEvent}
+        >
           <div
-              className="tm-placer"
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                overflow: "hidden",
-              }}
-              onContextMenu={stopEvent}
+            className="tm"
+            id={menuId(uuid.value)}
+            style={{
+              position: 'absolute',
+              top: refBox.p.y,
+              left: refBox.p.x,
+              visibility: 'hidden',
+            }}
+            onContextMenu={stopEvent}
           >
-            <div
-                className="tm"
-                id={menuId(uuid.value)}
-                style={{
-                  position: "absolute",
-                  top: position.y,
-                  left: position.x,
-                  visibility: "hidden",
-                }}
-                onContextMenu={stopEvent}
-            >
-              {renderItems()}
-            </div>
+            {renderItems()}
           </div>
-      )
+        </div>
+      );
     }
-    case "open": {
-      const {box} = state;
-      const {p, d} = box;
+    case 'open': {
+      const { box } = state;
+      const { p, d } = box;
       return (
-          <>
-            <div
-                className="tm"
-                id={menuId(uuid.value)}
-                style={{
-                  position: "absolute",
-                  top: p.y,
-                  left: p.x,
-                  width: d.w,
-                  height: d.h
-                }}
-                onContextMenu={stopEvent}
-            >
-              {renderItems()}
-            </div>
-            {model.child
-                .map(child =>
-                    <ViewMenu model={child} dispatch={map(dispatch, childMsg)} renderer={renderer}/>
-                )
-                .withDefaultSupply(() => <></>)
-            }
-          </>
-      )
+        <>
+          <div
+            className="tm"
+            id={menuId(uuid.value)}
+            style={{
+              position: 'absolute',
+              top: p.y,
+              left: p.x,
+              width: d.w,
+              height: d.h,
+            }}
+            onContextMenu={stopEvent}
+          >
+            {renderItems()}
+          </div>
+          {model.child
+            .map((child) => (
+              <ViewMenu
+                model={child}
+                dispatch={map(dispatch, childMsg)}
+                renderer={renderer}
+              />
+            ))
+            .withDefaultSupply(() => (
+              <></>
+            ))}
+        </>
+      );
     }
   }
 }
@@ -142,23 +146,22 @@ export interface ViewMenuItemProps<T> {
 }
 
 export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
-  const {menu, item, renderer, dispatch, uuid, itemIndex} = props;
+  const { menu, item, renderer, dispatch, uuid, itemIndex } = props;
   const selected = menu.isSelected(item);
   return (
-      <div
-          id={menuItemId(uuid, itemIndex)}
-          onMouseEnter={() => dispatch({ tag: 'mouse-enter', item, itemIndex })}
-          onMouseLeave={() => dispatch({ tag: 'mouse-leave', item, itemIndex })}
-          onClick={() => {
-            dispatch({tag: 'item-clicked', item})
-          }}
-      >
-        {renderer({
-          data: item.userData,
-          active: selected,
-          hasSubMenu: item.subMenu.isJust(),
-        })}
-      </div>
+    <div
+      id={menuItemId(uuid, itemIndex)}
+      onMouseEnter={() => dispatch({ tag: 'mouse-enter', item, itemIndex })}
+      onMouseLeave={() => dispatch({ tag: 'mouse-leave', item, itemIndex })}
+      onClick={() => {
+        dispatch({ tag: 'item-clicked', item });
+      }}
+    >
+      {renderer({
+        data: item.userData,
+        active: selected,
+        hasSubMenu: item.subMenu.isJust(),
+      })}
+    </div>
   );
 }
-
