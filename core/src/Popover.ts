@@ -23,21 +23,20 @@
  *
  */
 
-import {box, Box} from "./Box";
-import {dim, Dim} from "./Dim";
-import {pos} from "./Pos";
+import { box, Box } from './Box';
+import { dim, Dim } from './Dim';
+import { pos } from './Pos';
 
 export function adjustPopover(viewport: Dim, elem: Box): Box {
-
   // display above or below and shrink size if necessary
 
-  const {x, y} = elem.p;
-  const {h, w} = elem.d;
-  const { h:vh, w:vw } = viewport;
+  const { x, y } = elem.p;
+  const { h, w } = elem.d;
+  const { h: vh, w: vw } = viewport;
 
   let newY = y;
   let newH = h;
-  const overflowDown = (y + h) - vh;
+  const overflowDown = y + h - vh;
   if (overflowDown > 0) {
     // would overflow the bottom, check if we have enough space to move up
     if (y > overflowDown) {
@@ -52,7 +51,7 @@ export function adjustPopover(viewport: Dim, elem: Box): Box {
 
   let newX = x;
   let newW = w;
-  const overflowRight = (x + w) - vw;
+  const overflowRight = x + w - vw;
   if (overflowRight > 0) {
     // would overflow on the right, check if we have enough space to move left
     if (x > overflowRight) {

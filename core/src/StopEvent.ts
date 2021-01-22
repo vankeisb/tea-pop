@@ -23,9 +23,9 @@
  *
  */
 
-import {EventHandler} from "react";
+import { EventHandler } from 'react';
 
-export const stopEvent: EventHandler<any> = e => {
+export const stopEvent: EventHandler<any> = (e) => {
   e.preventDefault();
   e.stopPropagation();
-}
+};

@@ -23,87 +23,81 @@
  *
  */
 
-import {dim, Dim} from "./Dim";
-import {Box, box} from "./Box";
-import {pos} from "./Pos";
-import { place } from "./Popover2";
+import { dim, Dim } from './Dim';
+import { Box, box } from './Box';
+import { pos } from './Pos';
+import { place } from './Popover2';
 
-describe("popover 2 tests", () => {
+describe('popover 2 tests', () => {
+  const viewport: Dim = dim(100);
 
-  const viewport: Dim = dim(100)
+  const place_ = (refBox: Box) => (elem: Dim) => place(viewport, refBox, elem);
 
-  const place_ = (refBox: Box) => (elem: Dim) => place(viewport, refBox, elem)
+  describe('top left', () => {
+    const doPlace = place_(box(pos(10, 10), dim(10)));
 
-  describe("top left", () => {
+    test('should align top right', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(20, 10), dim(50)));
+    });
 
-    const doPlace = place_(box(pos(10, 10), dim(10)))
+    test('should translate up if not enough space to align top right', () => {
+      expect(doPlace(dim(50, 95))).toEqual(box(pos(20, 5), dim(50, 95)));
+    });
 
-    test("should align top right", () => {
-      expect(doPlace(dim(50))).toEqual(box(pos(20, 10), dim(50)))
-    })
-
-    test("should translate up if not enough space to align top right", () => {
-      expect(doPlace(dim(50, 95))).toEqual(box(pos(20, 5), dim(50, 95)))
-    })
-
-    test("should fit vertically if too high", () => {
-      expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)))
-    })
+    test('should fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)));
+    });
 
     test("should translate up and left if doesn't fit", () => {
       expect(doPlace(dim(85, 95))).toEqual(box(pos(15, 5), dim(85, 95)));
-    })
-  })
+    });
+  });
 
-  describe("bottom left", () => {
+  describe('bottom left', () => {
+    const doPlace = place_(box(pos(10, 80), dim(10)));
 
-    const doPlace = place_(box(pos(10, 80), dim(10)))
+    test('should align bottom right', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(20, 90), dim(50)));
+    });
 
-    test("should align bottom right", () => {
-      expect(doPlace(dim(50))).toEqual(box(pos(20, 90), dim(50)))
-    })
+    test('should translate down if not enough space to align bottom right', () => {
+      expect(doPlace(dim(50, 95))).toEqual(box(pos(20, 0), dim(50, 95)));
+    });
 
-    test("should translate down if not enough space to align bottom right", () => {
-      expect(doPlace(dim(50, 95))).toEqual(box(pos(20, 0), dim(50, 95)))
-    })
+    test('shoult fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)));
+    });
+  });
 
-    test("shoult fit vertically if too high", () => {
-      expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)))
-    })
-  })
+  describe('top right', () => {
+    const doPlace = place_(box(pos(80, 10), dim(10)));
 
-  describe("top right", () => {
+    test('should align top left', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(30, 10), dim(50)));
+    });
 
-    const doPlace = place_(box(pos(80, 10), dim(10)))
+    test('should translate up if not enough space to aligh top left', () => {
+      expect(doPlace(dim(50, 95))).toEqual(box(pos(30, 5), dim(50, 95)));
+    });
 
-    test("should align top left", () => {
-      expect(doPlace(dim(50))).toEqual(box(pos(30, 10), dim(50)))
-    })
+    test('should fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(30, 0), dim(50, 100)));
+    });
+  });
 
-    test("should translate up if not enough space to aligh top left", () => {
-      expect(doPlace(dim(50, 95))).toEqual(box(pos(30, 5), dim(50, 95)))
-    })
+  describe('bottom right', () => {
+    const doPlace = place_(box(pos(80, 80), dim(10)));
 
-    test("should fit vertically if too high", () => {
-      expect(doPlace(dim(50, 200))).toEqual(box(pos(30, 0), dim(50, 100)))
-    })
-  })
+    test('should align bottom left', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(30, 40), dim(50)));
+    });
 
-  describe("bottom right", () => {
+    test('should translate down if not enough space to aligh bottom left', () => {
+      expect(doPlace(dim(50, 95))).toEqual(box(pos(30, 0), dim(50, 95)));
+    });
 
-    const doPlace = place_(box(pos(80, 80), dim(10)))
-
-    test("should align bottom left", () => {
-      expect(doPlace(dim(50))).toEqual(box(pos(30, 40), dim(50)))
-    })
-
-    test("should translate down if not enough space to aligh bottom left", () => {
-      expect(doPlace(dim(50, 95))).toEqual(box(pos(30, 0), dim(50, 95)))
-    })
-
-    test("should fit vertically if too high", () => {
-      expect(doPlace(dim(50, 200))).toEqual(box(pos(30, 0), dim(50, 100)))
-    })
-  })
-
-})
+    test('should fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(30, 0), dim(50, 100)));
+    });
+  });
+});

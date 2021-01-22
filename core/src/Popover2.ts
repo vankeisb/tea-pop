@@ -23,10 +23,10 @@
  *
  */
 
-import {box, Box} from "./Box";
-import {dim, Dim} from "./Dim";
-import {pos} from "./Pos";
+import { box, Box } from './Box';
+import { dim, Dim } from './Dim';
+import { pos } from './Pos';
 
 export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
-  throw "fuck"
+  throw 'fuck';
 }

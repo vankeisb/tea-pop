@@ -23,11 +23,11 @@
  *
  */
 
-import {Menu} from "./Menu";
-import {Maybe, nothing} from "react-tea-cup";
-import {Dim} from "./Dim";
-import {Box} from "./Box";
-import {Pos} from "./Pos";
+import { Menu } from './Menu';
+import { Maybe, nothing } from 'react-tea-cup';
+import { Dim } from './Dim';
+import { Box } from './Box';
+import { Pos } from './Pos';
 
 export interface Model<T> {
   readonly uuid: Maybe<string>;
@@ -50,20 +50,23 @@ export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
     child: nothing,
     navigatedWithKeyboard: false,
     subMenuCounter: 0,
-  }
+  };
 }
 
 export type MenuState =
-    | { tag: 'placing', position: Pos }
-    | { tag: 'open', box: Box };
+  | { tag: 'placing'; position: Pos }
+  | { tag: 'open'; box: Box };
 
 export function menuStatePlacing(position: Pos): MenuState {
   return {
     tag: 'placing',
-    position
-  }
+    position,
+  };
 }
 
-export function keyboardNavigated<T>(model: Model<T>, navigatedWithKeyboard: boolean = true): Model<T> {
-  return {...model, navigatedWithKeyboard }
+export function keyboardNavigated<T>(
+  model: Model<T>,
+  navigatedWithKeyboard = true,
+): Model<T> {
+  return { ...model, navigatedWithKeyboard };
 }
