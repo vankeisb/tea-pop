@@ -57,11 +57,7 @@ describe('popover 2 tests', () => {
     const doPlace = place_(box(pos(10, 80), dim(10)));
 
     test('should align bottom right', () => {
-      expect(doPlace(dim(50))).toEqual(box(pos(20, 90), dim(50)));
-    });
-
-    test('should translate down if not enough space to align bottom right', () => {
-      expect(doPlace(dim(50, 95))).toEqual(box(pos(20, 0), dim(50, 95)));
+      expect(doPlace(dim(50))).toEqual(box(pos(20, 40), dim(50)));
     });
 
     test('shoult fit vertically if too high', () => {
@@ -90,10 +86,6 @@ describe('popover 2 tests', () => {
 
     test('should align bottom left', () => {
       expect(doPlace(dim(50))).toEqual(box(pos(30, 40), dim(50)));
-    });
-
-    test('should translate down if not enough space to aligh bottom left', () => {
-      expect(doPlace(dim(50, 95))).toEqual(box(pos(30, 0), dim(50, 95)));
     });
 
     test('should fit vertically if too high', () => {

@@ -28,5 +28,71 @@ import { dim, Dim } from './Dim';
 import { Pos, pos } from './Pos';
 
 export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
-  return box(Pos.origin, dim(100));
+  const pX = place1DEnd(viewport.w, refBox.p.x, refBox.d.w, elem.w);
+  const pY = place1DStart(viewport.h, refBox.p.y, refBox.d.h, elem.h);
+  return box(pos(pX.x, pY.x), dim(pX.w, pY.w));
+}
+
+interface Placed1D {
+  readonly x: number;
+  readonly w: number;
+}
+
+function place1DEnd(
+  viewportW: number,
+  refX: number,
+  refW: number,
+  elemW: number,
+): Placed1D {
+  if (elemW > viewportW) {
+    return { x: 0, w: viewportW };
+  }
+  if (refX + refW + elemW > viewportW) {
+    // not enough space after, try before
+    if (elemW < refX) {
+      // ok, prepend
+      return { x: refX - elemW, w: elemW };
+    } else {
+      // not enough space before or after, we have to translate and/or expand !
+      if (elemW < viewportW) {
+        // can't append or prepend, but no need to shrink... translate only
+        const delta = refX + refW + elemW - viewportW;
+        return { x: refX + refW - delta, w: elemW };
+      }
+      return { x: 0, w: 10 };
+    }
+  } else {
+    // enough space to append
+    return { x: refX + refW, w: elemW };
+  }
+}
+
+function place1DStart(
+  viewportW: number,
+  refX: number,
+  refW: number,
+  elemW: number,
+): Placed1D {
+  if (elemW > viewportW) {
+    return { x: 0, w: viewportW };
+  }
+  if (refX + elemW > viewportW) {
+    // not enough space after, try before
+    if (elemW < refX + refW) {
+      // ok, prepend
+      return { x: refX + refW - elemW, w: elemW };
+    } else {
+      // not enough space before or after, we have to translate and/or expand !
+      if (elemW < viewportW) {
+        console.log('shrink');
+        // can't append or prepend, but no need to shrink... translate only
+        const delta = refX + refW + elemW - viewportW;
+        return { x: refX + refW - delta, w: elemW };
+      }
+      return { x: 0, w: 10 };
+    }
+  } else {
+    // enough space to append
+    return { x: refX, w: elemW };
+  }
 }

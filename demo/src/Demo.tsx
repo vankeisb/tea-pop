@@ -52,7 +52,6 @@ function initialMainPage(): MainPage {
 
 interface PlacementPage {
   readonly viewportDim: Maybe<Dim>;
-  readonly refDim: Dim;
 }
 
 function openPlacementPage(model: Model): [Model, Cmd<Msg>] {
@@ -61,7 +60,7 @@ function openPlacementPage(model: Model): [Model, Cmd<Msg>] {
         ...model,
         page: right({
           viewportDim: nothing,
-          refDim: dim(30),
+          refDim: dim(100),
         })
       },
       Task.perform(
@@ -85,12 +84,12 @@ export type Msg =
     | { tag: 'main-page-msg', m: MainPageMsg }
     | { tag: 'mouse-move', pos: Pos }
     | { tag: 'placement-page-msg' }
+    | { tag: 'key-down', key: string }
 
 
 type MainPageMsg =
     | { tag: 'menu-msg', msg: MenuMsg }
     | { tag: 'mouse-down', button: number }
-    | { tag: 'key-down', key: string }
 
 function mainPageMsg(m: MainPageMsg): Msg {
   return {
@@ -126,9 +125,9 @@ function onMouseMove(pos: Pos): Msg {
 }
 
 function onKeyDown(key: string): Msg {
-  return mainPageMsg({
+  return {
     tag: "key-down", key
-  })
+  }
 }
 
 /*
@@ -183,22 +182,20 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
   )
 }
 
+
 function viewPlacementPage(dispatch: Dispatcher<Msg>, model: Model, page: PlacementPage) {
   // TODO call place func to get pos/dimensions of the menu
   // we need the viewport size for that...
-  // const placed = place()
-  const { viewportDim, refDim } = page;
+  const { viewportDim } = page;
   return viewportDim.map(vd => {
     const { mousePos } = model;
-    const elemDim = dim(123);
+    const elemDim = dim(300, 400);
+    const refDim = dim(100, 50);
     const placedBox: Box = place(vd, box(pos(mousePos.x, mousePos.y), refDim), elemDim);
     const viewDim = (d: Dim) => <span>{d.w}*{d.h}</span>
     const viewPos = (p: Pos) => <span>{p.x}:{p.y}</span>
     return (
         <div className="demo">
-          <div className="page-switch">
-            <a href="#" onClick={() => dispatch({tag: "switch-page"})}>Close</a>
-          </div>
           <div className="dimensions">
             <ul>
               <li>elem: {viewDim(elemDim)}</li>
@@ -211,8 +208,8 @@ function viewPlacementPage(dispatch: Dispatcher<Msg>, model: Model, page: Placem
           <div className="ref-elem" style={{
             height: refDim.h,
             width: refDim.w,
-            left: model.mousePos.x + 2,
-            top: model.mousePos.y + 2,
+            left: model.mousePos.x,
+            top: model.mousePos.y,
           }}>
           </div>
           <div className="menu-elem" style={{
@@ -312,15 +309,29 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           }
           return noCmd(model);
         }
-        case "key-down": {
-          // open menu on context menu key
-          if (mpMsg.key === 'ContextMenu') {
-            return updateMenu(model, TM.open(myMenu, model.mousePos));
-          }
-          return noCmd(model);
-        }
       }
       break;
+    }
+    case "key-down": {
+      return model.page.match(
+          () => {
+            // open menu on context menu key
+            if (msg.key === 'ContextMenu') {
+              return updateMenu(model, TM.open(myMenu, model.mousePos));
+            }
+            return noCmd(model);
+          },
+          () => {
+            // close placement test on ESC
+            if (msg.key === 'Escape') {
+              return noCmd({
+                ...model,
+                page: left(initialMainPage())
+              })
+            }
+            return noCmd(model);
+          }
+      )
     }
     case "mouse-move": {
       // keep track of the mouse pos (needed for opening with keyboard)
@@ -352,6 +363,7 @@ const windowEvents = new WindowEvents();
 
 export function subscriptions(model: Model): Sub<Msg> {
   const mouseMove: Sub<Msg> = documentEvents.on('mousemove', e => onMouseMove(pos(e.pageX, e.pageY)));
+  const keyDown: Sub<Msg> = documentEvents.on('keydown', e => onKeyDown(e.key));
   return model.page.match(
       mainPage => {
         // the menu's subs
@@ -359,11 +371,11 @@ export function subscriptions(model: Model): Sub<Msg> {
                 .map(mm => TM.subscriptions(mm).map(menuMsg).map(mainPageMsg))
                 .withDefaultSupply(() => Sub.none());
         // mouse & key subs
-        const keyDown: Sub<Msg> = documentEvents.on('keydown', e => onKeyDown(e.key));
         return Sub.batch([menuSub, mouseMove, keyDown]);
       },
       () => Sub.batch([
           mouseMove,
+        keyDown,
         windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
       ])
   )
