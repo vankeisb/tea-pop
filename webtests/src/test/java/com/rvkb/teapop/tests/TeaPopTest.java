@@ -88,7 +88,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
 
     private void assertNoMenu() {
         fDemo()
-                .$$("span")
+                .$$("div")
                 .where(e -> e.getText().startsWith("Right-click anywhere"))
                 .expectOne()
                 .eval();

@@ -23,72 +23,73 @@
  *
  */
 
-import {adjustPopover} from "./Popover";
-import {dim, Dim} from "./Dim";
-import {box} from "./Box";
-import {pos} from "./Pos";
+import { dim, Dim } from './Dim';
+import { Box, box } from './Box';
+import { pos } from './Pos';
+import { place } from './Popover';
 
-const viewport: Dim = dim(100, 200);
+describe('popover 2 tests', () => {
+  const viewport: Dim = dim(100);
 
-describe("popover tests", () => {
+  const place_ = (refBox: Box) => (elem: Dim) => place(viewport, refBox, elem);
 
-  test("no changes if doesn't overflow", () => {
-    const b = box(pos(10, 20), dim(25, 25));
-    const b2 = adjustPopover(viewport, b);
-    expect(b).toEqual(b2);
+  describe('top left', () => {
+    const doPlace = place_(box(pos(10, 10), dim(10)));
+
+    test('should align top right', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(20, 10), dim(50)));
+    });
+
+    test('should translate up if not enough space to align top right', () => {
+      expect(doPlace(dim(50, 95))).toEqual(box(pos(20, 5), dim(50, 95)));
+    });
+
+    test('should fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)));
+    });
+
+    test("should translate up and left if doesn't fit", () => {
+      expect(doPlace(dim(85, 95))).toEqual(box(pos(15, 5), dim(85, 95)));
+    });
   });
 
-  test("should move up if it overflows the bottom", () => {
-    const p = pos(10, 180);
-    const d = dim(50, 30);
-    const b = box(p, d);
-    const b2 = adjustPopover(viewport, b);
-    expect(b2.d).toEqual(d);
-    expect(b2.p.x).toEqual(b2.p.x);
-    expect(b2.p.y).toEqual(p.y - 10);
+  describe('bottom left', () => {
+    const doPlace = place_(box(pos(10, 80), dim(10)));
+
+    test('should align bottom right', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(20, 40), dim(50)));
+    });
+
+    test('shoult fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(20, 0), dim(50, 100)));
+    });
   });
 
-  test("should have the viewport's height if bigger", () => {
-    const p = pos(10, 100);
-    const d = dim(50, 250);
-    const b = box(p, d);
-    const b2 = adjustPopover(viewport, b);
-    expect(b2.p.x).toEqual(b.p.x);
-    expect(b2.p.y).toEqual(0);
-    expect(b2.d.h).toEqual(viewport.h);
-    expect(b2.d.w).toEqual(b.d.w);
+  describe('top right', () => {
+    const doPlace = place_(box(pos(80, 10), dim(10)));
+
+    test('should align top left', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(30, 10), dim(50)));
+    });
+
+    test('should translate up if not enough space to aligh top left', () => {
+      expect(doPlace(dim(50, 95))).toEqual(box(pos(30, 5), dim(50, 95)));
+    });
+
+    test('should fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(30, 0), dim(50, 100)));
+    });
   });
 
-  test("should move left if it overflows the right", () => {
-    const p = pos(80, 10);
-    const d = dim(30, 50);
-    const b = box(p, d);
-    const b2 = adjustPopover(viewport, b);
-    expect(b2.d).toEqual(d);
-    expect(b2.p.y).toEqual(b2.p.y);
-    expect(b2.p.x).toEqual(p.x - 10);
+  describe('bottom right', () => {
+    const doPlace = place_(box(pos(80, 80), dim(10)));
+
+    test('should align bottom left', () => {
+      expect(doPlace(dim(50))).toEqual(box(pos(30, 40), dim(50)));
+    });
+
+    test('should fit vertically if too high', () => {
+      expect(doPlace(dim(50, 200))).toEqual(box(pos(30, 0), dim(50, 100)));
+    });
   });
-
-  test("should have the viewport's width if bigger", () => {
-    const p = pos(10, 100);
-    const d = dim(250, 50);
-    const b = box(p, d);
-    const b2 = adjustPopover(viewport, b);
-    expect(b2.p.y).toEqual(b.p.y);
-    expect(b2.p.x).toEqual(0);
-    expect(b2.d.w).toEqual(viewport.w);
-    expect(b2.d.h).toEqual(b.d.h);
-  });
-
-  test("should move if overflows right and bottom", () => {
-    const p = pos(80, 180);
-    const d = dim(50, 55);
-    const b = box(p, d);
-    const b2 = adjustPopover(viewport, b);
-    expect(b2.p.y).toEqual(b.p.y - 35);
-    expect(b2.p.x).toEqual(b.p.x - 30);
-    expect(b2.d).toEqual(d);
-  });
-
-
-})
+});

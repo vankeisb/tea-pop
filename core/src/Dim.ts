@@ -24,13 +24,11 @@
  */
 
 export class Dim {
-  constructor(
-      readonly w: number,
-      readonly h: number,
-  ) {
-  }
+  constructor(readonly w: number, readonly h: number) {}
+
+  static zero: Dim = dim(0);
 }
 
-export function dim(w: number, h: number): Dim {
-  return new Dim(w, h);
+export function dim(w: number, h?: number): Dim {
+  return new Dim(w, h ?? w);
 }

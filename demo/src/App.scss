@@ -9,6 +9,25 @@
   align-items: center;
   justify-content: center;
 
+  .page-switch {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
+
+  .ref-elem, .menu-elem {
+    position: absolute;
+    opacity: 0.5;
+  }
+
+  .ref-elem {
+    background-color: green;
+  }
+
+  .menu-elem {
+    background-color: blue;
+  }
+
 }
 
 code {

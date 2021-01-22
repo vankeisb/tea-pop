@@ -24,20 +24,13 @@
  */
 
 export class Pos {
-  constructor(
-      readonly x: number,
-      readonly y: number,
-  ) {
-  }
+  constructor(readonly x: number, readonly y: number) {}
 
   add(p: Pos): Pos {
-    return new Pos(
-      this.x + p.x,
-      this.y + p.y
-    )
+    return new Pos(this.x + p.x, this.y + p.y);
   }
 
-  static origin: Pos = pos(0, 0)
+  static origin: Pos = pos(0, 0);
 }
 
 export function pos(x: number, y: number): Pos {
