@@ -49,21 +49,20 @@ import {
 } from 'react-tea-cup';
 import { initialModel, keyboardNavigated, Model } from './Model';
 import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
-import { pos, Pos } from './Pos';
 import { dim, Dim } from './Dim';
 import { Box } from './Box';
-import { adjustPopover } from './Popover';
 import { OutMsg } from './OutMsg';
+import { place } from './Popover';
 
 export function open<T>(
   menu: Menu<T>,
-  position: Pos,
+  refBox: Box,
   selectFirst = false,
 ): [Model<T>, Cmd<Msg<T>>] {
   return [
     initialModel(
       selectFirst ? menu.selectFirstItem() : menu.deselectAll(),
-      position,
+      refBox,
     ),
     Cmd.batch([
       Task.perform(getWindowDimensions, (d) => gotWindowDimensions(d)),
@@ -117,29 +116,33 @@ export function update<T>(
       );
     }
     case 'got-menu-box': {
-      return withOut(
-        noCmd(
-          model.windowSize
-            .map((windowSize) => {
-              const newModel: Model<T> = msg.r.match(
-                (box) =>
-                  ({
+      if (model.state.tag === 'placing') {
+        const state = model.state;
+        return withOut(
+          noCmd(
+            model.windowSize
+              .map((windowSize) => {
+                const newModel: Model<T> = msg.r.match(
+                  (menuBox) =>
+                    ({
+                      ...model,
+                      state: {
+                        tag: 'open',
+                        box: place(windowSize, state.refBox, menuBox.d),
+                      },
+                    } as Model<T>),
+                  (err) => ({
                     ...model,
-                    state: {
-                      tag: 'open',
-                      box: adjustPopover(windowSize, box),
-                    },
-                  } as Model<T>),
-                (err) => ({
-                  ...model,
-                  error: just(err),
-                }),
-              );
-              return newModel;
-            })
-            .withDefault(model),
-        ),
-      );
+                    error: just(err),
+                  }),
+                );
+                return newModel;
+              })
+              .withDefault(model),
+          ),
+        );
+      }
+      return withOut(noCmd(model));
     }
 
     case 'key-down': {
@@ -217,11 +220,7 @@ export function update<T>(
               .map((subMenu) => {
                 // we have a sub menu so we need
                 // to open a new Menu !
-                const mac = open(
-                  subMenu,
-                  itemBox.p.add(pos(itemBox.d.w, 0)),
-                  msg.selectFirst,
-                );
+                const mac = open(subMenu, itemBox, msg.selectFirst);
                 const newModel2: Model<T> = {
                   ...newModel,
                   child: just(mac[0]),

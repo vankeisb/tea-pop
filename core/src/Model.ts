@@ -27,7 +27,6 @@ import { Menu } from './Menu';
 import { Maybe, nothing } from 'react-tea-cup';
 import { Dim } from './Dim';
 import { Box } from './Box';
-import { Pos } from './Pos';
 
 export interface Model<T> {
   readonly uuid: Maybe<string>;
@@ -40,12 +39,12 @@ export interface Model<T> {
   readonly subMenuCounter: number;
 }
 
-export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
+export function initialModel<T>(menu: Menu<T>, refBox: Box): Model<T> {
   return {
     uuid: nothing,
     windowSize: nothing,
     menu,
-    state: menuStatePlacing(position),
+    state: menuStatePlacing(refBox),
     error: nothing,
     child: nothing,
     navigatedWithKeyboard: false,
@@ -54,13 +53,13 @@ export function initialModel<T>(menu: Menu<T>, position: Pos): Model<T> {
 }
 
 export type MenuState =
-  | { tag: 'placing'; position: Pos }
+  | { tag: 'placing'; refBox: Box }
   | { tag: 'open'; box: Box };
 
-export function menuStatePlacing(position: Pos): MenuState {
+export function menuStatePlacing(refBox: Box): MenuState {
   return {
     tag: 'placing',
-    position,
+    refBox,
   };
 }
 

@@ -34,4 +34,4 @@ export * from './Pos';
 export * from './Dim';
 export * from './Box';
 export * from './ItemRenderer';
-export * from './Popover2';
+export * from './Popover';

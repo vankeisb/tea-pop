@@ -10,22 +10,28 @@ import {
   noCmd,
   nothing,
   right,
-  Sub, Task,
-  Tuple, WindowEvents
+  Sub,
+  Task,
+  Tuple,
+  WindowEvents
 } from "react-tea-cup";
 import * as React from 'react';
 import * as TM from 'tea-pop';
 import {
-  defaultItemRenderer, dim,
+  box,
+  defaultItemRenderer,
+  dim,
   Dim,
   item,
   Menu,
   menu,
   Model as TModel,
-  Msg as TMsg, pos, box,
+  Msg as TMsg,
+  place,
+  pos,
   Pos,
   separator,
-  ViewMenu, place
+  ViewMenu
 } from 'tea-pop';
 import {Box} from "tea-pop/dist/Box";
 
@@ -233,7 +239,8 @@ function viewMainPage(dispatch: Dispatcher<Msg>, page: MainPage) {
             onMouseDown={e => dispatch(onMouseDown(e.button))}
         >
           <div className="page-switch">
-            <a href="#" onClick={() => dispatch({tag: "switch-page"})}>Placement tests</a>
+          { /* eslint-disable-next-line */ }
+          <a href="#" onClick={() => dispatch({tag: "switch-page"})}>Placement tests</a>
           </div>
           {page.menuModel
               .map(() => <span>Menu is open</span>)
@@ -305,7 +312,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
         case "mouse-down": {
           // open menu on right click
           if (mpMsg.button === 2) {
-            return updateMenu(model, TM.open(myMenu, model.mousePos));
+            return updateMenu(model, TM.open(myMenu, box(model.mousePos, Dim.zero)));
           }
           return noCmd(model);
         }
@@ -317,7 +324,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           () => {
             // open menu on context menu key
             if (msg.key === 'ContextMenu') {
-              return updateMenu(model, TM.open(myMenu, model.mousePos));
+              return updateMenu(model, TM.open(myMenu, box(model.mousePos, Dim.zero)));
             }
             return noCmd(model);
           },
