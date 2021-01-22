@@ -136,7 +136,7 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
 function viewPlacementPage(dispatch: Dispatcher<Msg>, model: Model, page: PlacementPage) {
   // TODO call place func to get pos/dimensions of the menu
   // we need the viewport size for that...
-  const placed = place()
+  // const placed = place()
   return (
     <div className="demo">
         <div className="page-switch">
@@ -227,10 +227,14 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
                 // eslint-disable-next-line array-callback-return
                 .map(out => {
                   switch (out.tag) {
-                    case "request-close":
-                      return closeMenu(model);
-                    case "item-selected":
-                      return closeMenu(model, just(out.data));
+                    case "request-close": {
+                      const mac2 = closeMenu(newModel);
+                      return Tuple.fromNative(mac2).mapSecond(c => Cmd.batch([cmd, c])).toNative();
+                    }
+                    case "item-selected": {
+                      const mac2 = closeMenu(newModel, just(out.data));
+                      return Tuple.fromNative(mac2).mapSecond(c => Cmd.batch([cmd, c])).toNative();
+                    }
                   }
                 })
                 .withDefault(mac);
@@ -272,7 +276,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
               page: left(initialMainPage())
             }
           }
-        )  
+        )
       )
     }
   }
@@ -315,16 +319,16 @@ function updateMenu(model: Model, mac: [MenuModel, Cmd<MenuMsg>]): [Model, Cmd<M
       })
       .mapSecond(mc => mc.map(menuMsg))
       .toNative(),
-    () => noCmd(model) 
+    () => noCmd(model)
   )
 }
 
 function closeMenu(model: Model, lastClicked: Maybe<string> = nothing): [Model, Cmd<Msg>] {
   const newModel: Model = {
-    ...model, 
+    ...model,
     page: model.page.mapLeft(mainPage => ({
-      ...mainPage, 
-      menuModel: nothing, 
+      ...mainPage,
+      menuModel: nothing,
       lastClicked
     }))
   }
