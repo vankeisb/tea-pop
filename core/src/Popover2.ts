@@ -25,8 +25,8 @@
 
 import { box, Box } from './Box';
 import { dim, Dim } from './Dim';
-import { pos } from './Pos';
+import { Pos, pos } from './Pos';
 
 export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
-  throw 'fuck';
+  return box(Pos.origin, dim(100));
 }

@@ -32,5 +32,6 @@ export * from './OutMsg';
 export * from './StopEvent';
 export * from './Pos';
 export * from './Dim';
+export * from './Box';
 export * from './ItemRenderer';
 export * from './Popover2';
