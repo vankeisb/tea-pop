@@ -1,4 +1,18 @@
-import {Cmd, Dispatcher, DocumentEvents, just, map, Maybe, noCmd, nothing, Sub, Tuple, Either, left, right} from "react-tea-cup";
+import {
+  Cmd,
+  Dispatcher,
+  DocumentEvents,
+  Either,
+  just,
+  left,
+  map,
+  Maybe,
+  noCmd,
+  nothing,
+  right,
+  Sub,
+  Tuple
+} from "react-tea-cup";
 import * as React from 'react';
 import * as TM from 'tea-pop';
 import {
@@ -9,12 +23,10 @@ import {
   menu,
   Model as TModel,
   Msg as TMsg,
-  place,
   Pos,
   separator,
   ViewMenu
 } from 'tea-pop';
-import { relative } from "path";
 
 export interface Model {
   // keep track of mouse position
