@@ -2,14 +2,11 @@ import {
   Cmd,
   Dispatcher,
   DocumentEvents,
-  Either,
   just,
-  left,
   map,
   Maybe,
   noCmd,
   nothing,
-  right,
   Sub,
   Task,
   Tuple,
@@ -27,7 +24,8 @@ import {
   menu,
   Model as TModel,
   Msg as TMsg,
-  place, placeCombo,
+  place,
+  placeCombo,
   pos,
   Pos,
   separator,
@@ -39,10 +37,13 @@ export interface Model {
   // keep track of mouse position
   readonly mousePos: Pos;
   // page to display
-  readonly page: Either<MainPage, PlacementPage>;
+  readonly page: Page;
 }
 
+type Page = MainPage | PlacementPage | DropDownPage
+
 interface MainPage {
+  readonly tag: 'main-page';
   // ref to the tea-pop model
   readonly menuModel: Maybe<TModel<string>>;
   // keep last clicked item
@@ -51,14 +52,20 @@ interface MainPage {
 
 function initialMainPage(): MainPage {
   return {
+    tag: "main-page",
     menuModel: nothing,
     lastClicked: nothing,
   }
 }
 
+function openMainPage(model: Model): [Model, Cmd<Msg>] {
+  return noCmd({...model, page: initialMainPage()});
+}
+
 type PlacementMode = "menu" | "drop-down";
 
 interface PlacementPage {
+  readonly tag: 'placement-page';
   readonly mode: PlacementMode;
   readonly viewportDim: Maybe<Dim>;
 }
@@ -67,17 +74,31 @@ function openPlacementPage(model: Model): [Model, Cmd<Msg>] {
   return Tuple.t2n(
       {
         ...model,
-        page: right({
+        page: {
+          tag: "placement-page",
           viewportDim: nothing,
           refDim: dim(100),
           mode: "menu",
-        })
+        }
       },
       Task.perform(
           Task.succeedLazy(() => dim(window.innerWidth, window.innerHeight)),
           gotWindowDimensions
       )
   )
+}
+
+interface DropDownPage {
+  readonly tag: "drop-down-page";
+}
+
+function openDropDownPage(model: Model): [Model, Cmd<Msg>] {
+  return noCmd({
+    ...model,
+    page: {
+      tag: "drop-down-page"
+    }
+  })
 }
 
 // just to avoid too much typing
@@ -88,12 +109,13 @@ export type MenuMsg = TMsg<string>
  * Msg
  */
 
+type PageTag = "main-page" | "placement-page" | "drop-down-page";
+
 export type Msg =
-    | { tag: 'switch-page' }
+    | { tag: 'switch-page', page: PageTag }
     | { tag: 'got-window-dimensions', d: Dim }
     | { tag: 'main-page-msg', m: MainPageMsg }
     | { tag: 'mouse-move', pos: Pos }
-    | { tag: 'placement-page-msg' }
     | { tag: 'key-down', key: string }
 
 
@@ -140,6 +162,13 @@ function onKeyDown(key: string): Msg {
   }
 }
 
+function switchPage(p: PageTag): Msg {
+  return {
+    tag: "switch-page",
+    page: p,
+  }
+}
+
 /*
  * We keep our menus as constants. Those are, like everything, immutable.
  * They will serve as prototypes for when we open menus in reaction to clicks or
@@ -181,15 +210,22 @@ const MyRenderer = defaultItemRenderer((s: string) => <span>{s}</span>);
 export function init(): [Model, Cmd<Msg>] {
   return noCmd({
     mousePos: Pos.origin,
-    page: left(initialMainPage()),
+    page: initialMainPage(),
   });
 }
 
 export function view(dispatch: Dispatcher<Msg>, model: Model) {
-  return model.page.match(
-      mainPage => viewMainPage(dispatch, mainPage),
-      placementPage => viewPlacementPage(dispatch, model, placementPage),
-  )
+  switch (model.page.tag) {
+    case "main-page": {
+      return viewMainPage(dispatch, model.page);
+    }
+    case "placement-page": {
+      return viewPlacementPage(dispatch, model, model.page);
+    }
+    case "drop-down-page": {
+      return viewDropDownPage(dispatch, model.page);
+    }
+  }
 }
 
 
@@ -244,7 +280,9 @@ function viewMainPage(dispatch: Dispatcher<Msg>, page: MainPage) {
         >
           <div className="page-switch">
           { /* eslint-disable-next-line */ }
-          <a href="#" onClick={() => dispatch({tag: "switch-page"})}>Placement tests</a>
+            <a href="#" onClick={() => dispatch(switchPage("drop-down-page"))}>Drop-down</a>
+            {" "}|{" "}
+            <a href="#" onClick={() => dispatch(switchPage("placement-page"))}>Placement tests</a>
           </div>
           {page.menuModel
               .map(() => <span>Menu is open</span>)
@@ -269,49 +307,55 @@ function viewMainPage(dispatch: Dispatcher<Msg>, page: MainPage) {
   )
 }
 
+function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
+  // drop down page could display buttons that, when clicked, open a dropdown
+
+
+  return <div>TODO</div>;
+}
+
 export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
   switch (msg.tag) {
     case "main-page-msg": {
+      if (model.page.tag !== "main-page") {
+        return noCmd(model);
+      }
       const mpMsg: MainPageMsg = msg.m;
+      const mainPage: MainPage = model.page;
       switch (mpMsg.tag)  {
         case "menu-msg": {
-          return model.page.match(
-              mainPage => {
-                // got child msg, update our child...
-                if (mainPage.menuModel.type === 'Nothing') {
-                  return noCmd(model);
+          // got child msg, update our child...
+          if (mainPage.menuModel.type === 'Nothing') {
+            return noCmd(model);
+          }
+          const menuModel = mainPage.menuModel.value;
+          const mco = TM.update(mpMsg.msg, menuModel);
+          const newPage: MainPage = {
+            ...mainPage,
+            menuModel: just(mco[0])
+          };
+          const newModel: Model = {
+            ...model, page: newPage
+          };
+          const cmd: Cmd<Msg> = mco[1].map(menuMsg).map(mainPageMsg);
+          const mac: [Model, Cmd<Msg>] = [newModel, cmd];
+          // and handle its out msg if needed
+          const outMsg: Maybe<TM.OutMsg<string>> = mco[2];
+          return outMsg
+              // eslint-disable-next-line array-callback-return
+              .map(out => {
+                switch (out.tag) {
+                  case "request-close": {
+                    const mac2 = closeMenu(newModel);
+                    return Tuple.fromNative(mac2).mapSecond(c => Cmd.batch([cmd, c])).toNative();
+                  }
+                  case "item-selected": {
+                    const mac2 = closeMenu(newModel, just(out.data));
+                    return Tuple.fromNative(mac2).mapSecond(c => Cmd.batch([cmd, c])).toNative();
+                  }
                 }
-                const menuModel = mainPage.menuModel.value;
-                const mco = TM.update(mpMsg.msg, menuModel);
-                const newPage: MainPage = {
-                  ...mainPage,
-                  menuModel: just(mco[0])
-                };
-                const newModel: Model = {
-                  ...model, page: left(newPage)
-                };
-                const cmd: Cmd<Msg> = mco[1].map(menuMsg).map(mainPageMsg);
-                const mac: [Model, Cmd<Msg>] = [newModel, cmd];
-                // and handle its out msg if needed
-                const outMsg: Maybe<TM.OutMsg<string>> = mco[2];
-                return outMsg
-                    // eslint-disable-next-line array-callback-return
-                    .map(out => {
-                      switch (out.tag) {
-                        case "request-close": {
-                          const mac2 = closeMenu(newModel);
-                          return Tuple.fromNative(mac2).mapSecond(c => Cmd.batch([cmd, c])).toNative();
-                        }
-                        case "item-selected": {
-                          const mac2 = closeMenu(newModel, just(out.data));
-                          return Tuple.fromNative(mac2).mapSecond(c => Cmd.batch([cmd, c])).toNative();
-                        }
-                      }
-                    })
-                    .withDefault(mac);
-              },
-              placementPage => noCmd(model)
-          )
+              })
+              .withDefault(mac);
         }
         case "mouse-down": {
           // open menu on right click
@@ -324,60 +368,70 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       break;
     }
     case "key-down": {
-      return model.page.match(
-          () => {
-            // open menu on context menu key
-            if (msg.key === 'ContextMenu') {
-              return updateMenu(model, TM.open(myMenu, box(model.mousePos, Dim.zero)));
-            }
-            return noCmd(model);
-          },
-          () => {
-            // close placement test on ESC
-            switch (msg.key) {
-              case 'Escape': {
-                return noCmd({
-                  ...model,
-                  page: left(initialMainPage())
-                })
-              }
-              case 'm': {
-                return noCmd({
-                  ...model,
-                  page: model.page.mapRight(
-                      placementPage => ({
-                        ...placementPage,
-                        mode: placementPage.mode === "menu" ? "drop-down" : "menu"
-                      })
-                  )
-                })
-              }
-            }
-            return noCmd(model);
+      switch (model.page.tag) {
+        case "main-page": {
+          // open menu on context menu key
+          if (msg.key === 'ContextMenu') {
+            return updateMenu(model, TM.open(myMenu, box(model.mousePos, Dim.zero)));
           }
-      )
+          return noCmd(model);
+        }
+        case "placement-page": {
+          const placementPage = model.page;
+          // close placement test on ESC
+          switch (msg.key) {
+            case 'Escape': {
+              return noCmd({
+                ...model,
+                page: initialMainPage()
+              })
+            }
+            case 'm': {
+              return noCmd({
+                ...model,
+                page: {
+                  ...placementPage,
+                  mode: placementPage.mode === "menu" ? "drop-down" : "menu"
+                }
+              })
+            }
+            default:
+              return noCmd(model);
+          }
+        }
+        case "drop-down-page": {
+          return noCmd(model);
+        }
+      }
+      break;
     }
     case "mouse-move": {
       // keep track of the mouse pos (needed for opening with keyboard)
       return noCmd({...model, mousePos: msg.pos})
     }
-    case "placement-page-msg": {
-      return noCmd(model);
-    }
     case "switch-page": {
-      return model.page.match(
-          () => openPlacementPage(model),
-          () => noCmd({
-            ...model,
-            page: left(initialMainPage())
-          })
-      )
+      switch (msg.page) {
+        case "main-page": {
+          return openMainPage(model);
+        }
+        case "drop-down-page": {
+          return openDropDownPage(model);
+        }
+        case "placement-page": {
+          return openPlacementPage(model);
+        }
+      }
+      break;
     }
     case "got-window-dimensions": {
-      return noCmd({
-        ...model,
-        page: model.page.mapRight(placementPage => ({...placementPage, viewportDim: just(msg.d) }))
-      });
+      if (model.page.tag === "placement-page") {
+        const placementPage = model.page;
+        return noCmd({
+          ...model,
+          page: {...placementPage, viewportDim: just(msg.d) }
+        })
+      }
+      return noCmd(model);
     }
   }
 }
@@ -388,21 +442,27 @@ const windowEvents = new WindowEvents();
 export function subscriptions(model: Model): Sub<Msg> {
   const mouseMove: Sub<Msg> = documentEvents.on('mousemove', e => onMouseMove(pos(e.pageX, e.pageY)));
   const keyDown: Sub<Msg> = documentEvents.on('keydown', e => onKeyDown(e.key));
-  return model.page.match(
-      mainPage => {
-        // the menu's subs
-        const menuSub: Sub<Msg> = mainPage.menuModel
-                .map(mm => TM.subscriptions(mm).map(menuMsg).map(mainPageMsg))
-                .withDefaultSupply(() => Sub.none());
-        // mouse & key subs
-        return Sub.batch([menuSub, mouseMove, keyDown]);
-      },
-      () => Sub.batch([
-          mouseMove,
+  switch (model.page.tag) {
+    case "main-page": {
+      const mainPage = model.page;
+      // the menu's subs
+      const menuSub: Sub<Msg> = mainPage.menuModel
+          .map(mm => TM.subscriptions(mm).map(menuMsg).map(mainPageMsg))
+          .withDefaultSupply(() => Sub.none());
+      // mouse & key subs
+      return Sub.batch([menuSub, mouseMove, keyDown]);
+    }
+    case "placement-page":  {
+      return Sub.batch([
+        mouseMove,
         keyDown,
         windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
       ])
-  )
+    }
+    case "drop-down-page": {
+      return Sub.none();
+    }
+  }
 }
 
 /*
@@ -410,33 +470,38 @@ export function subscriptions(model: Model): Sub<Msg> {
  */
 
 function updateMenu(model: Model, mac: [MenuModel, Cmd<MenuMsg>]): [Model, Cmd<Msg>] {
-  return model.page.match(
-      mainPage => Tuple.fromNative(mac)
-          .mapFirst(mm => {
-            const newModel: Model = {
-              ...model,
-              page: left({
-                ...mainPage,
-                menuModel: just(mm)
-              })
-            }
-            return newModel;
-            // } ({...model, page: left({ ...mainPage, menuModel: just(mm)}})))
-          })
-          .mapSecond(mc => mc.map(menuMsg).map(mainPageMsg))
-          .toNative(),
-      () => noCmd(model)
-  )
+  if (model.page.tag !== "main-page") {
+    return noCmd(model);
+  }
+  const mainPage = model.page;
+  return Tuple.fromNative(mac)
+    .mapFirst(mm => {
+      const newModel: Model = {
+        ...model,
+        page: {
+          ...mainPage,
+          menuModel: just(mm)
+        }
+      }
+      return newModel;
+      // } ({...model, page: left({ ...mainPage, menuModel: just(mm)}})))
+    })
+    .mapSecond(mc => mc.map(menuMsg).map(mainPageMsg))
+    .toNative();
 }
 
 function closeMenu(model: Model, lastClicked: Maybe<string> = nothing): [Model, Cmd<Msg>] {
+  if (model.page.tag !== "main-page") {
+    return noCmd(model);
+  }
+  const mainPage = model.page;
   const newModel: Model = {
     ...model,
-    page: model.page.mapLeft(mainPage => ({
+    page: {
       ...mainPage,
       menuModel: nothing,
       lastClicked
-    }))
+    }
   }
   return noCmd(newModel)
 }
