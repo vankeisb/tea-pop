@@ -33,12 +33,18 @@ export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
   return box(pos(pX.offset, pY.offset), dim(pX.len, pY.len));
 }
 
+export function placeCombo(viewport: Dim, refBox: Box, elem: Dim): Box {
+  const pX = place1DStart(viewport.w, refBox.p.x, refBox.d.w, elem.w);
+  const pY = placeComboY(viewport.h, refBox.p.y, refBox.d.h, elem.h);
+  return box(pos(pX.offset, pY.offset), dim(pX.len, pY.len));
+}
+
 interface Placed1D {
   readonly offset: number;
   readonly len: number;
 }
 
-function place1DEnd(
+export function place1DEnd(
   viewportW: number,
   refX: number,
   refW: number,
@@ -64,7 +70,7 @@ function place1DEnd(
   }
 }
 
-function place1DStart(
+export function place1DStart(
   viewportW: number,
   refX: number,
   refW: number,
@@ -91,5 +97,32 @@ function place1DStart(
   } else {
     // enough space to append
     return { offset: refX, len: elemW };
+  }
+}
+
+function placeComboY(
+  viewportW: number,
+  refX: number,
+  refW: number,
+  elemW: number,
+): Placed1D {
+  const elemEnd = refX + refW;
+  const spaceBefore = refX;
+  const spaceAfter = viewportW - elemEnd;
+  if (elemW < spaceAfter) {
+    // enough space after, append
+    return { offset: elemEnd, len: elemW };
+  } else if (elemW < spaceBefore) {
+    // enough space before, append
+    return { offset: refX - elemW, len: elemW };
+  } else {
+    // not enough space, need to shrink
+    // use the most space
+    if (spaceBefore > spaceAfter) {
+      // place before
+      return { offset: 0, len: spaceBefore };
+    } else {
+      return { offset: elemEnd, len: spaceAfter };
+    }
   }
 }

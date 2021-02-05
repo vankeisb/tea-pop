@@ -27,7 +27,7 @@ import {
   menu,
   Model as TModel,
   Msg as TMsg,
-  place,
+  place, placeCombo,
   pos,
   Pos,
   separator,
@@ -56,7 +56,10 @@ function initialMainPage(): MainPage {
   }
 }
 
+type PlacementMode = "menu" | "drop-down";
+
 interface PlacementPage {
+  readonly mode: PlacementMode;
   readonly viewportDim: Maybe<Dim>;
 }
 
@@ -67,6 +70,7 @@ function openPlacementPage(model: Model): [Model, Cmd<Msg>] {
         page: right({
           viewportDim: nothing,
           refDim: dim(100),
+          mode: "menu",
         })
       },
       Task.perform(
@@ -190,20 +194,20 @@ export function view(dispatch: Dispatcher<Msg>, model: Model) {
 
 
 function viewPlacementPage(dispatch: Dispatcher<Msg>, model: Model, page: PlacementPage) {
-  // TODO call place func to get pos/dimensions of the menu
-  // we need the viewport size for that...
   const { viewportDim } = page;
   return viewportDim.map(vd => {
+    let placeFct = page.mode === "menu" ? place : placeCombo
     const { mousePos } = model;
-    const elemDim = dim(300, 400);
+    const elemDim = dim(600, 400);
     const refDim = dim(100, 50);
-    const placedBox: Box = place(vd, box(pos(mousePos.x, mousePos.y), refDim), elemDim);
+    const placedBox: Box = placeFct(vd, box(pos(mousePos.x, mousePos.y), refDim), elemDim);
     const viewDim = (d: Dim) => <span>{d.w}*{d.h}</span>
     const viewPos = (p: Pos) => <span>{p.x}:{p.y}</span>
     return (
         <div className="demo">
           <div className="dimensions">
             <ul>
+              <li>mode: {page.mode} (toggle with <code>M</code>)</li>
               <li>elem: {viewDim(elemDim)}</li>
               <li>viewport: {viewDim(vd)}</li>
               <li>ref: {viewDim(refDim)}</li>
@@ -330,11 +334,24 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           },
           () => {
             // close placement test on ESC
-            if (msg.key === 'Escape') {
-              return noCmd({
-                ...model,
-                page: left(initialMainPage())
-              })
+            switch (msg.key) {
+              case 'Escape': {
+                return noCmd({
+                  ...model,
+                  page: left(initialMainPage())
+                })
+              }
+              case 'm': {
+                return noCmd({
+                  ...model,
+                  page: model.page.mapRight(
+                      placementPage => ({
+                        ...placementPage,
+                        mode: placementPage.mode === "menu" ? "drop-down" : "menu"
+                      })
+                  )
+                })
+              }
             }
             return noCmd(model);
           }
