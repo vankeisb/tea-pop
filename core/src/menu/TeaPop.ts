@@ -49,10 +49,8 @@ import {
 } from 'react-tea-cup';
 import { initialModel, keyboardNavigated, Model } from './Model';
 import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
-import { dim, Dim } from './Dim';
-import { Box } from './Box';
+import { dim, Dim, Box, place } from '../common';
 import { OutMsg } from './OutMsg';
-import { place } from './Popover';
 
 export function open<T>(
   menu: Menu<T>,

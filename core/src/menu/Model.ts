@@ -23,27 +23,48 @@
  *
  */
 
-export * from './common';
+import { Menu } from './Menu';
+import { Maybe, nothing } from 'react-tea-cup';
+import { Box, Dim } from '../common';
 
-export {
-  Model as MenuModel,
-  Msg as MenuMsg,
-  OutMsg as MenuOutMsg,
-  update as menuUpdate,
-  ViewMenu,
-  defaultItemRenderer,
-  separator,
-  item,
-  Menu,
-  menu,
-  subscriptions as menuSubscriptions,
-  open as menuOpen,
-} from './menu';
+export interface Model<T> {
+  readonly uuid: Maybe<string>;
+  readonly windowSize: Maybe<Dim>;
+  readonly menu: Menu<T>;
+  readonly state: MenuState;
+  readonly error: Maybe<Error>;
+  readonly child: Maybe<Model<T>>;
+  readonly navigatedWithKeyboard: boolean;
+  readonly subMenuCounter: number;
+}
 
-export {
-  Model as DropDownModel,
-  Msg as DropDownMsg,
-  open as dropDownOpen,
-  update as dropDownUpdate,
-  ViewDropDown,
-} from './dropdown/DropDown';
+export function initialModel<T>(menu: Menu<T>, refBox: Box): Model<T> {
+  return {
+    uuid: nothing,
+    windowSize: nothing,
+    menu,
+    state: menuStatePlacing(refBox),
+    error: nothing,
+    child: nothing,
+    navigatedWithKeyboard: false,
+    subMenuCounter: 0,
+  };
+}
+
+export type MenuState =
+  | { tag: 'placing'; refBox: Box }
+  | { tag: 'open'; box: Box };
+
+export function menuStatePlacing(refBox: Box): MenuState {
+  return {
+    tag: 'placing',
+    refBox,
+  };
+}
+
+export function keyboardNavigated<T>(
+  model: Model<T>,
+  navigatedWithKeyboard = true,
+): Model<T> {
+  return { ...model, navigatedWithKeyboard };
+}

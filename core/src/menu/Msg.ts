@@ -23,8 +23,7 @@
  *
  */
 
-import { Dim } from './Dim';
-import { Box } from './Box';
+import { Dim, Box } from '../common';
 import { Result } from 'react-tea-cup';
 import { MenuItem } from './Menu';
 
