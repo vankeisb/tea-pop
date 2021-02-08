@@ -307,6 +307,7 @@ function viewMainPage(dispatch: Dispatcher<Msg>, page: MainPage) {
             { /* eslint-disable-next-line */}
             <a href="#" onClick={() => dispatch(switchPage("drop-down-page"))}>Drop-down</a>
             {" "}|{" "}
+            { /* eslint-disable-next-line */}
             <a href="#" onClick={() => dispatch(switchPage("placement-page"))}>Placement tests</a>
           </div>
           {page.menuModel
