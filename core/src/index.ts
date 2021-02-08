@@ -38,6 +38,8 @@ export {
   menu,
   subscriptions as menuSubscriptions,
   open as menuOpen,
+  MenuElement,
+  MenuItem,
 } from './menu';
 
 export {
