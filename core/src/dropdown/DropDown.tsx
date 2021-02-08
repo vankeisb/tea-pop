@@ -25,18 +25,41 @@
 
 import * as React from 'react';
 import { box, Box, Dim, Pos, getWindowDimensions, placeCombo } from '../common';
-import { Cmd, noCmd, Result, Task, uuid } from 'react-tea-cup';
+import {
+  Cmd,
+  just,
+  Maybe,
+  noCmd,
+  nothing,
+  Result,
+  Task,
+  uuid,
+} from 'react-tea-cup';
 
 export type Model =
-  | { tag: 'fresh'; refBox: Box }
-  | { tag: 'ready'; uuid: string; windowDimensions: Dim; state: State };
+  | { tag: 'fresh' }
+  | {
+      tag: 'ready';
+      initData: InitData;
+      placed: Maybe<Box>;
+    }
+  | { tag: 'error'; e: Error };
 
-type State =
-  | { tag: 'placing'; refBox: Box }
-  | { tag: 'placed'; r: Result<Error, Box> };
+function errorModel(e: Error): Model {
+  return {
+    tag: 'error',
+    e,
+  };
+}
+
+interface InitData {
+  readonly refBox: Box;
+  readonly windowDimensions: Dim;
+  readonly uuid: string;
+}
 
 export type Msg =
-  | { tag: 'got-init-data'; windowDimensions: Dim; uuid: string }
+  | { tag: 'got-init-data'; r: Result<Error, InitData> }
   | { tag: 'got-rendered-box'; r: Result<Error, Box> };
 
 function gotRenderedBox(r: Result<Error, Box>): Msg {
@@ -46,30 +69,26 @@ function gotRenderedBox(r: Result<Error, Box>): Msg {
   };
 }
 
-function gotInitData(windowDimensions: Dim, uuid: string): Msg {
+function gotInitData(r: Result<Error, InitData>): Msg {
   return {
     tag: 'got-init-data',
-    windowDimensions,
-    uuid,
+    r,
   };
 }
 
 export type Renderer = () => React.ReactNode;
 
-export function open(refBox: Box): [Model, Cmd<Msg>] {
+export function open(getRefBox: Task<Error, Box>): [Model, Cmd<Msg>] {
   const model: Model = {
     tag: 'fresh',
-    refBox,
   };
-  const cmd: Cmd<Msg> = Task.perform(
+  const getInitData: Task<Error, InitData> = getRefBox.andThen((refBox) =>
     getWindowDimensions.andThen((windowDimensions) =>
-      uuid().map((uuid) => ({
-        windowDimensions,
-        uuid,
-      })),
+      uuid().map((uuid) => ({ refBox, windowDimensions, uuid })),
     ),
-    ({ windowDimensions, uuid }) => gotInitData(windowDimensions, uuid),
   );
+
+  const cmd: Cmd<Msg> = Task.attempt(getInitData, gotInitData);
   return [model, cmd];
 }
 
@@ -84,27 +103,12 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
     case 'fresh': {
       return <></>;
     }
+    case 'error': {
+      return <></>; // TODO ?
+    }
     case 'ready': {
-      switch (model.state.tag) {
-        case 'placing': {
-          return (
-            <span
-              id={model.uuid}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                visibility: 'hidden',
-              }}
-            >
-              {renderer()}
-            </span>
-          );
-        }
-        case 'placed': {
-          const placedBox = model.state.r.withDefaultSupply(() =>
-            box(Pos.origin, Dim.zero),
-          );
+      return model.placed
+        .map((placedBox) => {
           const { p, d } = placedBox;
           return (
             <div
@@ -120,8 +124,22 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
               {renderer()}
             </div>
           );
-        }
-      }
+        })
+        .withDefaultSupply(() => {
+          return (
+            <span
+              id={model.initData.uuid}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                visibility: 'hidden',
+              }}
+            >
+              {renderer()}
+            </span>
+          );
+        });
     }
   }
 }
@@ -129,50 +147,43 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
 export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
   switch (msg.tag) {
     case 'got-init-data': {
-      switch (model.tag) {
-        case 'fresh': {
+      if (model.tag !== 'fresh') {
+        return noCmd(model);
+      }
+      return msg.r.match(
+        (initData) => {
           const newModel: Model = {
             tag: 'ready',
-            state: {
-              tag: 'placing',
-              refBox: model.refBox,
-            },
-            windowDimensions: msg.windowDimensions,
-            uuid: msg.uuid,
+            initData,
+            placed: nothing,
           };
           const cmd: Cmd<Msg> = Task.attempt(
-            getRenderedBox(msg.uuid),
+            getRenderedBox(initData.uuid),
             gotRenderedBox,
           );
           return [newModel, cmd];
-        }
-      }
-      break;
+        },
+        (error) => noCmd(errorModel(error)),
+      );
     }
     case 'got-rendered-box': {
-      switch (model.tag) {
-        case 'ready': {
-          switch (model.state.tag) {
-            case 'placing': {
-              const s = model.state;
-              const state: State = {
-                tag: 'placed',
-                r: msg.r.map((b) =>
-                  placeCombo(model.windowDimensions, s.refBox, b.d),
-                ),
-              };
-              return noCmd({
-                ...model,
-                state,
-              });
-            }
+      return msg.r.match(
+        (renderedBox) => {
+          if (model.tag !== 'ready') {
+            return noCmd(model);
           }
-        }
-      }
-      break;
+          const { initData } = model;
+          const { windowDimensions, refBox } = initData;
+          const placedBox = placeCombo(windowDimensions, refBox, renderedBox.d);
+          return noCmd({
+            ...model,
+            placed: just(placedBox),
+          });
+        },
+        (error) => noCmd(errorModel(error)),
+      );
     }
   }
-  return noCmd(model);
 }
 
 function getRenderedBox(uuid: string): Task<Error, Box> {

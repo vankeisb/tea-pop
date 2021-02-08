@@ -358,9 +358,9 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
                       height,
                       width,
                     }}
-                    onClick={() => dispatch(dropDownPageMsg({
+                    onClick={(evt) => dispatch(dropDownPageMsg({
                       tag: "button-clicked",
-                      b: box(pos(left, top), dim(width, height))
+                      b: Box.fromDomRect((evt.target as HTMLElement).getBoundingClientRect())
                     }))}
                 >
                   {btnIndex}
@@ -521,7 +521,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       const pageMsg = msg.m;
       switch (pageMsg.tag) {
         case "button-clicked": {
-          const ddMac: [DropDownModel, Cmd<DropDownMsg>] = dropDownOpen(pageMsg.b);
+          const ddMac: [DropDownModel, Cmd<DropDownMsg>] = dropDownOpen(Task.succeed(pageMsg.b));
           return handleDropDownUpdate(model, page, ddMac);
         }
         case "dd-msg": {
