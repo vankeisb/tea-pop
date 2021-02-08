@@ -32,6 +32,7 @@ export {
   update as menuUpdate,
   ViewMenu,
   defaultItemRenderer,
+  ItemRenderer,
   separator,
   item,
   Menu,
