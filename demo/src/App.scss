@@ -70,3 +70,21 @@ code {
     margin-bottom: 0.2rem;
   }
 }
+
+
+.drop-down-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.my-drop-down {
+  background-color: lightblue;
+  width: 200px;
+  max-width: 200px;
+  height: 200px;
+}
+

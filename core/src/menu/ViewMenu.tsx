@@ -29,7 +29,7 @@ import { childMsg, Msg } from './Msg';
 import { Dispatcher, map } from 'react-tea-cup';
 import { ItemRenderer } from './ItemRenderer';
 import { Model } from './Model';
-import { stopEvent } from './StopEvent';
+import { stopEvent } from '../common';
 
 export interface ViewMenuProps<T> {
   model: Model<T>;
@@ -37,7 +37,7 @@ export interface ViewMenuProps<T> {
   renderer: ItemRenderer<T>;
 }
 
-export function ViewMenu<T>(props: ViewMenuProps<T>) {
+export function ViewMenu<T>(props: ViewMenuProps<T>): React.ReactElement {
   const { model, dispatch, renderer } = props;
   const { menu, state, uuid, windowSize } = model;
   if (uuid.type === 'Nothing') {
@@ -145,7 +145,9 @@ export interface ViewMenuItemProps<T> {
   renderer: ItemRenderer<T>;
 }
 
-export function ViewMenuItem<T>(props: ViewMenuItemProps<T>) {
+export function ViewMenuItem<T>(
+  props: ViewMenuItemProps<T>,
+): React.ReactElement {
   const { menu, item, renderer, dispatch, uuid, itemIndex } = props;
   const selected = menu.isSelected(item);
   return (
