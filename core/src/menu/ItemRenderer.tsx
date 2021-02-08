@@ -23,7 +23,7 @@
  *
  */
 
-import * as React from "react";
+import * as React from 'react';
 
 export interface RendererInput<T> {
   readonly data: T;
@@ -33,24 +33,17 @@ export interface RendererInput<T> {
 
 export type ItemRenderer<T> = (input: RendererInput<T>) => React.ReactNode;
 
-export function defaultItemRenderer<T>(contentRenderer: (t: T) => React.ReactNode): ItemRenderer<T> {
+export function defaultItemRenderer<T>(
+  contentRenderer: (t: T) => React.ReactNode,
+): ItemRenderer<T> {
   return (input) => {
     const { data, active, hasSubMenu } = input;
     const activeClass = active ? ' tm-active' : '';
     return (
-        <div className={`tm-item${activeClass}`}>
-          <div className="tm-item__content">
-            {contentRenderer(data)}
-          </div>
-          { hasSubMenu
-              ? (
-                  <div className="tm-item__submenu">
-                    ›
-                  </div>
-              )
-              : <></>
-          }
-        </div>
-    )
-  }
+      <div className={`tm-item${activeClass}`}>
+        <div className="tm-item__content">{contentRenderer(data)}</div>
+        {hasSubMenu ? <div className="tm-item__submenu">›</div> : <></>}
+      </div>
+    );
+  };
 }

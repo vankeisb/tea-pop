@@ -23,49 +23,13 @@
  *
  */
 
-import { Menu } from './Menu';
-import { Maybe, nothing } from 'react-tea-cup';
-import { Dim } from './Dim';
-import { Box } from './Box';
+import { dim, Dim } from './Dim';
+import { Task } from 'react-tea-cup';
 
-export interface Model<T> {
-  readonly uuid: Maybe<string>;
-  readonly windowSize: Maybe<Dim>;
-  readonly menu: Menu<T>;
-  readonly state: MenuState;
-  readonly error: Maybe<Error>;
-  readonly child: Maybe<Model<T>>;
-  readonly navigatedWithKeyboard: boolean;
-  readonly subMenuCounter: number;
+export function windowDimensions(): Dim {
+  return dim(window.innerWidth, window.innerHeight);
 }
 
-export function initialModel<T>(menu: Menu<T>, refBox: Box): Model<T> {
-  return {
-    uuid: nothing,
-    windowSize: nothing,
-    menu,
-    state: menuStatePlacing(refBox),
-    error: nothing,
-    child: nothing,
-    navigatedWithKeyboard: false,
-    subMenuCounter: 0,
-  };
-}
-
-export type MenuState =
-  | { tag: 'placing'; refBox: Box }
-  | { tag: 'open'; box: Box };
-
-export function menuStatePlacing(refBox: Box): MenuState {
-  return {
-    tag: 'placing',
-    refBox,
-  };
-}
-
-export function keyboardNavigated<T>(
-  model: Model<T>,
-  navigatedWithKeyboard = true,
-): Model<T> {
-  return { ...model, navigatedWithKeyboard };
-}
+export const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
+  windowDimensions(),
+);

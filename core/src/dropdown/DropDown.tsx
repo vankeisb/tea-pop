@@ -24,29 +24,20 @@
  */
 
 import * as React from 'react';
-import { box, Box } from './Box';
-import { Cmd, noCmd, Result, Task } from 'react-tea-cup';
-import { dim, Dim } from './Dim';
-import { Pos } from './Pos';
+import { box, Box, Dim, Pos, getWindowDimensions, placeCombo } from '../common';
+import { Cmd, noCmd, Result, Task, uuid } from 'react-tea-cup';
 
 export type Model =
   | { tag: 'fresh'; refBox: Box }
-  | { tag: 'ready'; windowDimensions: Dim; state: State };
+  | { tag: 'ready'; uuid: string; windowDimensions: Dim; state: State };
 
 type State =
   | { tag: 'placing'; refBox: Box }
   | { tag: 'placed'; r: Result<Error, Box> };
 
 export type Msg =
-  | { tag: 'got-window-dimensions'; d: Dim }
+  | { tag: 'got-init-data'; windowDimensions: Dim; uuid: string }
   | { tag: 'got-rendered-box'; r: Result<Error, Box> };
-
-function gotWindowDimensions(d: Dim): Msg {
-  return {
-    tag: 'got-window-dimensions',
-    d,
-  };
-}
 
 function gotRenderedBox(r: Result<Error, Box>): Msg {
   return {
@@ -55,19 +46,40 @@ function gotRenderedBox(r: Result<Error, Box>): Msg {
   };
 }
 
+function gotInitData(windowDimensions: Dim, uuid: string): Msg {
+  return {
+    tag: 'got-init-data',
+    windowDimensions,
+    uuid,
+  };
+}
+
 export type Renderer = () => React.ReactNode;
-export type NodeFinder = Task<Error, HTMLElement>;
 
 export function open(refBox: Box): [Model, Cmd<Msg>] {
   const model: Model = {
     tag: 'fresh',
     refBox,
   };
-  const cmd: Cmd<Msg> = Task.perform(getWindowDimensions, gotWindowDimensions);
+  const cmd: Cmd<Msg> = Task.perform(
+    getWindowDimensions.andThen((windowDimensions) =>
+      uuid().map((uuid) => ({
+        windowDimensions,
+        uuid,
+      })),
+    ),
+    ({ windowDimensions, uuid }) => gotInitData(windowDimensions, uuid),
+  );
   return [model, cmd];
 }
 
-export function view(renderer: Renderer, model: Model): React.ReactElement {
+export interface ViewDropDownProps {
+  readonly renderer: Renderer;
+  readonly model: Model;
+}
+
+export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
+  const { renderer, model } = props;
   switch (model.tag) {
     case 'fresh': {
       return <></>;
@@ -76,19 +88,17 @@ export function view(renderer: Renderer, model: Model): React.ReactElement {
       switch (model.state.tag) {
         case 'placing': {
           return (
-            <div
-              className="tm-placer"
+            <span
+              id={model.uuid}
               style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                bottom: 0,
-                right: 0,
-                overflow: 'hidden',
+                visibility: 'hidden',
               }}
             >
               {renderer()}
-            </div>
+            </span>
           );
         }
         case 'placed': {
@@ -98,7 +108,7 @@ export function view(renderer: Renderer, model: Model): React.ReactElement {
           const { p, d } = placedBox;
           return (
             <div
-              className="tm"
+              className="tm-drop-down"
               style={{
                 position: 'absolute',
                 top: p.y,
@@ -116,13 +126,9 @@ export function view(renderer: Renderer, model: Model): React.ReactElement {
   }
 }
 
-export function update(
-  nodeFinder: NodeFinder,
-  msg: Msg,
-  model: Model,
-): [Model, Cmd<Msg>] {
+export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
   switch (msg.tag) {
-    case 'got-window-dimensions': {
+    case 'got-init-data': {
       switch (model.tag) {
         case 'fresh': {
           const newModel: Model = {
@@ -131,10 +137,11 @@ export function update(
               tag: 'placing',
               refBox: model.refBox,
             },
-            windowDimensions: msg.d,
+            windowDimensions: msg.windowDimensions,
+            uuid: msg.uuid,
           };
           const cmd: Cmd<Msg> = Task.attempt(
-            getRenderedBox(nodeFinder),
+            getRenderedBox(msg.uuid),
             gotRenderedBox,
           );
           return [newModel, cmd];
@@ -147,9 +154,12 @@ export function update(
         case 'ready': {
           switch (model.state.tag) {
             case 'placing': {
+              const s = model.state;
               const state: State = {
                 tag: 'placed',
-                r: msg.r,
+                r: msg.r.map((b) =>
+                  placeCombo(model.windowDimensions, s.refBox, b.d),
+                ),
               };
               return noCmd({
                 ...model,
@@ -165,16 +175,18 @@ export function update(
   return noCmd(model);
 }
 
-function getRenderedBox(nodeFinder: NodeFinder): Task<Error, Box> {
-  return nodeFinder.map((elem) =>
+function getRenderedBox(uuid: string): Task<Error, Box> {
+  return byId(uuid).map((elem) =>
     Box.fromDomRect(elem.getBoundingClientRect()),
   );
 }
 
-function windowDimensions(): Dim {
-  return dim(window.innerWidth, window.innerHeight);
+function byId(id: string): Task<Error, HTMLElement> {
+  return Task.fromLambda(() => {
+    const e = document.getElementById(id);
+    if (!e) {
+      throw new Error('element not found ' + id);
+    }
+    return e;
+  });
 }
-
-const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
-  windowDimensions(),
-);
