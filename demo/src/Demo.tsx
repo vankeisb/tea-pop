@@ -351,6 +351,7 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
             const left = x + padding;
             buttons.push(
                 <button
+                    key={"btn" + btnIndex}
                     style={{
                       position: "absolute",
                       top,
