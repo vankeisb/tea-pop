@@ -471,6 +471,14 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           }
         }
         case "drop-down-page": {
+          switch (msg.key) {
+            case 'Escape': {
+              return noCmd({
+                ...model,
+                page: initialMainPage()
+              })
+            }
+          }
           return noCmd(model);
         }
       }
@@ -565,7 +573,7 @@ export function subscriptions(model: Model): Sub<Msg> {
       ])
     }
     case "drop-down-page": {
-      return windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
+      return Sub.batch([keyDown, windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))]);
     }
   }
 }
