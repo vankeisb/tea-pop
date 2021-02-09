@@ -48,5 +48,7 @@ export {
   Msg as DropDownMsg,
   open as dropDownOpen,
   update as dropDownUpdate,
+  subscriptions as dropDownSubscriptions,
   ViewDropDown,
+  RequestClose as DropDownRequestClose,
 } from './dropdown/DropDown';
