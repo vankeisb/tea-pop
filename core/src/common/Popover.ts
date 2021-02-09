@@ -87,7 +87,6 @@ export function place1DStart(
     } else {
       // not enough space before or after, we have to translate and/or expand !
       if (elemW < viewportW) {
-        console.log('shrink');
         // can't append or prepend, but no need to shrink... translate only
         const delta = refX + refW + elemW - viewportW;
         return { offset: refX + refW - delta, len: elemW };

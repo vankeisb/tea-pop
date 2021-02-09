@@ -101,7 +101,7 @@ function openPlacementPage(model: Model): [Model, Cmd<Msg>] {
 interface DropDownPage {
   readonly tag: "drop-down-page";
   readonly viewportDim: Maybe<Dim>;
-  readonly ddModel: Maybe<DropDownModel>;
+  readonly indexAndModel: Maybe<Tuple<number,DropDownModel>>;
 }
 
 function openDropDownPage(model: Model): [Model, Cmd<Msg>] {
@@ -110,7 +110,7 @@ function openDropDownPage(model: Model): [Model, Cmd<Msg>] {
     page: {
       tag: "drop-down-page",
       viewportDim: nothing,
-      ddModel: nothing,
+      indexAndModel: nothing,
     }
   }, Task.perform(getWindowDimensions, gotWindowDimensions))
 }
@@ -134,7 +134,7 @@ export type Msg =
     | { tag: 'key-down', key: string }
 
 type DropDownPageMsg =
-    | { tag: "button-clicked", b: Box }
+    | { tag: "button-clicked", index: number; b: Box }
     | { tag: "dd-msg", m: DropDownMsg }
 
 function dropDownPageMsg(m: DropDownPageMsg): Msg {
@@ -267,6 +267,7 @@ function viewPlacementPage(dispatch: Dispatcher<Msg>, model: Model, page: Placem
     return (
         <div className="demo">
           <div className="dimensions">
+            <h1>Placement tests (<code>x</code> to close)</h1>
             <ul>
               <li>mode: {page.mode} (toggle with <code>M</code>)</li>
               <li>elem: {viewDim(elemDim)}</li>
@@ -347,8 +348,12 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
         const width = xStep - (padding * 2);
         for (let x = 0; (x + padding + width) < viewportDim.w; x += xStep) {
           for (let y = 0; (y + padding + height) < viewportDim.h; y += yStep) {
+            const curBtnIndex = btnIndex;
             const top = y + padding;
             const left = x + padding;
+            const border = page.indexAndModel
+                .map(iam => iam.a)
+                .filter(i => i === curBtnIndex).map(() => "2px solid blue").withDefault("inherit");
             buttons.push(
                 <button
                     key={"btn" + btnIndex}
@@ -358,9 +363,11 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
                       left,
                       height,
                       width,
+                      border,
                     }}
                     onClick={(evt) => dispatch(dropDownPageMsg({
                       tag: "button-clicked",
+                      index: curBtnIndex,
                       b: Box.fromDomRect((evt.target as HTMLElement).getBoundingClientRect())
                     }))}
                 >
@@ -375,9 +382,9 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
               <div className="drop-down-page">
                 {buttons}
               </div>
-              {page.ddModel
+              {page.indexAndModel
                   .map(ddModel =>
-                      <ViewDropDown renderer={() => <div className="my-drop-down">HELLO</div>} model={ddModel}/>
+                      <ViewDropDown renderer={() => <div className="my-drop-down">HELLO</div>} model={ddModel.b}/>
                   )
                   .withDefaultSupply(() => <></>)
               }
@@ -453,7 +460,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           const placementPage = model.page;
           // close placement test on ESC
           switch (msg.key) {
-            case 'Escape': {
+            case 'x': {
               return noCmd({
                 ...model,
                 page: initialMainPage()
@@ -474,7 +481,7 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
         }
         case "drop-down-page": {
           switch (msg.key) {
-            case 'Escape': {
+            case 'x': {
               return noCmd({
                 ...model,
                 page: initialMainPage()
@@ -523,32 +530,38 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       switch (pageMsg.tag) {
         case "button-clicked": {
           const ddMac: [DropDownModel, Cmd<DropDownMsg>] = dropDownOpen(Task.succeed(pageMsg.b));
-          return handleDropDownUpdate(model, page, ddMac);
+          return Tuple.fromNative(ddMac)
+              .mapFirst(ddModel => ({
+                ...model,
+                page: {
+                  ...page,
+                  indexAndModel: just(new Tuple(pageMsg.index, ddModel))
+                }
+              }))
+              .mapSecond(c => c.map(m => dropDownPageMsg({ tag: "dd-msg", m})))
+              .toNative();
         }
         case "dd-msg": {
-          return model.page.ddModel
-              .map(ddModel => {
-                const ddMac: [DropDownModel, Cmd<DropDownMsg>] = dropDownUpdate(pageMsg.m, ddModel);
-                return handleDropDownUpdate(model, page, ddMac);
+          return model.page.indexAndModel
+              .map(iam => {
+                const ddMac: [DropDownModel, Cmd<DropDownMsg>] = dropDownUpdate(pageMsg.m, iam.b);
+                const res: [Model, Cmd<Msg>] = Tuple.fromNative(ddMac)
+                    .mapFirst(ddModel => ({
+                      ...model,
+                      page: {
+                        ...page,
+                        indexAndModel: page.indexAndModel.map(t => new Tuple(t.a, ddModel))
+                      }
+                    }))
+                    .mapSecond(c => c.map(m => dropDownPageMsg({ tag: "dd-msg", m})))
+                    .toNative();
+                return res;
               })
               .withDefaultSupply(() => noCmd(model));
         }
       }
     }
   }
-}
-
-function handleDropDownUpdate(model: Model, page: DropDownPage, ddMac: [DropDownModel, Cmd<DropDownMsg>]): [Model, Cmd<Msg>] {
-  return Tuple.fromNative(ddMac)
-      .mapFirst(ddModel => ({
-        ...model,
-        page: {
-          ...page,
-          ddModel: just(ddModel)
-        }
-      }))
-      .mapSecond(c => c.map(m => dropDownPageMsg({ tag: "dd-msg", m})))
-      .toNative();
 }
 
 const documentEvents = new DocumentEvents();
