@@ -63,7 +63,8 @@ interface InitData {
 export type Msg =
   | { tag: 'got-init-data'; r: Result<Error, InitData> }
   | { tag: 'got-rendered-box'; r: Result<Error, Box> }
-  | { tag: 'key-down'; key: string };
+  | { tag: 'request-close' }
+  | { tag: 'noop' };
 
 function gotRenderedBox(r: Result<Error, Box>): Msg {
   return {
@@ -79,12 +80,13 @@ function gotInitData(r: Result<Error, InitData>): Msg {
   };
 }
 
-function keyDown(key: string): Msg {
-  return {
-    tag: 'key-down',
-    key,
-  };
-}
+const noop: Msg = {
+  tag: 'noop',
+};
+
+const requestClose: Msg = {
+  tag: 'request-close',
+};
 
 export type Renderer = () => React.ReactNode;
 
@@ -206,8 +208,11 @@ export function update(
         );
       }, handleError);
     }
-    case 'key-down': {
-      return withOut([model, Cmd.none()], msg.key === 'Escape');
+    case 'request-close': {
+      return withOut([model, Cmd.none()], true);
+    }
+    case 'noop': {
+      return withOut(noCmd(model));
     }
   }
 }
@@ -231,5 +236,20 @@ function byId(id: string): Task<Error, HTMLElement> {
 const documentEvents = new DocumentEvents();
 
 export function subscriptions(): Sub<Msg> {
-  return documentEvents.on('keydown', (e) => keyDown(e.key));
+  return Sub.batch([
+    documentEvents.on('keydown', (e) =>
+      e.key === 'Escape' ? requestClose : noop,
+    ),
+    documentEvents.on('mousedown', (evt) => {
+      let t: HTMLElement | null = evt.target as HTMLElement;
+      while (t) {
+        // move up and try to find if we are inside a tea-pop DD !
+        if (t.classList.contains('tm-drop-down')) {
+          return noop;
+        }
+        t = t.parentElement;
+      }
+      return requestClose;
+    }),
+  ]);
 }
