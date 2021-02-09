@@ -40,7 +40,8 @@ import {
   ViewDropDown,
   dropDownOpen,
   DropDownMsg,
-  dropDownUpdate
+  dropDownUpdate, dropDownSubscriptions,
+  DropDownRequestClose,
 } from 'tea-pop';
 
 export interface Model {
@@ -351,9 +352,9 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
             const curBtnIndex = btnIndex;
             const top = y + padding;
             const left = x + padding;
-            const border = page.indexAndModel
+            const backgroundColor = page.indexAndModel
                 .map(iam => iam.a)
-                .filter(i => i === curBtnIndex).map(() => "2px solid blue").withDefault("inherit");
+                .filter(i => i === curBtnIndex).map(() => "lightblue").withDefault("lightgray");
             buttons.push(
                 <button
                     key={"btn" + btnIndex}
@@ -363,7 +364,8 @@ function viewDropDownPage(dispatch: Dispatcher<Msg>, page: DropDownPage) {
                       left,
                       height,
                       width,
-                      border,
+                      border: "none",
+                      backgroundColor,
                     }}
                     onClick={(evt) => dispatch(dropDownPageMsg({
                       tag: "button-clicked",
@@ -544,8 +546,26 @@ export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
         case "dd-msg": {
           return model.page.indexAndModel
               .map(iam => {
-                const ddMac: [DropDownModel, Cmd<DropDownMsg>] = dropDownUpdate(pageMsg.m, iam.b);
-                const res: [Model, Cmd<Msg>] = Tuple.fromNative(ddMac)
+                const ddMac: [DropDownModel, Cmd<DropDownMsg>, DropDownRequestClose] = dropDownUpdate(pageMsg.m, iam.b);
+                if (ddMac[2]) {
+                  // close requested
+                  const newModel: Model = {
+                    ...model,
+                    page: {
+                      ...page,
+                      indexAndModel: nothing,
+                    }
+                  };
+                  return noCmd<Model, Msg>(newModel);
+                //   return noCmd({
+                //     ...model,
+                //     page: {
+                //       ...page,
+                //       indexAndModel: nothing,
+                //     }
+                //   });
+                }
+                const res: [Model, Cmd<Msg>] = Tuple.fromNative([ddMac[0], ddMac[1]])
                     .mapFirst(ddModel => ({
                       ...model,
                       page: {
@@ -588,7 +608,11 @@ export function subscriptions(model: Model): Sub<Msg> {
       ])
     }
     case "drop-down-page": {
-      return Sub.batch([keyDown, windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))]);
+      return Sub.batch([
+        dropDownSubscriptions().map(m => dropDownPageMsg({ tag: "dd-msg", m })),
+        keyDown,
+        windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
+      ]);
     }
   }
 }

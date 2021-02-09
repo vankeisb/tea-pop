@@ -27,11 +27,13 @@ import * as React from 'react';
 import { Box, Dim, getWindowDimensions, placeCombo } from '../common';
 import {
   Cmd,
+  DocumentEvents,
   just,
   Maybe,
   noCmd,
   nothing,
   Result,
+  Sub,
   Task,
   uuid,
 } from 'react-tea-cup';
@@ -60,7 +62,8 @@ interface InitData {
 
 export type Msg =
   | { tag: 'got-init-data'; r: Result<Error, InitData> }
-  | { tag: 'got-rendered-box'; r: Result<Error, Box> };
+  | { tag: 'got-rendered-box'; r: Result<Error, Box> }
+  | { tag: 'key-down'; key: string };
 
 function gotRenderedBox(r: Result<Error, Box>): Msg {
   return {
@@ -73,6 +76,13 @@ function gotInitData(r: Result<Error, InitData>): Msg {
   return {
     tag: 'got-init-data',
     r,
+  };
+}
+
+function keyDown(key: string): Msg {
+  return {
+    tag: 'key-down',
+    key,
   };
 }
 
@@ -144,44 +154,60 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
   }
 }
 
-export function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
+function handleError(error: Error): [Model, Cmd<Msg>, RequestClose] {
+  console.error(error);
+  return withOut(noCmd(errorModel(error)));
+}
+
+export type RequestClose = boolean;
+
+function withOut(
+  mac: [Model, Cmd<Msg>],
+  requestClose: RequestClose = false,
+): [Model, Cmd<Msg>, RequestClose] {
+  return [mac[0], mac[1], requestClose];
+}
+
+export function update(
+  msg: Msg,
+  model: Model,
+): [Model, Cmd<Msg>, RequestClose] {
   switch (msg.tag) {
     case 'got-init-data': {
       if (model.tag !== 'fresh') {
-        return noCmd(model);
+        return withOut(noCmd(model));
       }
-      return msg.r.match(
-        (initData) => {
-          const newModel: Model = {
-            tag: 'ready',
-            initData,
-            placed: nothing,
-          };
-          const cmd: Cmd<Msg> = Task.attempt(
-            getRenderedBox(initData.uuid),
-            gotRenderedBox,
-          );
-          return [newModel, cmd];
-        },
-        (error) => noCmd(errorModel(error)),
-      );
+      return msg.r.match((initData) => {
+        const newModel: Model = {
+          tag: 'ready',
+          initData,
+          placed: nothing,
+        };
+        const cmd: Cmd<Msg> = Task.attempt(
+          getRenderedBox(initData.uuid),
+          gotRenderedBox,
+        );
+        return [newModel, cmd, false];
+      }, handleError);
     }
     case 'got-rendered-box': {
-      return msg.r.match(
-        (renderedBox) => {
-          if (model.tag !== 'ready') {
-            return noCmd(model);
-          }
-          const { initData } = model;
-          const { windowDimensions, refBox } = initData;
-          const placedBox = placeCombo(windowDimensions, refBox, renderedBox.d);
-          return noCmd({
+      return msg.r.match((renderedBox) => {
+        if (model.tag !== 'ready') {
+          return withOut(noCmd(model));
+        }
+        const { initData } = model;
+        const { windowDimensions, refBox } = initData;
+        const placedBox = placeCombo(windowDimensions, refBox, renderedBox.d);
+        return withOut(
+          noCmd({
             ...model,
             placed: just(placedBox),
-          });
-        },
-        (error) => noCmd(errorModel(error)),
-      );
+          }),
+        );
+      }, handleError);
+    }
+    case 'key-down': {
+      return withOut([model, Cmd.none()], msg.key === 'Escape');
     }
   }
 }
@@ -200,4 +226,10 @@ function byId(id: string): Task<Error, HTMLElement> {
     }
     return e;
   });
+}
+
+const documentEvents = new DocumentEvents();
+
+export function subscriptions(): Sub<Msg> {
+  return documentEvents.on('keydown', (e) => keyDown(e.key));
 }
