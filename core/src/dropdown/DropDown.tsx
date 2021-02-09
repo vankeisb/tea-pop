@@ -24,7 +24,7 @@
  */
 
 import * as React from 'react';
-import { box, Box, Dim, Pos, getWindowDimensions, placeCombo } from '../common';
+import { Box, Dim, getWindowDimensions, placeCombo } from '../common';
 import {
   Cmd,
   just,
