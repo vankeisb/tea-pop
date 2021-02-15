@@ -124,6 +124,7 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
           const { p, d } = placedBox;
           return (
             <div
+              id={model.initData.uuid}
               className="tm-drop-down"
               style={{
                 position: 'absolute',
@@ -139,8 +140,9 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
         })
         .withDefaultSupply(() => {
           return (
-            <span
+            <div
               id={model.initData.uuid}
+              className="tm-drop-down"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -149,7 +151,7 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
               }}
             >
               {renderer()}
-            </span>
+            </div>
           );
         });
     }
