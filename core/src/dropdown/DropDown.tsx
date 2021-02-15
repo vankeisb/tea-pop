@@ -125,7 +125,7 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
           return (
             <div
               id={model.initData.uuid}
-              className="tm-drop-down tm-placing"
+              className="tm-drop-down tm-placed"
               style={{
                 position: 'absolute',
                 top: p.y,
@@ -142,7 +142,7 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
           return (
             <div
               id={model.initData.uuid}
-              className="tm-drop-down tm-placed"
+              className="tm-drop-down tm-placing"
               style={{
                 position: 'absolute',
                 top: 0,
