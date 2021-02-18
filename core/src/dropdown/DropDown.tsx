@@ -113,7 +113,19 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
   const { renderer, model } = props;
   switch (model.tag) {
     case 'fresh': {
-      return <></>;
+      return (
+        <div
+          className="tm-drop-down tm-placing"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            visibility: 'hidden',
+          }}
+        >
+          {renderer()}
+        </div>
+      );
     }
     case 'error': {
       return <></>; // TODO ?
