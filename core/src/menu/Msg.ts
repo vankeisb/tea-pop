@@ -32,7 +32,7 @@ export type Msg<T> =
   | { tag: 'got-uuid'; uuid: string }
   | { tag: 'got-menu-box'; r: Result<Error, Box> }
   | { tag: 'key-down'; key: string }
-  | { tag: 'mouse-enter'; item: MenuItem<T>; itemIndex: number }
+  | { tag: 'mouse-move'; item: MenuItem<T>; itemIndex: number }
   | { tag: 'mouse-leave'; item: MenuItem<T>; itemIndex: number }
   | {
       tag: 'got-item-box';
