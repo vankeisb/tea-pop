@@ -108,17 +108,17 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
         TeaMenu menu1 = new TeaMenu(findMenus().at(0));
         menu1
                 .assertItems(
+                        "Yalla",
                         "Copy",
                         "Cut",
                         "Paste",
-                        "Yalla",
                         "I am a bit longer"
                 )
-                .assertSelectedItem(0, 5)
-                .assertItemHasSubMenu("Copy", false)
+                .assertNoSelectedItems()
                 .assertItemHasSubMenu("Yalla", true)
+                .assertItemHasSubMenu("Copy", false)
                 .mouseOverItem("Paste")
-                .assertSelectedItem(2, 5)
+                .assertSelectedItem(3, 5)
                 .mouseOverItem("Yalla");
 
         TeaMenu menu2 = new TeaMenu(findMenus().at(1));
@@ -182,52 +182,31 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
         fDemo().eval(contextClick); // no context menu key in Selenium ??
         findMenus().count(1).eval();
 
+        // arrow down
         TeaMenu menu1 = new TeaMenu(findMenus().at(0));
-        menu1.assertSelectedItem(0, 5);
-        sendKeys(Keys.ARROW_DOWN);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(1, 5);
-        sendKeys(Keys.ARROW_DOWN);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(2, 5);
-        sendKeys(Keys.ARROW_DOWN);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(3, 5);
-        sendKeys(Keys.ARROW_DOWN);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(4, 5);
+        menu1.assertNoSelectedItems();
+        for (int i = 0; i < 5; i++) {
+            sendKeys(Keys.ARROW_DOWN);
+            findMenus().count(1).eval();
+            menu1.assertSelectedItem(i, 5);
+        }
         // cycle !
-        sendKeys(Keys.ARROW_DOWN);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(0, 5);
-        sendKeys(Keys.ARROW_DOWN);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(1, 5);
+        for (int i = 0; i < 2; i++) {
+            sendKeys(Keys.ARROW_DOWN);
+            findMenus().count(1).eval();
+            menu1.assertSelectedItem(i, 5);
+        }
+
         // now up
         sendKeys(Keys.ARROW_UP);
         findMenus().count(1).eval();
         menu1.assertSelectedItem(0, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(4, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(3, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(2, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(1, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(0, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(4, 5);
-        sendKeys(Keys.ARROW_UP);
-        findMenus().count(1).eval();
-        menu1.assertSelectedItem(3, 5);
+
+        for (int i = 4; i >= 0 ; i-- ) {
+            sendKeys(Keys.ARROW_UP);
+            findMenus().count(1).eval();
+            menu1.assertSelectedItem(i, 5);
+        }
 
         // expand to the right
         sendKeys(Keys.ARROW_RIGHT);
@@ -302,15 +281,15 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
         // collapse 2nd menu
         sendKeys(Keys.ARROW_LEFT);
         findMenus().count(1).eval();
-        menu1.assertSelectedItem(3, 5);
+        menu1.assertSelectedItem(0, 5);
         sendKeys(Keys.ARROW_UP);
         findMenus().count(1).eval();
-        menu1.assertSelectedItem(2, 5);
+        menu1.assertSelectedItem(4, 5);
 
         // last arrow left has no effect
         sendKeys(Keys.ARROW_LEFT);
         findMenus().count(1).eval();
-        menu1.assertSelectedItem(2, 5);
+        menu1.assertSelectedItem(4, 5);
 
         // and close with ESC
         sendKeys(Keys.ESCAPE);
@@ -322,15 +301,19 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
         assertNoMenu();
         fDemo().eval(contextClick); // no context menu key in Selenium ??
         findMenus().count(1).eval();
-
         TeaMenu menu = new TeaMenu(findMenus().at(0));
+
+        // menu items with no children should be deselected on mouse leave
         menu.mouseOverItem("Copy");
-        menu.assertSelectedItem(0, 5);
-
+        menu.assertSelectedItem(1, 5);
         new Actions(getWebDriver()).moveByOffset(-100, 0).perform();
-
         menu.assertNoSelectedItems();
 
+        // not if a sub-menu is open !
+        menu.mouseOverItem("Yalla");
+        menu.assertSelectedItem(0, 5);
+        new Actions(getWebDriver()).moveByOffset(-100, 0).perform();
+        menu.assertSelectedItem(0, 5);
     }
 
     private void sendKeys(CharSequence... keys) {
