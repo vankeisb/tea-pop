@@ -215,11 +215,12 @@ const mySubMenu1: Menu<string> = menu([
 ])
 
 const myMenu: Menu<string> = menu([
+  item("Yalla", mySubMenu1),
+  separator,
   item("Copy"),
   item("Cut"),
   item("Paste"),
   separator,
-  item("Yalla", mySubMenu1),
   item("I am a bit longer")
 ]);
 

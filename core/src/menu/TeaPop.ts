@@ -174,7 +174,10 @@ export function update<T>(
           return withOut(noCmd(model));
       }
     }
-    case 'mouse-enter': {
+    case 'mouse-move': {
+      if (model.menu.isSelected(msg.item)) {
+        return withOut(noCmd(model));
+      }
       const newModel = { ...model, subMenuCounter: model.subMenuCounter + 1 };
       if (model.navigatedWithKeyboard) {
         return withOut(noCmd(keyboardNavigated(newModel, false)));
