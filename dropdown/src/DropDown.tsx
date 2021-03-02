@@ -24,7 +24,7 @@
  */
 
 import * as React from 'react';
-import { Box, Dim, getWindowDimensions, placeCombo } from 'tea-pop-core';
+import { Box, Dim, placeCombo, windowDimensions } from 'tea-pop-core';
 import {
   Cmd,
   DocumentEvents,
@@ -94,6 +94,9 @@ export function open(getRefBox: Task<Error, Box>): [Model, Cmd<Msg>] {
   const model: Model = {
     tag: 'fresh',
   };
+  const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
+    windowDimensions(),
+  );
   const getInitData: Task<Error, InitData> = getRefBox.andThen((refBox) =>
     getWindowDimensions.andThen((windowDimensions) =>
       uuid().map((uuid) => ({ refBox, windowDimensions, uuid })),

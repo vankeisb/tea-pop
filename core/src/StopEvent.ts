@@ -23,9 +23,14 @@
  *
  */
 
-import { EventHandler } from 'react';
+interface Evt {
+  preventDefault(): void;
+  stopPropagation(): void;
+}
 
-export const stopEvent: EventHandler<any> = (e) => {
+type EventHandler = (e: Evt) => void;
+
+export const stopEvent: EventHandler = (e) => {
   e.preventDefault();
   e.stopPropagation();
 };

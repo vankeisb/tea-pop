@@ -18,18 +18,13 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALIxNGS IN THE
  * SOFTWARE.
  *
  */
 
 import { dim, Dim } from './Dim';
-import { Task } from 'react-tea-cup';
 
 export function windowDimensions(): Dim {
   return dim(window.innerWidth, window.innerHeight);
 }
-
-export const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
-  windowDimensions(),
-);

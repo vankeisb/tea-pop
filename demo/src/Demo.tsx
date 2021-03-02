@@ -13,7 +13,7 @@ import {
   WindowEvents
 } from "react-tea-cup";
 import * as React from 'react';
-import {box, Box, dim, Dim, getWindowDimensions, place, placeCombo, pos, Pos, stopEvent} from "tea-pop-core";
+import {box, Box, dim, Dim, place, placeCombo, pos, Pos, stopEvent, windowDimensions} from "tea-pop-core";
 import {
   DropDownModel,
   DropDownMsg,
@@ -86,6 +86,9 @@ interface DropDownPage {
 }
 
 function openDropDownPage(model: Model): [Model, Cmd<Msg>] {
+  const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
+      windowDimensions(),
+  );
   return Tuple.t2n({
     ...model,
     page: {
