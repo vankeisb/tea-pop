@@ -47,7 +47,7 @@
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <systemPropertyVariables>
                         <webdriver.chrome.driver>${chrome.driver}</webdriver.chrome.driver>
-                        <teapop.webapp.dir>${project.build.directory}/demo/build</teapop.webapp.dir>
+                        <teapop.webapp.dir>${project.build.directory}/demo</teapop.webapp.dir>
                         <webtests.browser>chrome</webtests.browser>
                         <webtests.findr.verbose>true</webtests.findr.verbose>
                         <webtests.video.dir>${project.build.directory}/videos</webtests.video.dir>
