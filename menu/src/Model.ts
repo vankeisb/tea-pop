@@ -25,7 +25,7 @@
 
 import { Menu } from './Menu';
 import { Maybe, nothing } from 'react-tea-cup';
-import { Box, Dim } from '../common';
+import { Box, Dim } from 'tea-pop-core';
 
 export interface Model<T> {
   readonly uuid: Maybe<string>;

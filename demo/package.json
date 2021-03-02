@@ -11,7 +11,9 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "3.4.3",
-    "tea-pop": "^2.0.0"
+    "tea-pop-core": "^3.0.0",
+    "tea-pop-dropdown": "^3.0.0",
+    "tea-pop-menu": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -21,7 +23,6 @@
     "gh-pages": "gh-pages -d build -m 'demo [ci skip]'"
   },
   "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",

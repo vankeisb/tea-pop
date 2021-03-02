@@ -23,7 +23,7 @@
  *
  */
 
-import { Dim, Box } from '../common';
+import { Dim, Box } from 'tea-pop-core';
 import { Result } from 'react-tea-cup';
 import { MenuItem } from './Menu';
 

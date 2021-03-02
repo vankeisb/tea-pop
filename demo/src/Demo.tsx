@@ -13,36 +13,16 @@ import {
   WindowEvents
 } from "react-tea-cup";
 import * as React from 'react';
+import {box, Box, dim, Dim, place, placeCombo, pos, Pos, stopEvent, windowDimensions} from "tea-pop-core";
 import {
-  box,
-  defaultItemRenderer,
-  dim,
-  Dim,
-  item,
-  Menu,
-  menu,
-  place,
-  placeCombo,
-  pos,
-  Pos,
-  separator,
-  ViewMenu,
-  Box,
-  MenuModel,
-  MenuMsg,
-  getWindowDimensions,
-  stopEvent,
-  menuUpdate,
-  MenuOutMsg,
-  menuSubscriptions,
-  menuOpen,
   DropDownModel,
-  ViewDropDown,
-  dropDownOpen,
   DropDownMsg,
-  dropDownUpdate, dropDownSubscriptions,
-  DropDownRequestClose,
-} from 'tea-pop';
+  dropDownOpen,
+  DropDownRequestClose, dropDownSubscriptions,
+  dropDownUpdate,
+  ViewDropDown
+} from "tea-pop-dropdown";
+import {defaultItemRenderer, item, menu, Menu, separator, ViewMenu, Model as MenuModel, Msg as MenuMsg, update as menuUpdate, OutMsg as MenuOutMsg, open as menuOpen, subscriptions as menuSubscriptions } from "tea-pop-menu";
 
 export interface Model {
   // keep track of mouse position
@@ -106,6 +86,9 @@ interface DropDownPage {
 }
 
 function openDropDownPage(model: Model): [Model, Cmd<Msg>] {
+  const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
+      windowDimensions(),
+  );
   return Tuple.t2n({
     ...model,
     page: {

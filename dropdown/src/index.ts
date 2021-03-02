@@ -23,13 +23,12 @@
  *
  */
 
-import { dim, Dim } from './Dim';
-import { Task } from 'react-tea-cup';
-
-export function windowDimensions(): Dim {
-  return dim(window.innerWidth, window.innerHeight);
-}
-
-export const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
-  windowDimensions(),
-);
+export {
+  Model as DropDownModel,
+  Msg as DropDownMsg,
+  open as dropDownOpen,
+  update as dropDownUpdate,
+  subscriptions as dropDownSubscriptions,
+  ViewDropDown,
+  RequestClose as DropDownRequestClose,
+} from './DropDown';
