@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Cmd, DevTools, Dispatcher, map, noCmd, ProgramWithNav, Sub, Tuple, WindowEvents} from "react-tea-cup";
+import {Cmd, DevTools, Dispatcher, map, noCmd, ProgramWithNav, Sub, Tuple} from "react-tea-cup";
 import {homeModel, Model} from "./Model";
 import {dropDownPageMsg, menuPageMsg, Msg, placementPageMsg} from "./Msg";
 import {router, routeToUrl} from "./routes";
@@ -11,7 +11,6 @@ import {viewDropDownPage} from "./dropdown-page/ViewDropDownPage";
 import {dropDownPageInit, dropDownPageSubs, dropDownPageUpdate} from "./dropdown-page/Update";
 import {placementPageInit, placementPageSubs, placementPageUpdate} from "./placement-page/Update";
 import {viewPlacementPage} from "./placement-page/ViewPlacementPage";
-import {dim} from "tea-pop-core";
 
 function init(l: Location): [Model, Cmd<Msg>] {
   return router.parseLocation(l)
