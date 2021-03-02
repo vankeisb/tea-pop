@@ -1,4 +1,5 @@
-import {route0, route1, Router, str} from "react-tea-cup";
+import {Cmd, newUrl, route0, route1, Router, str, Task} from "react-tea-cup";
+import {Msg, noop} from "./Msg";
 
 export type Route = 'home' | 'menu' | 'dropdown' | 'placement'
 
@@ -17,4 +18,11 @@ export function routeToUrl(route: Route): string {
     default:
       return "/" + route;
   }
+}
+
+export function navigateTo(route: Route): Cmd<Msg> {
+  return Task.perform(
+    newUrl(routeToUrl(route)),
+      () => noop
+  );
 }

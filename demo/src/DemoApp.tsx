@@ -1,8 +1,8 @@
 import * as React from "react";
-import {Cmd, DevTools, Dispatcher, map, noCmd, ProgramWithNav, Sub, Tuple} from "react-tea-cup";
+import {Cmd, DevTools, Dispatcher, map, newUrl, noCmd, ProgramWithNav, Sub, Task, Tuple} from "react-tea-cup";
 import {homeModel, Model} from "./Model";
-import {dropDownPageMsg, menuPageMsg, Msg, placementPageMsg} from "./Msg";
-import {router, routeToUrl} from "./routes";
+import {dropDownPageMsg, menuPageMsg, Msg, navigate, noop, placementPageMsg} from "./Msg";
+import {Route, router, routeToUrl} from "./routes";
 import {viewMenuPage} from "./menu-page/ViewMenuPage";
 import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
 
@@ -53,6 +53,15 @@ function initHome(): [Model, Cmd<Msg>] {
   return noCmd(homeModel());
 }
 
+function link(dispatch: Dispatcher<Msg>, route: Route, text: string) {
+  return <a href={'#'} onClick={e => {
+    e.preventDefault();
+    dispatch(navigate(route));
+  }}>
+    {text}
+  </a>
+}
+
 function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
   const { page } = model;
   switch (page.tag) {
@@ -62,13 +71,13 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
             <h1>tea-pop demo app</h1>
             <ul>
               <li>
-                <a href={routeToUrl('menu')}>Context menu</a>
+                {link(dispatch, 'menu', "Context menu")}
               </li>
               <li>
-                <a href={routeToUrl('dropdown')}>Drop-down</a>
+                {link(dispatch, 'dropdown', "Drop-down")}
               </li>
               <li>
-                <a href={routeToUrl('placement')}>Live placement</a>
+                {link(dispatch, 'placement', "Live placement")}
               </li>
             </ul>
           </>
@@ -127,6 +136,12 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           }))
           .mapSecond(c => c.map(placementPageMsg))
           .toNative();
+    }
+    case "navigate": {
+      return Tuple.t2n(model, Task.perform(newUrl(routeToUrl(msg.route)), () => noop));
+    }
+    case "noop": {
+      return noCmd(model);
     }
   }
 }
