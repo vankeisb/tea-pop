@@ -1,16 +1,13 @@
-import {MenuPage, myMenu} from "./MenuPage";
-import {menuMsg, MenuPageMsg, onKeyDown, onMouseMove} from "./MenuPageMsg";
+import {MenuPage, myMenu, MyMenuModel} from "./MenuPage";
+import {menuMsg, MenuPageMsg, MyMenuMsg, onKeyDown, onMouseMove} from "./MenuPageMsg";
 import {Cmd, DocumentEvents, just, Maybe, noCmd, nothing, Sub, Tuple, WindowEvents} from "react-tea-cup";
 import {
   open as menuOpen,
-  update as menuUpdate,
-  subscriptions as menuSubs,
   OutMsg as MenuOutMsg,
-  subscriptions as menuSubscriptions
+  subscriptions as menuSubscriptions,
+  update as menuUpdate
 } from "tea-pop-menu";
 import {box, Dim, pos, Pos} from "tea-pop-core";
-import {Msg, MyMenuModel, MyMenuMsg} from "../Demo";
-import {menuPageMsg} from "../Msg";
 
 
 export function menuPageInit(): [MenuPage, Cmd<MenuPageMsg>] {

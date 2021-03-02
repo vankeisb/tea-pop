@@ -1,5 +1,5 @@
 // just to avoid too much typing
-import {item, menu, Menu, Model as MenuModel, Msg as MenuMsg, separator} from "tea-pop-menu";
+import {item, menu, Menu, Model as MenuModel, separator} from "tea-pop-menu";
 import {Maybe} from "react-tea-cup";
 import {Pos} from "tea-pop-core";
 

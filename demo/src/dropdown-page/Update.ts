@@ -10,8 +10,6 @@ import {
   dropDownUpdate
 } from "tea-pop-dropdown";
 import {Dim, dim, windowDimensions} from "tea-pop-core";
-import {dropDownPageMsg} from "../Msg";
-import {Model, Msg} from "../Demo";
 
 export function dropDownPageInit(): [DropDownPage, Cmd<DropDownPageMsg>] {
   const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>
