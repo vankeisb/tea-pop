@@ -73,7 +73,7 @@ const windowEvents = new WindowEvents();
 export function dropDownPageSubs(): Sub<DropDownPageMsg> {
   return Sub.batch([
     dropDownSubscriptions().map(ddMsg),
-    windowEvents.on('resize', e => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
+    windowEvents.on('resize', () => gotWindowDimensions(dim(window.innerWidth, window.innerHeight)))
   ]);
 }
 

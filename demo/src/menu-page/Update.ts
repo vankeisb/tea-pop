@@ -1,6 +1,6 @@
 import {MenuPage, myMenu, MyMenuModel} from "./MenuPage";
 import {menuMsg, MenuPageMsg, MyMenuMsg, onKeyDown, onMouseMove} from "./MenuPageMsg";
-import {Cmd, DocumentEvents, just, Maybe, noCmd, nothing, Sub, Tuple, WindowEvents} from "react-tea-cup";
+import {Cmd, DocumentEvents, just, Maybe, noCmd, nothing, Sub, Tuple} from "react-tea-cup";
 import {
   open as menuOpen,
   OutMsg as MenuOutMsg,
