@@ -70,7 +70,7 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
                 retries--;
             }
         } else {
-            getWebDriver().get("http://localhost:3000");
+            getWebDriver().get("http://localhost:3000/menu");
         }
         assertNoMenu();
     }

@@ -68,7 +68,6 @@ function openPlacementPage(model: Model): [Model, Cmd<Msg>] {
         page: {
           tag: "placement-page",
           viewportDim: nothing,
-          refDim: dim(100),
           mode: "menu",
         }
       },

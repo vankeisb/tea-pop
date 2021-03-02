@@ -1,7 +1,7 @@
 import * as React from "react";
-import {Cmd, DevTools, Dispatcher, map, noCmd, ProgramWithNav, Sub, Tuple} from "react-tea-cup";
+import {Cmd, DevTools, Dispatcher, map, noCmd, ProgramWithNav, Sub, Tuple, WindowEvents} from "react-tea-cup";
 import {homeModel, Model} from "./Model";
-import {dropDownPageMsg, menuPageMsg, Msg} from "./Msg";
+import {dropDownPageMsg, menuPageMsg, Msg, placementPageMsg} from "./Msg";
 import {router, routeToUrl} from "./routes";
 import {viewMenuPage} from "./menu-page/ViewMenuPage";
 import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
@@ -9,6 +9,9 @@ import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
 import './App.scss';
 import {viewDropDownPage} from "./dropdown-page/ViewDropDownPage";
 import {dropDownPageInit, dropDownPageSubs, dropDownPageUpdate} from "./dropdown-page/Update";
+import {placementPageInit, placementPageSubs, placementPageUpdate} from "./placement-page/Update";
+import {viewPlacementPage} from "./placement-page/ViewPlacementPage";
+import {dim} from "tea-pop-core";
 
 function init(l: Location): [Model, Cmd<Msg>] {
   return router.parseLocation(l)
@@ -34,7 +37,12 @@ function init(l: Location): [Model, Cmd<Msg>] {
                 .toNative();
           }
           case "placement": {
-            return initHome();
+            return Tuple.fromNative(placementPageInit())
+                .mapFirst(page => ({
+                  page
+                }))
+                .mapSecond(c => c.map(placementPageMsg))
+                .toNative();
           }
         }
       })
@@ -52,13 +60,15 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
       return (
           <>
             <h1>tea-pop demo app</h1>
-            <p>Bla bla bla</p>
             <ul>
               <li>
                 <a href={routeToUrl('menu')}>Context menu</a>
               </li>
               <li>
                 <a href={routeToUrl('dropdown')}>Drop-down</a>
+              </li>
+              <li>
+                <a href={routeToUrl('placement')}>Live placement</a>
               </li>
             </ul>
           </>
@@ -67,8 +77,13 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
     case "menu": {
       return viewMenuPage(map(dispatch, menuPageMsg), page);
     }
-    case "drop-down-page":
+    case "drop-down-page": {
       return viewDropDownPage(map(dispatch, dropDownPageMsg), page);
+    }
+    case "placement-page": {
+      return viewPlacementPage(map(dispatch, placementPageMsg), page);
+    }
+
   }
 }
 
@@ -101,6 +116,18 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           .mapSecond(c => c.map(dropDownPageMsg))
           .toNative();
     }
+    case "placement-page-msg": {
+      const { page } = model;
+      if (page.tag !== "placement-page") {
+        return noCmd(model);
+      }
+      return Tuple.fromNative(placementPageUpdate(msg.msg, page))
+          .mapFirst(page => ({
+            page
+          }))
+          .mapSecond(c => c.map(placementPageMsg))
+          .toNative();
+    }
   }
 }
 
@@ -112,6 +139,9 @@ function subscriptions(model: Model): Sub<Msg> {
     }
     case "drop-down-page": {
       return dropDownPageSubs().map(dropDownPageMsg);
+    }
+    case "placement-page": {
+      return placementPageSubs().map(placementPageMsg);
     }
   }
   return Sub.none();
