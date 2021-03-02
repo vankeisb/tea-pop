@@ -4,18 +4,17 @@ import {menuPageMsg, Msg} from "../Msg";
 import {MenuPage} from "./MenuPage";
 import {stopEvent} from "tea-pop-core";
 import {defaultItemRenderer, ViewMenu} from "tea-pop-menu";
-import {menuMsg} from "./MenuPageMsg";
+import {menuMsg, MenuPageMsg} from "./MenuPageMsg";
 
 const MyRenderer = defaultItemRenderer((s: string) => <span>{s}</span>);
 
-export function viewMenuPage(dispatch: Dispatcher<Msg>, page: MenuPage) {
-  const d = map(dispatch, menuPageMsg);
+export function viewMenuPage(dispatch: Dispatcher<MenuPageMsg>, page: MenuPage) {
   return (
       <>
         <div
             className="demo"
             onContextMenu={stopEvent}
-            onMouseDown={e => d({tag: 'mouse-down', button: e.button})}
+            onMouseDown={e => dispatch({tag: 'mouse-down', button: e.button})}
         >
           {page.menuModel
               .map(() => <span>Menu is open</span>)
@@ -34,7 +33,7 @@ export function viewMenuPage(dispatch: Dispatcher<Msg>, page: MenuPage) {
             .map(menuModel =>
                 <ViewMenu
                     model={menuModel}
-                    dispatch={map(dispatch, m => menuPageMsg(menuMsg(m)))}
+                    dispatch={map(dispatch, menuMsg)}
                     renderer={MyRenderer}
                 />
             )

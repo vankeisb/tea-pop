@@ -1,12 +1,14 @@
 import * as React from "react";
-import {Cmd, DevTools, Dispatcher, noCmd, ProgramWithNav, Sub, Tuple} from "react-tea-cup";
+import {Cmd, DevTools, Dispatcher, map, noCmd, ProgramWithNav, Sub, Tuple} from "react-tea-cup";
 import {homeModel, Model} from "./Model";
-import {menuPageMsg, Msg} from "./Msg";
+import {dropDownPageMsg, menuPageMsg, Msg} from "./Msg";
 import {router, routeToUrl} from "./routes";
 import {viewMenuPage} from "./menu-page/ViewMenuPage";
 import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
 
 import './App.scss';
+import {viewDropDownPage} from "./dropdown-page/ViewDropDownPage";
+import {dropDownPageInit, dropDownPageSubs, dropDownPageUpdate} from "./dropdown-page/Update";
 
 function init(l: Location): [Model, Cmd<Msg>] {
   return router.parseLocation(l)
@@ -24,7 +26,12 @@ function init(l: Location): [Model, Cmd<Msg>] {
                 .toNative();
           }
           case "dropdown": {
-            return initHome();
+            return Tuple.fromNative(dropDownPageInit())
+                .mapFirst(page => ({
+                  page
+                }))
+                .mapSecond(c => c.map(dropDownPageMsg))
+                .toNative();
           }
           case "placement": {
             return initHome();
@@ -48,18 +55,20 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
             <p>Bla bla bla</p>
             <ul>
               <li>
-                <a href={routeToUrl('home')}>Home</a>
+                <a href={routeToUrl('menu')}>Context menu</a>
               </li>
               <li>
-                <a href={routeToUrl('menu')}>Context menu</a>
+                <a href={routeToUrl('dropdown')}>Drop-down</a>
               </li>
             </ul>
           </>
       )
     }
     case "menu": {
-      return viewMenuPage(dispatch, page);
+      return viewMenuPage(map(dispatch, menuPageMsg), page);
     }
+    case "drop-down-page":
+      return viewDropDownPage(map(dispatch, dropDownPageMsg), page);
   }
 }
 
@@ -71,7 +80,6 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
     case "menu-page-msg": {
       const { page } = model;
       if (page.tag !== "menu") {
-        debugger;
         return noCmd(model);
       }
       return Tuple.fromNative(menuPageUpdate(msg.msg, page))
@@ -81,8 +89,19 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
           .mapSecond(c => c.map(menuPageMsg))
           .toNative();
     }
+    case "dd-page-msg": {
+      const { page } = model;
+      if (page.tag !== "drop-down-page") {
+        return noCmd(model);
+      }
+      return Tuple.fromNative(dropDownPageUpdate(msg.msg, page))
+          .mapFirst(page => ({
+            page
+          }))
+          .mapSecond(c => c.map(dropDownPageMsg))
+          .toNative();
+    }
   }
-  return noCmd(model);
 }
 
 function subscriptions(model: Model): Sub<Msg> {
@@ -90,6 +109,9 @@ function subscriptions(model: Model): Sub<Msg> {
   switch (page.tag) {
     case "menu": {
       return menuPageSubs(page).map(menuPageMsg);
+    }
+    case "drop-down-page": {
+      return dropDownPageSubs().map(dropDownPageMsg);
     }
   }
   return Sub.none();
