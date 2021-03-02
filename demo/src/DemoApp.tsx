@@ -14,6 +14,7 @@ import {viewPlacementPage} from "./placement-page/ViewPlacementPage";
 
 function init(l: Location): [Model, Cmd<Msg>] {
   return router.parseLocation(l)
+      // eslint-disable-next-line array-callback-return
       .map(route => {
         switch (route) {
           case "home": {

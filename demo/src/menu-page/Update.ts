@@ -73,7 +73,6 @@ export function menuPageUpdate(msg: MenuPageMsg, menuPage: MenuPage): [MenuPage,
 }
 
 const documentEvents = new DocumentEvents();
-const windowEvents = new WindowEvents();
 
 export function menuPageSubs(page: MenuPage): Sub<MenuPageMsg> {
   // the menu's subs
