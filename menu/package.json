@@ -1,5 +1,5 @@
 {
-  "name": "tea-pop-core",
+  "name": "tea-pop-menu",
   "version": "3.0.0",
   "description": "Popup menu for react-tea-cup",
   "author": "Rémi Van Keisbelck <remi@rvkb.com>",
@@ -20,6 +20,7 @@
     "lint": "eslint '**/*.{js,ts}'"
   },
   "dependencies": {
+    "tea-pop-core": "^3.0.0",
     "react-tea-cup": "^1.5.2",
     "react": "^16.7.0"
   },

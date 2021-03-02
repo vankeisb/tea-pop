@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Rémi Van Keisbelck
+ * Copyright (c) 2019 Rémi Van Keisbelck
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,48 +23,9 @@
  *
  */
 
-import { Menu } from './Menu';
-import { Maybe, nothing } from 'react-tea-cup';
-import { Box, Dim } from '../common';
-
-export interface Model<T> {
-  readonly uuid: Maybe<string>;
-  readonly windowSize: Maybe<Dim>;
-  readonly menu: Menu<T>;
-  readonly state: MenuState;
-  readonly error: Maybe<Error>;
-  readonly child: Maybe<Model<T>>;
-  readonly navigatedWithKeyboard: boolean;
-  readonly subMenuCounter: number;
-}
-
-export function initialModel<T>(menu: Menu<T>, refBox: Box): Model<T> {
-  return {
-    uuid: nothing,
-    windowSize: nothing,
-    menu,
-    state: menuStatePlacing(refBox),
-    error: nothing,
-    child: nothing,
-    navigatedWithKeyboard: false,
-    subMenuCounter: 0,
-  };
-}
-
-export type MenuState =
-  | { tag: 'placing'; refBox: Box }
-  | { tag: 'open'; box: Box };
-
-export function menuStatePlacing(refBox: Box): MenuState {
-  return {
-    tag: 'placing',
-    refBox,
-  };
-}
-
-export function keyboardNavigated<T>(
-  model: Model<T>,
-  navigatedWithKeyboard = true,
-): Model<T> {
-  return { ...model, navigatedWithKeyboard };
-}
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testPathIgnorePatterns: ['node_modules'],
+  roots: ['<rootDir>/src/'],
+};

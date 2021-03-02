@@ -23,9 +23,48 @@
  *
  */
 
-export * from './StopEvent';
-export * from './Pos';
-export * from './Dim';
-export * from './Box';
-export * from './Popover';
-export * from './WindowUtils';
+import { Menu } from './Menu';
+import { Maybe, nothing } from 'react-tea-cup';
+import { Box, Dim } from 'tea-pop-core';
+
+export interface Model<T> {
+  readonly uuid: Maybe<string>;
+  readonly windowSize: Maybe<Dim>;
+  readonly menu: Menu<T>;
+  readonly state: MenuState;
+  readonly error: Maybe<Error>;
+  readonly child: Maybe<Model<T>>;
+  readonly navigatedWithKeyboard: boolean;
+  readonly subMenuCounter: number;
+}
+
+export function initialModel<T>(menu: Menu<T>, refBox: Box): Model<T> {
+  return {
+    uuid: nothing,
+    windowSize: nothing,
+    menu,
+    state: menuStatePlacing(refBox),
+    error: nothing,
+    child: nothing,
+    navigatedWithKeyboard: false,
+    subMenuCounter: 0,
+  };
+}
+
+export type MenuState =
+  | { tag: 'placing'; refBox: Box }
+  | { tag: 'open'; box: Box };
+
+export function menuStatePlacing(refBox: Box): MenuState {
+  return {
+    tag: 'placing',
+    refBox,
+  };
+}
+
+export function keyboardNavigated<T>(
+  model: Model<T>,
+  navigatedWithKeyboard = true,
+): Model<T> {
+  return { ...model, navigatedWithKeyboard };
+}

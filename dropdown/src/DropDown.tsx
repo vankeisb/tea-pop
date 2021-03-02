@@ -24,7 +24,7 @@
  */
 
 import * as React from 'react';
-import { Box, Dim, getWindowDimensions, placeCombo } from '../common';
+import { Box, Dim, getWindowDimensions, placeCombo } from 'tea-pop-core';
 import {
   Cmd,
   DocumentEvents,

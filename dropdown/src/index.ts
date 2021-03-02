@@ -23,4 +23,12 @@
  *
  */
 
-export * from './DropDown';
+export {
+  Model as DropDownModel,
+  Msg as DropDownMsg,
+  open as dropDownOpen,
+  update as dropDownUpdate,
+  subscriptions as dropDownSubscriptions,
+  ViewDropDown,
+  RequestClose as DropDownRequestClose,
+} from './DropDown';

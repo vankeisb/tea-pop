@@ -3,6 +3,8 @@
     "private": true,
     "workspaces": [
         "core",
+        "menu",
+        "dropdown",
         "demo"
     ],
     "devDependencies": {

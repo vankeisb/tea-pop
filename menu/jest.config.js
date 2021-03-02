@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Rémi Van Keisbelck
+ * Copyright (c) 2019 Rémi Van Keisbelck
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,9 @@
  *
  */
 
-export * from './StopEvent';
-export * from './Pos';
-export * from './Dim';
-export * from './Box';
-export * from './Popover';
-export * from './WindowUtils';
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testPathIgnorePatterns: ['node_modules'],
+  roots: ['<rootDir>/src/'],
+};
