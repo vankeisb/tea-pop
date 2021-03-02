@@ -54,6 +54,7 @@ function initHome(): [Model, Cmd<Msg>] {
 }
 
 function link(dispatch: Dispatcher<Msg>, route: Route, text: string) {
+  // eslint-disable-next-line jsx-a11y/anchor-is-valid
   return <a href={'#'} onClick={e => {
     e.preventDefault();
     dispatch(navigate(route));
