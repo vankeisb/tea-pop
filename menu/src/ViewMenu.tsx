@@ -29,7 +29,7 @@ import { childMsg, Msg } from './Msg';
 import { Dispatcher, map } from 'react-tea-cup';
 import { ItemRenderer } from './ItemRenderer';
 import { Model } from './Model';
-import { stopEvent } from '../common';
+import { stopEvent } from 'tea-pop-core';
 
 export interface ViewMenuProps<T> {
   model: Model<T>;

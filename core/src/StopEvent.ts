@@ -23,9 +23,14 @@
  *
  */
 
-export * from './StopEvent';
-export * from './Pos';
-export * from './Dim';
-export * from './Box';
-export * from './Popover';
-export * from './WindowUtils';
+interface Evt {
+  preventDefault(): void;
+  stopPropagation(): void;
+}
+
+type EventHandler = (e: Evt) => void;
+
+export const stopEvent: EventHandler = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+};

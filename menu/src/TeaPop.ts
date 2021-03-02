@@ -49,7 +49,7 @@ import {
 } from 'react-tea-cup';
 import { initialModel, keyboardNavigated, Model } from './Model';
 import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
-import { dim, Dim, Box, place } from '../common';
+import { dim, Dim, Box, place } from 'tea-pop-core';
 import { OutMsg } from './OutMsg';
 
 export function open<T>(
