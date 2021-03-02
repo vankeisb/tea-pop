@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+import static com.pojosontheweb.selenium.Findrs.textEquals;
+
 public class TeaPopTest extends ManagedDriverJunit4TestBase {
 
     private static String WEBAPP_DIR = System.getProperty("teapop.webapp.dir");
@@ -70,8 +72,9 @@ public class TeaPopTest extends ManagedDriverJunit4TestBase {
                 retries--;
             }
         } else {
-            getWebDriver().get("http://localhost:3000/menu");
+            getWebDriver().get("http://localhost:3000");
         }
+        findr().$$("a").where(textEquals("Context menu")).expectOne().click();
         assertNoMenu();
     }
 
