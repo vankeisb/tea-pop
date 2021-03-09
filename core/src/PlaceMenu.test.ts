@@ -26,9 +26,9 @@
 import { dim, Dim } from './Dim';
 import { Box, box } from './Box';
 import { pos } from './Pos';
-import { place } from './Popover';
+import { place } from './Place';
 
-describe('popover 2 tests', () => {
+describe('popover menu tests', () => {
   const viewport: Dim = dim(100);
 
   const place_ = (refBox: Box) => (elem: Dim) => place(viewport, refBox, elem);
