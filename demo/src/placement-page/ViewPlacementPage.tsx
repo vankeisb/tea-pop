@@ -2,12 +2,12 @@ import * as React from 'react';
 import {Dispatcher} from "react-tea-cup";
 import {PlacementPageMsg} from "./PlacementPageMsg";
 import {PlacementPage} from "./PlacementPage";
-import {box, Box, Dim, dim, place, placeCombo, Pos, pos} from "tea-pop-core";
+import {box, Box, Dim, dim, placeMenu, placeCombo, placeComboSliding, Pos, pos} from "tea-pop-core";
 
 export function viewPlacementPage(dispatch: Dispatcher<PlacementPageMsg>, page: PlacementPage) {
   const {viewportDim} = page;
   return viewportDim.map(vd => {
-    let placeFct = page.mode === "menu" ? place : placeCombo
+    const placeFct = page.mode === "menu" ? placeMenu : (page.mode === "drop-down" ? placeCombo : placeComboSliding)
     const {mousePos} = page;
     const elemDim = dim(600, 400);
     const refDim = dim(100, 50);
@@ -18,7 +18,7 @@ export function viewPlacementPage(dispatch: Dispatcher<PlacementPageMsg>, page: 
         <div className="demo">
           <div className="dimensions">
             <ul>
-              <li>mode: {page.mode} (toggle with <code>M</code>)</li>
+              <li>mode: {page.mode} (toggle with <code>space</code>)</li>
               <li>elem: {viewDim(elemDim)}</li>
               <li>viewport: {viewDim(vd)}</li>
               <li>ref: {viewDim(refDim)}</li>

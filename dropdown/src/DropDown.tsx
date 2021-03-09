@@ -24,7 +24,13 @@
  */
 
 import * as React from 'react';
-import { Box, Dim, placeCombo, windowDimensions } from 'tea-pop-core';
+import {
+  Box,
+  Dim,
+  placeCombo,
+  PlaceFunction,
+  windowDimensions,
+} from 'tea-pop-core';
 import {
   Cmd,
   DocumentEvents,
@@ -190,6 +196,7 @@ function withOut(
 export function update(
   msg: Msg,
   model: Model,
+  place?: PlaceFunction,
 ): [Model, Cmd<Msg>, RequestClose] {
   switch (msg.tag) {
     case 'got-init-data': {
@@ -216,7 +223,11 @@ export function update(
         }
         const { initData } = model;
         const { windowDimensions, refBox } = initData;
-        const placedBox = placeCombo(windowDimensions, refBox, renderedBox.d);
+        const placedBox = (place ?? placeCombo)(
+          windowDimensions,
+          refBox,
+          renderedBox.d,
+        );
         return withOut(
           noCmd({
             ...model,

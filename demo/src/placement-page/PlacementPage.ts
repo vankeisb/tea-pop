@@ -1,7 +1,7 @@
 import {Maybe} from "react-tea-cup";
 import {Dim, Pos} from "tea-pop-core";
 
-export type PlacementMode = "menu" | "drop-down";
+export type PlacementMode = "menu" | "drop-down" | "drop-down-sliding";
 
 export interface PlacementPage {
   readonly tag: 'placement-page';

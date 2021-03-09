@@ -49,7 +49,7 @@ import {
 } from 'react-tea-cup';
 import { initialModel, keyboardNavigated, Model } from './Model';
 import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
-import { dim, Dim, Box, place } from 'tea-pop-core';
+import { dim, Dim, Box, placeMenu } from 'tea-pop-core';
 import { OutMsg } from './OutMsg';
 
 export function open<T>(
@@ -126,7 +126,7 @@ export function update<T>(
                       ...model,
                       state: {
                         tag: 'open',
-                        box: place(windowSize, state.refBox, menuBox.d),
+                        box: placeMenu(windowSize, state.refBox, menuBox.d),
                       },
                     } as Model<T>),
                   (err) => ({

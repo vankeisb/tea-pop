@@ -22,7 +22,6 @@ export function menuPageInit(): [MenuPage, Cmd<MenuPageMsg>] {
 export function menuPageUpdate(msg: MenuPageMsg, menuPage: MenuPage): [MenuPage, Cmd<MenuPageMsg>] {
   switch (msg.tag) {
     case "menu-msg": {
-      console.log("menu-msg", msg.msg);
       return menuPage.menuModel
           .map(menuModel => {
             const mco = menuUpdate(msg.msg, menuModel);
@@ -51,7 +50,6 @@ export function menuPageUpdate(msg: MenuPageMsg, menuPage: MenuPage): [MenuPage,
           .withDefaultSupply(() => noCmd(menuPage));
     }
     case "mouse-down": {
-      console.log("down", menuPage.mousePos);
       // open menu on right click
       if (msg.button === 2) {
         return updateMenu(menuPage, menuOpen(myMenu, box(menuPage.mousePos, Dim.zero)));
@@ -59,7 +57,6 @@ export function menuPageUpdate(msg: MenuPageMsg, menuPage: MenuPage): [MenuPage,
       return noCmd(menuPage);
     }
     case "mouse-move": {
-      console.log("move", msg.pos);
       return noCmd({...menuPage, mousePos: msg.pos });
     }
     case "key-down": {

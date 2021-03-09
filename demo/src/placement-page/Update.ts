@@ -1,4 +1,4 @@
-import {PlacementPage} from "./PlacementPage";
+import {PlacementMode, PlacementPage} from "./PlacementPage";
 import {gotWindowDimensions, onKeyDown, onMouseMove, PlacementPageMsg} from "./PlacementPageMsg";
 import {Cmd, DocumentEvents, just, noCmd, nothing, Sub, Task, Tuple, WindowEvents} from "react-tea-cup";
 import {dim, Pos, pos} from "tea-pop-core";
@@ -17,6 +17,17 @@ export function placementPageInit(): [PlacementPage, Cmd<PlacementPageMsg>] {
   return Tuple.t2n(pp, cmd);
 }
 
+function nextMode(mode: PlacementMode): PlacementMode {
+  switch (mode) {
+    case "menu":
+      return "drop-down";
+    case "drop-down":
+      return "drop-down-sliding";
+    default:
+      return "menu";
+  }
+}
+
 export function placementPageUpdate(msg: PlacementPageMsg, page: PlacementPage): [PlacementPage, Cmd<PlacementPageMsg>] {
   switch (msg.tag) {
     case "got-window-dimensions": {
@@ -27,8 +38,8 @@ export function placementPageUpdate(msg: PlacementPageMsg, page: PlacementPage):
     }
     case "key-down": {
       return noCmd(
-          msg.key === "m"
-            ? { ...page, mode: page.mode === "menu" ? "drop-down" : "menu" }
+          msg.key === " "
+            ? { ...page, mode: nextMode(page.mode) }
             : page
       );
     }

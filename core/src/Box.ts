@@ -33,6 +33,10 @@ export class Box {
     const { x, y, height, width } = rect;
     return box(pos(x, y), dim(width, height));
   }
+
+  translate(p: Pos): Box {
+    return new Box(this.p.add(p), this.d);
+  }
 }
 
 export function box(p: Pos, d: Dim): Box {

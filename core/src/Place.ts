@@ -27,24 +27,44 @@ import { box, Box } from './Box';
 import { dim, Dim } from './Dim';
 import { pos } from './Pos';
 
-export function place(viewport: Dim, refBox: Box, elem: Dim): Box {
+export type PlaceFunction = (viewport: Dim, refBox: Box, elem: Dim) => Box;
+
+export const placeMenu: PlaceFunction = (
+  viewport: Dim,
+  refBox: Box,
+  elem: Dim,
+) => {
   const pX = place1DEnd(viewport.w, refBox.p.x, refBox.d.w, elem.w);
   const pY = place1DStart(viewport.h, refBox.p.y, refBox.d.h, elem.h);
   return box(pos(pX.offset, pY.offset), dim(pX.len, pY.len));
-}
+};
 
-export function placeCombo(viewport: Dim, refBox: Box, elem: Dim): Box {
+export const placeCombo: PlaceFunction = (
+  viewport: Dim,
+  refBox: Box,
+  elem: Dim,
+) => {
   const pX = place1DStart(viewport.w, refBox.p.x, refBox.d.w, elem.w);
   const pY = placeComboY(viewport.h, refBox.p.y, refBox.d.h, elem.h);
   return box(pos(pX.offset, pY.offset), dim(pX.len, pY.len));
-}
+};
+
+export const placeComboSliding: PlaceFunction = (
+  viewport: Dim,
+  refBox: Box,
+  elem: Dim,
+) => {
+  const pX = place1DStartSliding(viewport.w, refBox.p.x, refBox.d.w, elem.w);
+  const pY = placeComboY(viewport.h, refBox.p.y, refBox.d.h, elem.h);
+  return box(pos(pX.offset, pY.offset), dim(pX.len, pY.len));
+};
 
 interface Placed1D {
   readonly offset: number;
   readonly len: number;
 }
 
-export function place1DEnd(
+function place1DEnd(
   viewportW: number,
   refX: number,
   refW: number,
@@ -70,7 +90,7 @@ export function place1DEnd(
   }
 }
 
-export function place1DStart(
+function place1DStart(
   viewportW: number,
   refX: number,
   refW: number,
@@ -93,6 +113,27 @@ export function place1DStart(
       }
       return { offset: 0, len: 10 };
     }
+  } else {
+    // enough space to append
+    return { offset: refX, len: elemW };
+  }
+}
+
+function place1DStartSliding(
+  viewportW: number,
+  refX: number,
+  refW: number,
+  elemW: number,
+): Placed1D {
+  if (elemW > viewportW) {
+    return { offset: 0, len: viewportW };
+  }
+  if (refX + elemW > viewportW) {
+    // not enough space after, align right (slide)
+    return {
+      offset: viewportW - elemW,
+      len: elemW,
+    };
   } else {
     // enough space to append
     return { offset: refX, len: elemW };

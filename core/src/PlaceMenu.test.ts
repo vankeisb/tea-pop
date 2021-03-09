@@ -26,12 +26,13 @@
 import { dim, Dim } from './Dim';
 import { Box, box } from './Box';
 import { pos } from './Pos';
-import { place } from './Place';
+import { placeMenu } from './Place';
 
-describe('popover menu tests', () => {
+describe('place menu', () => {
   const viewport: Dim = dim(100);
 
-  const place_ = (refBox: Box) => (elem: Dim) => place(viewport, refBox, elem);
+  const place_ = (refBox: Box) => (elem: Dim) =>
+    placeMenu(viewport, refBox, elem);
 
   describe('top left', () => {
     const doPlace = place_(box(pos(10, 10), dim(10)));
