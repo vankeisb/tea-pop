@@ -77,9 +77,9 @@ function postOpen<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
     return noCmd(model);
   }
   const cmd: Cmd<Msg<T>> = Task.attempt(
-    menuTask(model.uuid.value).map((e) =>
-      Box.fromDomRect(e.getBoundingClientRect()),
-    ),
+    menuTask(model.uuid.value).map((e) => {
+      return Box.fromDomRect(e.getBoundingClientRect());
+    }),
     (x) => gotMenuBox(x),
   );
   return [model, cmd];
