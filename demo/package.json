@@ -14,7 +14,8 @@
     "react-tea-cup": "^1.5.2",
     "tea-pop-core": "^3.0.0",
     "tea-pop-dropdown": "^3.0.0",
-    "tea-pop-menu": "^3.0.0"
+    "tea-pop-menu": "^3.0.0",
+    "tea-pop-tooltip": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

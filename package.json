@@ -5,6 +5,7 @@
         "core",
         "dropdown",
         "menu",
+        "tooltip",
         "demo"
     ],
     "devDependencies": {

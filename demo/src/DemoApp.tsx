@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Cmd, DevTools, Dispatcher, map, newUrl, noCmd, ProgramWithNav, Sub, Task, Tuple} from "react-tea-cup";
 import {homeModel, Model} from "./Model";
-import {dropDownPageMsg, menuPageMsg, Msg, navigate, noop, placementPageMsg} from "./Msg";
+import {dropDownPageMsg, menuPageMsg, Msg, navigate, noop, placementPageMsg, tooltipPageMsg} from "./Msg";
 import {Route, router, routeToUrl} from "./routes";
 import {viewMenuPage} from "./menu-page/ViewMenuPage";
 import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
@@ -11,6 +11,8 @@ import {viewDropDownPage} from "./dropdown-page/ViewDropDownPage";
 import {dropDownPageInit, dropDownPageSubs, dropDownPageUpdate} from "./dropdown-page/Update";
 import {placementPageInit, placementPageSubs, placementPageUpdate} from "./placement-page/Update";
 import {viewPlacementPage} from "./placement-page/ViewPlacementPage";
+import {tooltipsPageInit, tooltipsPageUpdate} from "./tooltips-page/Update";
+import {viewTooltipsPage} from "./tooltips-page/ViewTooltipsPage";
 
 function init(l: Location): [Model, Cmd<Msg>] {
   return router.parseLocation(l)
@@ -34,6 +36,14 @@ function init(l: Location): [Model, Cmd<Msg>] {
                   page
                 }))
                 .mapSecond(c => c.map(dropDownPageMsg))
+                .toNative();
+          }
+          case "tooltip": {
+            return Tuple.fromNative(tooltipsPageInit())
+                .mapFirst(page => ({
+                  page
+                }))
+                .mapSecond(c => c.map(tooltipPageMsg))
                 .toNative();
           }
           case "placement": {
@@ -78,6 +88,9 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
                 {link(dispatch, 'dropdown', "Drop-down")}
               </li>
               <li>
+                {link(dispatch, 'tooltip', "Tooltip")}
+              </li>
+              <li>
                 {link(dispatch, 'placement', "Live placement")}
               </li>
             </ul>
@@ -92,6 +105,9 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
     }
     case "placement-page": {
       return viewPlacementPage(map(dispatch, placementPageMsg), page);
+    }
+    case "tooltips-page": {
+      return viewTooltipsPage(map(dispatch, tooltipPageMsg), page);
     }
 
   }
@@ -124,6 +140,18 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
             page
           }))
           .mapSecond(c => c.map(dropDownPageMsg))
+          .toNative();
+    }
+    case "tt-page-msg": {
+      const { page } = model;
+      if (page.tag !== "tooltips-page") {
+        return noCmd(model);
+      }
+      return Tuple.fromNative(tooltipsPageUpdate(msg.msg, page))
+          .mapFirst(page => ({
+            page
+          }))
+          .mapSecond(c => c.map(tooltipPageMsg))
           .toNative();
     }
     case "placement-page-msg": {

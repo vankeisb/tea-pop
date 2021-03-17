@@ -1,0 +1,34 @@
+{
+  "name": "tea-pop-tooltip",
+  "version": "3.0.0",
+  "description": "Tooltips for react-tea-cup",
+  "author": "Rémi Van Keisbelck <remi@rvkb.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vankeisb/tea-pop.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "tsc-v": "tsc -v",
+    "prettify": "prettier --write src",
+    "tsc": "tsc",
+    "compile": "rimraf dist && tsc",
+    "lint": "eslint '**/*.{js,ts}'"
+  },
+  "dependencies": {
+    "tea-pop-core": "^3.0.0",
+    "tea-pop-dropdown": "^3.0.0",
+    "react-tea-cup": "^1.5.2",
+    "react": "^16.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4"
+  }
+}
