@@ -1,6 +1,6 @@
 import {MenuPage, myMenu, MyMenuModel} from "./MenuPage";
 import {menuMsg, MenuPageMsg, MyMenuMsg, onKeyDown, onMouseMove} from "./MenuPageMsg";
-import {Cmd, DocumentEvents, just, Maybe, noCmd, nothing, Sub, Tuple} from "react-tea-cup";
+import {Cmd, just, Maybe, noCmd, nothing, Sub, Tuple} from "tea-cup-core";
 import {
   open as menuOpen,
   OutMsg as MenuOutMsg,
@@ -8,6 +8,7 @@ import {
   update as menuUpdate
 } from "tea-pop-menu";
 import {box, Dim, pos, Pos} from "tea-pop-core";
+import {DocumentEvents} from "react-tea-cup";
 
 
 export function menuPageInit(): [MenuPage, Cmd<MenuPageMsg>] {

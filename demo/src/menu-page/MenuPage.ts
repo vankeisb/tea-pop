@@ -1,6 +1,6 @@
 // just to avoid too much typing
 import {item, menu, Menu, Model as MenuModel, separator} from "tea-pop-menu";
-import {Maybe} from "react-tea-cup";
+import {Maybe} from "tea-cup-core";
 import {Pos} from "tea-pop-core";
 
 export type MyMenuModel = MenuModel<string>
