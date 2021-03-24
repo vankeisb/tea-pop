@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dispatcher, map} from "react-tea-cup";
+import {Dispatcher, map} from "tea-cup-core";
 import {MenuPage} from "./MenuPage";
 import {stopEvent} from "tea-pop-core";
 import {defaultItemRenderer, ViewMenu} from "tea-pop-menu";

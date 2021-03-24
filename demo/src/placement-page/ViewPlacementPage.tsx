@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dispatcher} from "react-tea-cup";
+import {Dispatcher} from "tea-cup-core";
 import {PlacementPageMsg} from "./PlacementPageMsg";
 import {PlacementPage} from "./PlacementPage";
 import {box, Box, Dim, dim, place, placeCombo, Pos, pos} from "tea-pop-core";

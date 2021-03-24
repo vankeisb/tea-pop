@@ -30,7 +30,7 @@ import {
   maybeOf,
   nothing,
   Task,
-} from 'react-tea-cup';
+} from 'tea-cup-core';
 
 export class Menu<T> {
   constructor(private readonly elements: ListWithSelection<MenuElement<T>>) {}

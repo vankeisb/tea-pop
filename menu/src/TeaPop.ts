@@ -36,7 +36,6 @@ import {
 } from './Msg';
 import {
   Cmd,
-  DocumentEvents,
   just,
   Maybe,
   noCmd,
@@ -45,12 +44,12 @@ import {
   Task,
   Tuple,
   uuid,
-  WindowEvents,
-} from 'react-tea-cup';
+} from 'tea-cup-core';
 import { initialModel, keyboardNavigated, Model } from './Model';
 import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
 import { dim, Dim, Box, place } from 'tea-pop-core';
 import { OutMsg } from './OutMsg';
+import { DocumentEvents, WindowEvents } from 'react-tea-cup';
 
 export function open<T>(
   menu: Menu<T>,

@@ -10833,13 +10833,10 @@ react-scripts@3.4.3:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-tea-cup@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/react-tea-cup/-/react-tea-cup-1.5.2.tgz#6c5eea88f52127c73261161d6fed184c1b6f7072"
-  integrity sha512-a5IWavpUkyKxot27f6J5EsymdeJdO7HXHBNKcUXmYFV4ZRiYB62/O6F9FxSup/YPiEzljJxVBZS6ML9bpoSo4Q==
-  dependencies:
-    react "^16.7.0"
-    tea-cup-core "1.5.2"
+react-tea-cup@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-tea-cup/-/react-tea-cup-2.0.0.tgz#7dbfb17cfda4dc46843279559a41144f522cde49"
+  integrity sha512-wLspiD4TyeMnUee/7xUaHlgiJWqOvc7fZq/WYyPIgF9dDe7awM9LDHNamKnlPYpLwp0Pddzias/j2/NFlqttWg==
 
 react@^16.7.0:
   version "16.14.0"
@@ -12435,10 +12432,10 @@ tar@^4.4.10, tar@^4.4.12, tar@^4.4.13:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-tea-cup-core@1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/tea-cup-core/-/tea-cup-core-1.5.2.tgz#64bdbf3e3594f8cbfc21cbb1ab416648c7f37899"
-  integrity sha512-YiHWRIvpmBsaGj8Tfi06Rv5aU4QH00ex3TVWmDupud2KZ8uDE6s4+RXO0kTs8tfdremqCxIpLiupSrjbL5bYWA==
+tea-cup-core@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tea-cup-core/-/tea-cup-core-2.0.0.tgz#71e1725d1b2dc884205a0b9f6820cd35677dbd42"
+  integrity sha512-pEir3eVD3htgYZX+r3O9EoaZvgVts+cJM2bpk2bbnrIt9a7wZWtRze+F1tqb2/BSDB9euF9n07yLKiLlhlUGuA==
 
 term-size@^1.2.0:
   version "1.2.0"
