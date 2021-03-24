@@ -11,7 +11,8 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "3.4.3",
-    "react-tea-cup": "^1.5.2",
+    "react-tea-cup": "^2.0.0",
+    "tea-cup-core": "^2.0.0",
     "tea-pop-core": "4.0.0",
     "tea-pop-dropdown": "4.0.0",
     "tea-pop-menu": "4.0.0"

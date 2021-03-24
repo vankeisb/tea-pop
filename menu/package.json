@@ -21,7 +21,8 @@
   },
   "peerDependencies": {
     "react": "^16.7.0",
-    "react-tea-cup": "^1.5.2",
+    "react-tea-cup": "^2.0.0",
+    "tea-cup-core": "^2.0.0",
     "tea-pop-core": "^4.0.0"
   },
   "devDependencies": {
