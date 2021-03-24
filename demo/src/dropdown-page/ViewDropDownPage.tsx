@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dispatcher} from "react-tea-cup";
+import {Dispatcher} from "tea-cup-core";
 import {DropDownPageMsg} from "./DropDownPageMsg";
 import {DropDownPage} from "./DropDownPage";
 import {Box} from "tea-pop-core";

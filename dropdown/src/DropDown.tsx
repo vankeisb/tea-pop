@@ -27,7 +27,6 @@ import * as React from 'react';
 import { Box, Dim, placeCombo, windowDimensions } from 'tea-pop-core';
 import {
   Cmd,
-  DocumentEvents,
   just,
   Maybe,
   noCmd,
@@ -36,7 +35,8 @@ import {
   Sub,
   Task,
   uuid,
-} from 'react-tea-cup';
+} from 'tea-cup-core';
+import { DocumentEvents } from 'react-tea-cup';
 
 export type Model =
   | { tag: 'fresh' }
