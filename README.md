@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/vankeisb/tea-pop/tree/develop.svg?style=shield)](https://app.circleci.com/pipelines/github/vankeisb/tea-pop)
+![npm](https://img.shields.io/npm/v/tea-pop-core)
+
 Popup / Context Menu written in [react-tea-cup](https://github.com/vankeisb/react-tea-cup).
 
 Features :

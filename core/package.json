@@ -1,6 +1,6 @@
 {
   "name": "tea-pop-core",
-  "version": "3.0.0",
+  "version": "4.0.1",
   "description": "Popup menu for react-tea-cup",
   "author": "Rémi Van Keisbelck <remi@rvkb.com>",
   "license": "MIT",
@@ -19,8 +19,7 @@
     "compile": "rimraf dist && tsc",
     "lint": "eslint '**/*.{js,ts}'"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^3.9.0",

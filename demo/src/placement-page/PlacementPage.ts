@@ -1,4 +1,4 @@
-import {Maybe} from "react-tea-cup";
+import {Maybe} from "tea-cup-core";
 import {Dim, Pos} from "tea-pop-core";
 
 export type PlacementMode = "menu" | "drop-down" | "drop-down-sliding";

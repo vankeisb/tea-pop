@@ -1,6 +1,6 @@
 import {DropDownPage} from "./DropDownPage";
 import {ddMsg, DropDownPageMsg, gotWindowDimensions} from "./DropDownPageMsg";
-import {Cmd, just, noCmd, nothing, Sub, Task, Tuple, WindowEvents} from "react-tea-cup";
+import {Cmd, just, noCmd, nothing, Sub, Task, Tuple} from "tea-cup-core";
 import {
   DropDownModel,
   DropDownMsg,
@@ -10,6 +10,7 @@ import {
   dropDownUpdate
 } from "tea-pop-dropdown";
 import {Dim, dim, windowDimensions} from "tea-pop-core";
+import {WindowEvents} from "react-tea-cup";
 
 export function dropDownPageInit(): [DropDownPage, Cmd<DropDownPageMsg>] {
   const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>

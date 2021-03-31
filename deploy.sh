@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cd core && \
-  yarn publish && \
-  cd ../menu && \
-  yarn publish && \
-  cd ../dropdown && \
-  yarn publish
+echo "Publishing tea-pop-core..."
+yarn --cwd core publish
+echo "Publishing tea-pop-menu..."
+yarn --cwd menu publish
+echo "Publishing tea-pop-dropdown..."
+yarn --cwd dropdown publish

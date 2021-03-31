@@ -34,6 +34,43 @@ export class Box {
     return box(pos(x, y), dim(width, height));
   }
 
+  get topLeft(): Pos {
+    return this.p;
+  }
+
+  get bottomRight(): Pos {
+    return pos(this.right, this.bottom);
+  }
+
+  get left(): number {
+    return this.p.x;
+  }
+
+  get right() {
+    return this.left + this.d.w;
+  }
+
+  get top() {
+    return this.p.y;
+  }
+
+  get bottom() {
+    return this.top + this.d.h;
+  }
+
+  isPointInside(pos: Pos): boolean {
+    return !(
+      pos.x < this.left ||
+      pos.x > this.right ||
+      pos.y < this.top ||
+      pos.y > this.bottom
+    );
+  }
+
+  isBoxInside(box: Box): boolean {
+    return this.isPointInside(box.topLeft) && this.isPointInside(box.bottomRight);
+  }
+
   translate(p: Pos): Box {
     return new Box(this.p.add(p), this.d);
   }

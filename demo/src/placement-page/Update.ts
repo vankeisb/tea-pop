@@ -1,7 +1,8 @@
 import {PlacementMode, PlacementPage} from "./PlacementPage";
 import {gotWindowDimensions, onKeyDown, onMouseMove, PlacementPageMsg} from "./PlacementPageMsg";
-import {Cmd, DocumentEvents, just, noCmd, nothing, Sub, Task, Tuple, WindowEvents} from "react-tea-cup";
+import {Cmd, just, noCmd, nothing, Sub, Task, Tuple} from "tea-cup-core";
 import {dim, Pos, pos} from "tea-pop-core";
+import {DocumentEvents, WindowEvents} from "react-tea-cup";
 
 export function placementPageInit(): [PlacementPage, Cmd<PlacementPageMsg>] {
   const pp: PlacementPage = {
