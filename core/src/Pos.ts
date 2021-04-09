@@ -37,7 +37,7 @@ export class Pos {
   static origin: Pos = pos(0, 0);
 
   toString(): string {
-    return `Pos{x=${this.x}, y=${this.y}`;
+    return `Pos{x=${this.x}, y=${this.y}}`;
   }
 }
 

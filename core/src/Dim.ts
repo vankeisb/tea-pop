@@ -33,7 +33,7 @@ export class Dim {
   }
 
   toString(): string {
-    return `Dim{w=${this.w}, h=${this.h}`;
+    return `Dim{w=${this.w}, h=${this.h}}`;
   }
 }
 
