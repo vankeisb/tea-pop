@@ -27,6 +27,14 @@ export class Dim {
   constructor(readonly w: number, readonly h: number) {}
 
   static zero: Dim = dim(0);
+
+  equals(other: Dim): boolean {
+    return this.w === other.w && this.h === other.h;
+  }
+
+  toString(): string {
+    return `Dim{w=${this.w}, h=${this.h}`;
+  }
 }
 
 export function dim(w: number, h?: number): Dim {

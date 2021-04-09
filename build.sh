@@ -7,5 +7,7 @@ yarn install && \
   ./build.sh && \
   cd ../dropdown && \
   ./build.sh && \
+  cd ../tooltip && \
+  ./build.sh && \
   cd ../demo && \
   ./build.sh

@@ -1,6 +1,6 @@
 {
   "name": "tea-pop-tooltip",
-  "version": "3.0.0",
+  "version": "4.0.1",
   "description": "Tooltips for react-tea-cup",
   "author": "Rémi Van Keisbelck <remi@rvkb.com>",
   "license": "MIT",
@@ -18,10 +18,10 @@
     "lint": "eslint '**/*.{js,ts}'"
   },
   "dependencies": {
-    "tea-pop-core": "^3.0.0",
-    "tea-pop-dropdown": "^3.0.0",
-    "react-tea-cup": "^1.5.2",
-    "react": "^16.7.0"
+    "react": "^16.7.0",
+    "react-tea-cup": "^2.0.0",
+    "tea-cup-core": "^2.0.0",
+    "tea-pop-core": "^4.0.1"
   },
   "devDependencies": {
     "@types/react": "^17.0.2",

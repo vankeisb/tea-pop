@@ -1,7 +1,8 @@
-import {Cmd, just, noCmd, nothing, Sub, Task, Tuple, WindowEvents} from "react-tea-cup";
+import {Cmd, just, noCmd, nothing, Sub, Task, Tuple} from "tea-cup-core";
 import {Dim, dim, windowDimensions} from "tea-pop-core";
 import {TooltipsPage} from "./TooltipsPage";
 import {gotWindowDimensions, TooltipsPageMsg} from "./TooltipsPageMsg";
+import {WindowEvents} from "react-tea-cup";
 
 export function tooltipsPageInit(): [TooltipsPage, Cmd<TooltipsPageMsg>] {
   const getWindowDimensions: Task<never, Dim> = Task.succeedLazy(() =>

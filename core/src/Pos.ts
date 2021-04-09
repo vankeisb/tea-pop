@@ -30,7 +30,15 @@ export class Pos {
     return new Pos(this.x + p.x, this.y + p.y);
   }
 
+  equals(other: Pos): boolean {
+    return this.x === other.x && this.y === other.y;
+  }
+
   static origin: Pos = pos(0, 0);
+
+  toString(): string {
+    return `Pos{x=${this.x}, y=${this.y}`;
+  }
 }
 
 export function pos(x: number, y: number): Pos {

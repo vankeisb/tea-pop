@@ -1,7 +1,7 @@
-import { Cmd, noCmd, Sub } from 'react-tea-cup';
+import { Cmd, noCmd, Sub } from 'tea-cup-core';
 import * as React from 'react';
-import { Renderer } from 'tea-pop-dropdown/dist/DropDown';
-import { DropDownModel } from 'tea-pop-dropdown';
+
+export type Renderer = () => React.ReactNode;
 
 export interface Model {
   readonly counter: 0;

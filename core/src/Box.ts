@@ -68,11 +68,21 @@ export class Box {
   }
 
   isBoxInside(box: Box): boolean {
-    return this.isPointInside(box.topLeft) && this.isPointInside(box.bottomRight);
+    return (
+      this.isPointInside(box.topLeft) && this.isPointInside(box.bottomRight)
+    );
   }
 
   translate(p: Pos): Box {
     return new Box(this.p.add(p), this.d);
+  }
+
+  equals(other: Box): boolean {
+    return this.p.equals(other.p) && this.d.equals(other.d);
+  }
+
+  toString(): string {
+    return `Box{p=${this.p}, d=${this.d}}`;
   }
 }
 

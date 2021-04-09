@@ -1,4 +1,4 @@
-import {Maybe} from "react-tea-cup";
+import {Maybe} from "tea-cup-core";
 import {Dim} from "tea-pop-core";
 
 export interface TooltipsPage {

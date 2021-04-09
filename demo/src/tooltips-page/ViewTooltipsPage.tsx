@@ -1,7 +1,9 @@
 import * as React from 'react';
-import {Dispatcher} from "react-tea-cup";
+import {Dispatcher} from "tea-cup-core";
 import {TooltipsPageMsg} from "./TooltipsPageMsg";
 import {TooltipsPage} from "./TooltipsPage";
+import {tooltipMouseEnter} from "tea-pop-core/dist/TooltipManager";
+import {Box, box, dim, pos} from "tea-pop-core";
 
 export function viewTooltipsPage(dispatch: Dispatcher<TooltipsPageMsg>, page: TooltipsPage) {
   const steps = 10;
@@ -16,7 +18,7 @@ export function viewTooltipsPage(dispatch: Dispatcher<TooltipsPageMsg>, page: To
         const width = xStep - (padding * 2);
         for (let x = 0; (x + padding + width) < viewportDim.w; x += xStep) {
           for (let y = 0; (y + padding + height) < viewportDim.h; y += yStep) {
-            const curBtnIndex = btnIndex;
+            // const curBtnIndex = btnIndex;
             const top = y + padding;
             const left = x + padding;
             buttons.push(
@@ -30,6 +32,15 @@ export function viewTooltipsPage(dispatch: Dispatcher<TooltipsPageMsg>, page: To
                       width,
                       border: "none",
                       backgroundColor: "lightblue",
+                    }}
+                    onMouseEnter={(evt) => {
+                      const b = box(pos(left, top), dim(width, height));
+                      tooltipMouseEnter(pos(evt.pageX, evt.pageY), b, () => {
+                        return new Promise<Box>((resolve, reject) => {
+                          console.log("provider returning")
+                          resolve(box(pos(10, 10), dim(100)));
+                        });
+                      })
                     }}
                     // onClick={(evt) => dispatch({
                     //   tag: "button-clicked",
