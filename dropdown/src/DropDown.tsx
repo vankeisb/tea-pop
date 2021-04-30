@@ -142,7 +142,7 @@ export function ViewDropDown(props: ViewDropDownProps): React.ReactElement {
               id={model.initData.uuid}
               className="tm-drop-down tm-placed"
               style={{
-                position: 'absolute',
+                position: 'fixed',
                 top: p.y,
                 left: p.x,
                 width: d.w,
