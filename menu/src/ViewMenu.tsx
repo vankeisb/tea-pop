@@ -109,7 +109,7 @@ export function ViewMenu<T>(props: ViewMenuProps<T>): React.ReactElement {
             className="tm"
             id={menuId(uuid.value)}
             style={{
-              position: 'absolute',
+              position: 'fixed',
               top: p.y,
               left: p.x,
               width: d.w,
