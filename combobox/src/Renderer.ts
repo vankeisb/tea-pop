@@ -31,8 +31,18 @@ export interface RenderItemProps<T> {
   readonly index: number;
 }
 
+export interface RenderInputProps<T> {
+  readonly id: string;
+  readonly value: string;
+  readonly onChange: (value: string) => void;
+  readonly onBlur: () => void;
+  readonly onKeyDown: (key: string) => void;
+  readonly onTriggerClick: () => void;
+}
+
 export interface Renderer<T> {
   renderItem(props: RenderItemProps<T>): React.ReactElement;
   renderLoading(): React.ReactElement;
   renderNoMatches(): React.ReactElement;
+  renderInput(props: RenderInputProps<T>): React.ReactElement;
 }

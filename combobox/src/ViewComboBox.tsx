@@ -44,37 +44,28 @@ export function ViewComboBox<T>(
   return model.uuid
     .map((uuid) => (
       <div className="tp-combobox">
-        <input
-          id={comboHtmlId(uuid)}
-          value={value}
-          onChange={(e) => {
-            const value = e.target.value;
+        {renderer.renderInput({
+          id: comboHtmlId(uuid),
+          value,
+          onChange: (value) =>
             dispatch({
               tag: 'input-value-changed',
               value,
-            });
-          }}
-          onBlur={() =>
+            }),
+          onBlur: () =>
             dispatch({
               tag: 'input-blurred',
-            })
-          }
-          onKeyDown={(e) =>
+            }),
+          onKeyDown: (key) =>
             dispatch({
               tag: 'input-key-down',
-              key: e.key,
-            })
-          }
-        />
-        <button
-          onClick={() =>
+              key,
+            }),
+          onTriggerClick: () =>
             dispatch({
               tag: 'trigger-clicked',
-            })
-          }
-        >
-          x
-        </button>
+            }),
+        })}
         {model.ddModel
           .map((ddModel) => (
             <ViewDropDown

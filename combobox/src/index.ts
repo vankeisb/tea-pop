@@ -36,4 +36,5 @@ export { Provider as ComboBoxProvider } from './Provider';
 export {
   Renderer as ComboBoxRenderer,
   RenderItemProps as ComboBoxRenderItemProps,
+  RenderInputProps as ComboBoxRenderInputProps,
 } from './Renderer';
