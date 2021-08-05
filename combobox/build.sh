@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-echo "*** dropdown ***"
+echo "*** combo-box ***"
 
 yarn compile

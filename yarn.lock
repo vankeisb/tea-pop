@@ -3998,6 +3998,11 @@ data-urls@^1.0.0, data-urls@^1.1.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
+debounce@^1.0.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
+  integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -5753,6 +5758,17 @@ glob-to-regexp@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/glob-to-regexp/-/glob-to-regexp-0.3.0.tgz#8c5a1494d2066c570cc3bfe4496175acc4d502ab"
   integrity sha1-jFoUlNIGbFcMw7/kSWF1rMTVAqs=
+
+glob@^6.0.1:
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-6.0.4.tgz#0f08860f6a155127b2fadd4f9ce24b1aab6e4d22"
+  integrity sha1-DwiGD2oVUSey+t1PnOJLGqtuTSI=
+  dependencies:
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "2 || 3"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
 
 glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6, glob@~7.1.1:
   version "7.1.6"
@@ -8384,7 +8400,7 @@ minimalistic-crypto-utils@^1.0.1:
   resolved "https://registry.yarnpkg.com/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
   integrity sha1-9sAMHAsIIkblxNmd+4x8CDsrWCo=
 
-minimatch@3.0.4, minimatch@^3.0.4, minimatch@~3.0.2:
+"minimatch@2 || 3", minimatch@3.0.4, minimatch@^3.0.4, minimatch@~3.0.2:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
@@ -8728,6 +8744,11 @@ node-sass@4.14.1:
     stdout-stream "^1.4.0"
     "true-case-path" "^1.0.2"
 
+node-watch@^0.3.4:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/node-watch/-/node-watch-0.3.5.tgz#a07f253a4f538de9d4ca522dd7f1996eeec0d97e"
+  integrity sha1-oH8lOk9TjenUylIt1/GZbu7A2X4=
+
 "nopt@2 || 3":
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
@@ -8899,6 +8920,17 @@ npm-run-path@^2.0.0:
   integrity sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8=
   dependencies:
     path-key "^2.0.0"
+
+npm-scripts-watcher@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/npm-scripts-watcher/-/npm-scripts-watcher-1.0.2.tgz#cb9d84a1037fb2f1e38d9813543f8eec9ec6025f"
+  integrity sha1-y52EoQN/svHjjZgTVD+O7J7GAl8=
+  dependencies:
+    colors "^1.1.2"
+    debounce "^1.0.0"
+    glob "^6.0.1"
+    node-watch "^0.3.4"
+    shelljs "^0.5.3"
 
 npm-user-validate@^1.0.1:
   version "1.0.1"
@@ -10833,10 +10865,10 @@ react-scripts@3.4.3:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-tea-cup@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-tea-cup/-/react-tea-cup-2.0.0.tgz#7dbfb17cfda4dc46843279559a41144f522cde49"
-  integrity sha512-wLspiD4TyeMnUee/7xUaHlgiJWqOvc7fZq/WYyPIgF9dDe7awM9LDHNamKnlPYpLwp0Pddzias/j2/NFlqttWg==
+react-tea-cup@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-tea-cup/-/react-tea-cup-2.1.0.tgz#83e57bf7bc7e25c1c757218df9272310d019a696"
+  integrity sha512-RIn+TTV7soNKq3ketLiI8ufvJU4LA3LGdWViu3YVTG02urvBUQvPuLr9FhxBwdHAwg1XVakRRc21qbHPol2qjQ==
 
 react@^16.7.0:
   version "16.14.0"
@@ -11723,6 +11755,11 @@ shell-quote@1.7.2:
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.7.2.tgz#67a7d02c76c9da24f99d20808fcaded0e0e04be2"
   integrity sha512-mRz/m/JVscCrkMyPqHc/bczi3OQHkLTqXHEFu0zDhK/qfv3UcOA4SVmRCLmos4bhjr9ekVQubj/R7waKapmiQg==
 
+shelljs@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.5.3.tgz#c54982b996c76ef0c1e6b59fbdc5825f5b713113"
+  integrity sha1-xUmCuZbHbvDB5rWfvcWCX1txMRM=
+
 shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
@@ -12432,10 +12469,10 @@ tar@^4.4.10, tar@^4.4.12, tar@^4.4.13:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-tea-cup-core@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/tea-cup-core/-/tea-cup-core-2.0.0.tgz#71e1725d1b2dc884205a0b9f6820cd35677dbd42"
-  integrity sha512-pEir3eVD3htgYZX+r3O9EoaZvgVts+cJM2bpk2bbnrIt9a7wZWtRze+F1tqb2/BSDB9euF9n07yLKiLlhlUGuA==
+tea-cup-core@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tea-cup-core/-/tea-cup-core-2.1.0.tgz#68530d4599eca7cd923d321ffde5d6602b3fc909"
+  integrity sha512-nhva1UzplmTTWQw0NpK+R/MDzcEfa2Uh3jKkpBR5nFAqdMkVHMFJjuExM7Pto68/1zWcQL4DVLIeoXzowYiDTA==
 
 term-size@^1.2.0:
   version "1.2.0"

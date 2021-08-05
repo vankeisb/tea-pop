@@ -2,12 +2,14 @@ import {MenuPageMsg} from "./menu-page/MenuPageMsg";
 import {DropDownPageMsg} from "./dropdown-page/DropDownPageMsg";
 import {PlacementPageMsg} from "./placement-page/PlacementPageMsg";
 import {Route} from "./routes";
+import { ComboPageMsg } from "./combo-page/ComboPageMsg";
 
 export type Msg =
     | { tag: 'url-change'; l: Location }
     | { tag: 'menu-page-msg'; msg: MenuPageMsg }
     | { tag: 'dd-page-msg', msg: DropDownPageMsg }
     | { tag: 'placement-page-msg', msg: PlacementPageMsg }
+    | { tag: 'combo-page-msg', msg: ComboPageMsg }
     | { tag: 'navigate', route: Route }
     | { tag: 'noop' }
 
@@ -41,3 +43,11 @@ export function placementPageMsg(msg: PlacementPageMsg): Msg {
     msg
   }
 }
+
+export function comboPageMsg(msg: ComboPageMsg): Msg {
+  return {
+    tag: "combo-page-msg",
+    msg
+  }
+}
+

@@ -88,3 +88,41 @@ code {
   height: 200px;
 }
 
+.combo-page {
+
+  padding-left: 12px;
+
+}
+
+.tp-combobox {
+
+  .tm-drop-down {
+    border: 1px solid red;
+  
+    // hack for the scrollbar... 
+    &.tm-placing {
+      padding-right: 16px;
+    }  
+    &.tm-placed {
+      overflow: auto;
+    }
+  
+    .tp-combobox-items {
+      .tp-combobox-item {
+  
+        &.tp-selected {
+          background-color: blue;
+        }
+
+        &:hover {
+          background-color: green;
+          cursor: pointer;
+        }  
+      }
+  
+    }
+  }
+  
+}
+
+

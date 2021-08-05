@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple} from "tea-cup-core";
-import {homeModel, Model} from "./Model";
-import {dropDownPageMsg, menuPageMsg, Msg, navigate, noop, placementPageMsg} from "./Msg";
+import {homeModel, Model, Page} from "./Model";
+import {comboPageMsg, dropDownPageMsg, menuPageMsg, Msg, navigate, noop, placementPageMsg} from "./Msg";
 import {Route, router, routeToUrl} from "./routes";
 import {viewMenuPage} from "./menu-page/ViewMenuPage";
 import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
@@ -12,6 +12,8 @@ import {dropDownPageInit, dropDownPageSubs, dropDownPageUpdate} from "./dropdown
 import {placementPageInit, placementPageSubs, placementPageUpdate} from "./placement-page/Update";
 import {viewPlacementPage} from "./placement-page/ViewPlacementPage";
 import {DevTools, newUrl, ProgramWithNav} from "react-tea-cup";
+import { comboPageInit, comboPageSubs, comboPageUpdate } from "./combo-page/Update";
+import { viewComboPage } from "./combo-page/ViewComboPage";
 
 function init(l: Location): [Model, Cmd<Msg>] {
   return router.parseLocation(l)
@@ -43,6 +45,14 @@ function init(l: Location): [Model, Cmd<Msg>] {
                   page
                 }))
                 .mapSecond(c => c.map(placementPageMsg))
+                .toNative();
+          }
+          case "combo": { 
+            return Tuple.fromNative(comboPageInit())
+                .mapFirst(page => ({
+                  page
+                }))
+                .mapSecond(c => c.map(comboPageMsg))
                 .toNative();
           }
         }
@@ -79,6 +89,9 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
                 {link(dispatch, 'dropdown', "Drop-down")}
               </li>
               <li>
+                {link(dispatch, 'combo', "Combobox")}
+              </li>
+              <li>
                 {link(dispatch, 'placement', "Live placement")}
               </li>
             </ul>
@@ -94,9 +107,24 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
     case "placement-page": {
       return viewPlacementPage(map(dispatch, placementPageMsg), page);
     }
-
+    case "combo-page": {
+      return viewComboPage(map(dispatch, comboPageMsg), page);
+    }
   }
 }
+
+function updatePage<P extends Page,M>(
+  msg: M, 
+  page: P, 
+  updateF: (m:M, p:P) => [P, Cmd<M>],
+  liftF: (m:M) => Msg
+): [Model, Cmd<Msg>] {
+  const mac: [P, Cmd<M>] = updateF(msg, page);
+  const newModel: Model = { page: mac[0] };
+  const cmd: Cmd<Msg> = mac[1].map(liftF);
+  return Tuple.t2n(newModel, cmd);
+}
+
 
 function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
   switch (msg.tag) {
@@ -108,36 +136,28 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       if (page.tag !== "menu") {
         return noCmd(model);
       }
-      return Tuple.fromNative(menuPageUpdate(msg.msg, page))
-          .mapFirst(page => ({
-            page
-          }))
-          .mapSecond(c => c.map(menuPageMsg))
-          .toNative();
+      return updatePage(msg.msg, page, menuPageUpdate, menuPageMsg);
     }
     case "dd-page-msg": {
       const { page } = model;
       if (page.tag !== "drop-down-page") {
         return noCmd(model);
       }
-      return Tuple.fromNative(dropDownPageUpdate(msg.msg, page))
-          .mapFirst(page => ({
-            page
-          }))
-          .mapSecond(c => c.map(dropDownPageMsg))
-          .toNative();
+      return updatePage(msg.msg, page, dropDownPageUpdate, dropDownPageMsg);
     }
     case "placement-page-msg": {
       const { page } = model;
       if (page.tag !== "placement-page") {
         return noCmd(model);
       }
-      return Tuple.fromNative(placementPageUpdate(msg.msg, page))
-          .mapFirst(page => ({
-            page
-          }))
-          .mapSecond(c => c.map(placementPageMsg))
-          .toNative();
+      return updatePage(msg.msg, page, placementPageUpdate, placementPageMsg);
+    }
+    case "combo-page-msg": {
+      const { page } = model;
+      if (page.tag !== "combo-page") {
+        return noCmd(model);
+      }
+      return updatePage(msg.msg, page, comboPageUpdate, comboPageMsg);
     }
     case "navigate": {
       return Tuple.t2n(model, Task.perform(newUrl(routeToUrl(msg.route)), () => noop));
@@ -160,8 +180,14 @@ function subscriptions(model: Model): Sub<Msg> {
     case "placement-page": {
       return placementPageSubs().map(placementPageMsg);
     }
+    case "combo-page": {
+      return comboPageSubs(page).map(comboPageMsg);
+    }
+    default: {
+      return Sub.none();
+    }
+    
   }
-  return Sub.none();
 }
 
 export function onUrlChange(l: Location): Msg {
