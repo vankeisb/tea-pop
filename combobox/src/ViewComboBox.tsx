@@ -118,7 +118,7 @@ export function ViewComboBox<T>(
                           (items) =>
                             items.length() === 0 ? (
                               <div className="tp-combobox-no-matches">
-                                renderer.renderNoMatches()
+                                {renderer.renderNoMatches()}
                               </div>
                             ) : (
                               <>{items.toArray().map(renderItem)}</>

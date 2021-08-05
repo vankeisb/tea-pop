@@ -77,10 +77,14 @@ function fetchFromProvider<T>(
 }
 
 function withOut<T>(
+  model: Model<T>,
   mac: [Model<T>, Cmd<Msg<T>>],
-  outMsg: Maybe<OutMsg> = nothing,
 ): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg>] {
-  return [mac[0], mac[1], outMsg];
+  return [
+    mac[0],
+    mac[1],
+    model.value === mac[0].value ? nothing : just(mac[0].value),
+  ];
 }
 
 export function update<T>(
@@ -90,20 +94,21 @@ export function update<T>(
 ): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg>] {
   switch (msg.tag) {
     case 'got-uuid': {
-      return withOut(noCmd({ ...model, uuid: just(msg.uuid) }));
+      return withOut(model, noCmd({ ...model, uuid: just(msg.uuid) }));
     }
     case 'input-value-changed': {
       const newModel: Model<T> = {
         ...model,
         value: msg.value,
       };
-      return withOut(fetchFromProvider(newModel, provider));
+      return withOut(model, fetchFromProvider(newModel, provider));
     }
     case 'trigger-clicked': {
-      return withOut(triggerClicked(model, provider));
+      return withOut(model, triggerClicked(model, provider));
     }
     case 'dd-msg': {
       return withOut(
+        model,
         model.ddModel
           .map((ddModel) => {
             const ddMac = dropDownUpdate(msg.child, ddModel);
@@ -126,18 +131,19 @@ export function update<T>(
       );
     }
     case 'input-blurred': {
-      return withOut(closeCombo(model));
+      return withOut(model, closeCombo(model));
     }
     case 'input-focused': {
-      return withOut(noCmd(model));
+      return withOut(model, noCmd(model));
     }
     case 'input-key-down': {
       switch (msg.key) {
         case 'Escape': {
-          return withOut(closeCombo(model));
+          return withOut(model, closeCombo(model));
         }
         case 'Enter': {
           return withOut(
+            model,
             model.items
               .andThen((i) => i.toMaybe())
               .andThen((items) => items.getSelected())
@@ -146,32 +152,38 @@ export function update<T>(
           );
         }
         case 'ArrowUp': {
-          return withOut(handleArrowKey(model, provider, true));
+          return withOut(model, handleArrowKey(model, provider, true));
         }
         case 'ArrowDown': {
-          return withOut(handleArrowKey(model, provider, false));
+          return withOut(model, handleArrowKey(model, provider, false));
         }
         default: {
-          return withOut(noCmd(model));
+          return withOut(model, noCmd(model));
         }
       }
     }
     case 'got-items-from-provider': {
       // ignore if fetch count has changed
       if (msg.fetchCount !== model.fetchCount) {
-        return withOut(noCmd(model));
+        return withOut(model, noCmd(model));
       }
       const newModel: Model<T> = {
         ...model,
         items: just(msg.res.map(ListWithSelection.fromArray)),
       };
-      return withOut(triggerCombo(newModel));
+      // re-trigger if we are open
+      return withOut(
+        model,
+        model.ddModel
+          .map(() => triggerCombo(newModel))
+          .withDefaultSupply(() => noCmd(model)),
+      );
     }
     case 'item-clicked': {
-      return withOut(selectItem(model, provider, msg.item));
+      return withOut(model, selectItem(model, provider, msg.item));
     }
     case 'noop': {
-      return withOut(noCmd(model));
+      return withOut(model, noCmd(model));
     }
   }
 }

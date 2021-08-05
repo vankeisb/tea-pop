@@ -37,6 +37,9 @@ export function comboPageUpdate(msg: ComboPageMsg, model: ComboPage): [ComboPage
     switch (msg.tag) {
         case "tea-pop-combobox-msg": {
             const maco = comboBoxUpdate(myProvider, msg.child, model.comboModel)
+            maco[2].forEach(out => {
+                console.log("out", out)
+            })
             // TODO handle out
             const newModel: ComboPage = {
                 ...model,
