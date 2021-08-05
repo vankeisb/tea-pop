@@ -1,12 +1,10 @@
 package com.rvkb.teapop.tests;
 
-import com.pojosontheweb.selenium.Findr;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
 
 import static com.pojosontheweb.selenium.Findrs.textEquals;
-import static org.junit.Assert.fail;
 
 public class TeaPopComboBoxTest extends TeaPopTestBase {
 
