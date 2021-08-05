@@ -24,18 +24,17 @@
  */
 
 import {
-  just,
-  Tuple,
-  uuid,
   Cmd,
-  noCmd,
+  just,
+  ListWithSelection,
   Maybe,
+  noCmd,
   nothing,
   Sub,
   Task,
+  Tuple,
   updatePiped,
-  ListWithSelection,
-  List,
+  uuid,
 } from 'tea-cup-core';
 import { Box } from 'tea-pop-core';
 import { dropDownOpen, dropDownUpdate } from 'tea-pop-dropdown';
@@ -177,7 +176,9 @@ export function update<T>(
   }
 }
 
-export function subscriptions<T>(model: Model<T>): Sub<Msg<T>> {
+export function subscriptions<T>(
+  model: Model<T>, // eslint-disable-line
+): Sub<Msg<T>> {
   return Sub.none();
 }
 
