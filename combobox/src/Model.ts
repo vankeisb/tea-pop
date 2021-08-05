@@ -23,54 +23,48 @@
  *
  */
 
-import { ListWithSelection, Maybe, nothing, Result } from "tea-cup-core"
-import { DropDownModel } from "tea-pop-dropdown"
+import { ListWithSelection, Maybe, nothing, Result } from 'tea-cup-core';
+import { DropDownModel } from 'tea-pop-dropdown';
 
 export interface Model<T> {
-    readonly uuid: Maybe<string>;
-    readonly value: string;
-    readonly ddModel: Maybe<DropDownModel>;
-    readonly items: Maybe<Result<Error,ListWithSelection<T>>>;
-    readonly fetchCount: number;
+  readonly uuid: Maybe<string>;
+  readonly value: string;
+  readonly ddModel: Maybe<DropDownModel>;
+  readonly items: Maybe<Result<Error, ListWithSelection<T>>>;
+  readonly fetchCount: number;
 }
 
 export function initialModel<T>(): Model<T> {
-    return {
-        uuid: nothing,
-        value: "",
-        ddModel: nothing,
-        items: nothing,
-        fetchCount: 0
-    }
+  return {
+    uuid: nothing,
+    value: '',
+    ddModel: nothing,
+    items: nothing,
+    fetchCount: 0,
+  };
 }
 
 export function comboHtmlId(uuid: string): string {
-    return "tp-cb-" + uuid;
+  return 'tp-cb-' + uuid;
 }
 
 export function comboItemHtmlId(uuid: string, index: number): string {
-    return "tp-cb-item-" + uuid + "-" + index;
+  return 'tp-cb-item-' + uuid + '-' + index;
 }
 
 export function moveSelection<T>(model: Model<T>, up: boolean): Model<T> {
-    return {
-        ...model,
-        items: model.items.map(r =>
-            r.map(items => {
-                const nbItems = items.length();
-                const curIndex = items.getSelectedIndex().withDefault(-1);                    
-                const newIndex = up ? curIndex - 1 : curIndex + 1;
-                const fixed =
-                    newIndex < 0 
-                        ? nbItems - 1
-                        : (
-                            newIndex >= nbItems
-                                ? 0
-                                : newIndex
-                        )
-                
-                return items.selectIndex(fixed)
-            })    
-        )
-    }
+  return {
+    ...model,
+    items: model.items.map((r) =>
+      r.map((items) => {
+        const nbItems = items.length();
+        const curIndex = items.getSelectedIndex().withDefault(-1);
+        const newIndex = up ? curIndex - 1 : curIndex + 1;
+        const fixed =
+          newIndex < 0 ? nbItems - 1 : newIndex >= nbItems ? 0 : newIndex;
+
+        return items.selectIndex(fixed);
+      }),
+    ),
+  };
 }

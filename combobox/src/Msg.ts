@@ -23,45 +23,52 @@
  *
  */
 
-import { Result } from "tea-cup-core";
-import { DropDownMsg } from "tea-pop-dropdown";
+import { Result } from 'tea-cup-core';
+import { DropDownMsg } from 'tea-pop-dropdown';
 
-export type Msg<T> = 
-    | { tag: "input-value-changed", value: string }
-    | { tag: "trigger-clicked" }
-    | { tag: "got-uuid", uuid: string }
-    | { tag: "dd-msg", child: DropDownMsg }
-    | { tag: "input-blurred" }
-    | { tag: "input-focused", res: Result<Error, HTMLElement> }
-    | { tag: "input-key-down", key: string }
-    | { tag: "got-items-from-provider", res: Result<Error, ReadonlyArray<T>>, fetchCount: number }
-    | { tag: "item-clicked", item: T }
-    | { tag: "noop" }
+export type Msg<T> =
+  | { tag: 'input-value-changed'; value: string }
+  | { tag: 'trigger-clicked' }
+  | { tag: 'got-uuid'; uuid: string }
+  | { tag: 'dd-msg'; child: DropDownMsg }
+  | { tag: 'input-blurred' }
+  | { tag: 'input-focused'; res: Result<Error, HTMLElement> }
+  | { tag: 'input-key-down'; key: string }
+  | {
+      tag: 'got-items-from-provider';
+      res: Result<Error, ReadonlyArray<T>>;
+      fetchCount: number;
+    }
+  | { tag: 'item-clicked'; item: T }
+  | { tag: 'noop' };
 
 export function dropDownMsg<T>(child: DropDownMsg): Msg<T> {
-    return {
-        tag: "dd-msg",
-        child
-    }
+  return {
+    tag: 'dd-msg',
+    child,
+  };
 }
 
 export function inputFocused<T>(res: Result<Error, HTMLElement>): Msg<T> {
-    return {
-        tag: "input-focused",
-        res
-    }
+  return {
+    tag: 'input-focused',
+    res,
+  };
 }
 
-export function gotItems<T>(res: Result<Error, ReadonlyArray<T>>, fetchCount: number): Msg<T> {
-    return {
-        tag: "got-items-from-provider",
-        res,
-        fetchCount
-    }
+export function gotItems<T>(
+  res: Result<Error, ReadonlyArray<T>>,
+  fetchCount: number,
+): Msg<T> {
+  return {
+    tag: 'got-items-from-provider',
+    res,
+    fetchCount,
+  };
 }
 
 export function noOp<T>(): Msg<T> {
-    return {
-        tag: "noop"
-    }
+  return {
+    tag: 'noop',
+  };
 }

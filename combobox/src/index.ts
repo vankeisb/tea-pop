@@ -23,10 +23,17 @@
  *
  */
 
-export { Model as ComboBoxModel } from "./Model";
-export { Msg as ComboBoxMsg } from "./Msg"; 
-export { OutMsg as ComboBoxOutMsg } from "./OutMsg";
-export { init as comboBoxInit, update as comboBoxUpdate, subscriptions as comboBoxSubscriptions } from "./ComboBox"
-export * from "./ViewComboBox"
-export { Provider as ComboBoxProvider } from "./Provider"
-export { Renderer as ComboBoxRenderer, RenderItemProps as ComboBoxRenderItemProps } from "./Renderer"
+export { Model as ComboBoxModel } from './Model';
+export { Msg as ComboBoxMsg } from './Msg';
+export { OutMsg as ComboBoxOutMsg } from './OutMsg';
+export {
+  init as comboBoxInit,
+  update as comboBoxUpdate,
+  subscriptions as comboBoxSubscriptions,
+} from './ComboBox';
+export * from './ViewComboBox';
+export { Provider as ComboBoxProvider } from './Provider';
+export {
+  Renderer as ComboBoxRenderer,
+  RenderItemProps as ComboBoxRenderItemProps,
+} from './Renderer';

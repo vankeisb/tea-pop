@@ -23,4 +23,4 @@
  *
  */
 
-export type OutMsg = string
+export type OutMsg = string;

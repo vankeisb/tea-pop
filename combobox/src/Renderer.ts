@@ -23,16 +23,16 @@
  *
  */
 
-import * as React from "react";
+import * as React from 'react';
 
 export interface RenderItemProps<T> {
-    readonly value: string;
-    readonly item: T;
-    readonly index: number;
+  readonly value: string;
+  readonly item: T;
+  readonly index: number;
 }
 
 export interface Renderer<T> {
-    renderItem(props: RenderItemProps<T>): React.ReactElement;
-    renderLoading(): React.ReactElement;
-    renderNoMatches(): React.ReactElement;
+  renderItem(props: RenderItemProps<T>): React.ReactElement;
+  renderLoading(): React.ReactElement;
+  renderNoMatches(): React.ReactElement;
 }

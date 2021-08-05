@@ -23,9 +23,9 @@
  *
  */
 
-import { Task } from "tea-cup-core";
+import { Task } from 'tea-cup-core';
 
 export interface Provider<T> {
-    fetchItems(value: string): Task<Error, ReadonlyArray<T>>;
-    itemToString(item: T): string;
+  fetchItems(value: string): Task<Error, ReadonlyArray<T>>;
+  itemToString(item: T): string;
 }
