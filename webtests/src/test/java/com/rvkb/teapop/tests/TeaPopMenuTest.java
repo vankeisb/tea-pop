@@ -20,7 +20,7 @@ public class TeaPopMenuTest extends TeaPopTestBase {
     @Before
     public void start() {
         super.start();
-        findr().$$("a").where(textEquals("Context menu")).expectOne().click();
+        findr().setTimeout(1).$$("a").where(textEquals("Contesssxt menu")).expectOne().click();
         assertNoMenu();
     }
 
