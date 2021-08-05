@@ -31,120 +31,122 @@ import { comboHtmlId, comboItemHtmlId, Model } from './Model';
 import { Msg } from './Msg';
 
 export interface ViewComboBoxProps<T> {
-    model: Model<T>;
-    dispatch: Dispatcher<Msg<T>>;
-    renderer: Renderer<T>;
+  model: Model<T>;
+  dispatch: Dispatcher<Msg<T>>;
+  renderer: Renderer<T>;
 }
 
-export function ViewComboBox<T>(props: ViewComboBoxProps<T>): React.ReactElement {
-    const { model, dispatch, renderer } = props;
-    const { value } = model;
-    return model.uuid
-        .map(uuid => (
-            <div className="tp-combobox">
-                <input
-                    id={comboHtmlId(uuid)}
-                    value={value}
-                    onChange={e => {
-                        const value = e.target.value;
+export function ViewComboBox<T>(
+  props: ViewComboBoxProps<T>,
+): React.ReactElement {
+  const { model, dispatch, renderer } = props;
+  const { value } = model;
+  return model.uuid
+    .map((uuid) => (
+      <div className="tp-combobox">
+        <input
+          id={comboHtmlId(uuid)}
+          value={value}
+          onChange={(e) => {
+            const value = e.target.value;
+            dispatch({
+              tag: 'input-value-changed',
+              value,
+            });
+          }}
+          onBlur={() =>
+            dispatch({
+              tag: 'input-blurred',
+            })
+          }
+          onKeyDown={(e) =>
+            dispatch({
+              tag: 'input-key-down',
+              key: e.key,
+            })
+          }
+        />
+        <button
+          onClick={() =>
+            dispatch({
+              tag: 'trigger-clicked',
+            })
+          }
+        >
+          x
+        </button>
+        {model.ddModel
+          .map((ddModel) => (
+            <ViewDropDown
+              model={ddModel}
+              renderer={() => {
+                const renderItem = (item: T, index: number) => {
+                  const selected = model.items
+                    .andThen((r) => r.toMaybe())
+                    .andThen((l) => l.getSelectedIndex())
+                    .map((selIndex) => selIndex === index)
+                    .withDefault(false);
+                  const classes = ['tp-combobox-item'].concat(
+                    selected ? ['tp-selected'] : [],
+                  );
+                  return (
+                    <div
+                      id={comboItemHtmlId(uuid, index)}
+                      key={index}
+                      className={classes.join(' ')}
+                      onMouseDown={() =>
                         dispatch({
-                            tag: 'input-value-changed',
-                            value
+                          tag: 'item-clicked',
+                          item,
                         })
-                    }}
-                    onBlur={() => dispatch({
-                        tag: "input-blurred"
-                    })}
-                    onKeyDown={e =>
-                        dispatch({
-                            tag:"input-key-down",
-                            key: e.key
-                        })
-                    }
-                />
-                <button
-                    onClick={() => dispatch({
-                        tag: "trigger-clicked"
-                    })}
-                >
-                    x
-                </button>
-                { model.ddModel
-                    .map(ddModel => 
-                        <ViewDropDown model={ddModel} renderer={() => {
+                      }
+                    >
+                      {renderer.renderItem({
+                        item,
+                        index,
+                        value,
+                      })}
+                    </div>
+                  );
+                };
 
-                            const renderItem = (item: T, index: number) => {
-                                const selected = model.items
-                                    .andThen(r => r.toMaybe())
-                                    .andThen(l => l.getSelectedIndex())
-                                    .map(selIndex => selIndex === index)
-                                    .withDefault(false);
-                                const classes = ["tp-combobox-item"]
-                                    .concat(
-                                        selected
-                                            ? ["tp-selected"]
-                                            : []
-                                    )
-                                return (
-                                    <div
-                                        id={comboItemHtmlId(uuid, index)}
-                                        key={index} 
-                                        className={classes.join(" ")}
-                                        onMouseDown={() => dispatch({
-                                            tag: "item-clicked",
-                                            item
-                                        })}
-                                    >
-                                        {renderer.renderItem({
-                                            item,
-                                            index,
-                                            value
-                                        })}
-                                    </div>
-                                )
-                            };
-
+                return (
+                  <div className="tp-combobox-items">
+                    {model.items
+                      .map((res) =>
+                        res.match(
+                          (items) =>
+                            items.length() === 0 ? (
+                              <div className="tp-combobox-no-matches">
+                                renderer.renderNoMatches()
+                              </div>
+                            ) : (
+                              <>{items.toArray().map(renderItem)}</>
+                            ),
+                          (err) => {
                             return (
-                                <div className="tp-combobox-items">
-                                    {model.items                                    
-                                        .map(res => 
-                                            res.match(
-                                                items => (
-                                                    items.length() === 0 
-                                                        ? (
-                                                            renderer.renderNoMatches()
-                                                        )
-                                                        : (
-                                                            <>
-                                                                {items.toArray().map(renderItem)}
-                                                            </>    
-                                                        )
-                                                ),
-                                                err => {
-                                                    return (
-                                                        <div className="tp-combo-error">
-                                                            {err.message}
-                                                        </div>
-                                                    )
-                                                }
-                                            )
-                                        )
-                                        .withDefaultSupply(() => {
-                                            // we are loading items...
-                                            return (
-                                                <div className="tp-combobox-loading">
-                                                    {renderer.renderLoading()}
-                                                </div>
-                                            );
-                                        })
-                                    }
-                                </div>
-                            )
-                        }}/>    
-                    )
-                    .withDefault(<></>)
-                }
-            </div>
-        ))
-        .withDefault(<></>);    
+                              <div className="tp-combo-error">
+                                {err.message}
+                              </div>
+                            );
+                          },
+                        ),
+                      )
+                      .withDefaultSupply(() => {
+                        // we are loading items...
+                        return (
+                          <div className="tp-combobox-loading">
+                            {renderer.renderLoading()}
+                          </div>
+                        );
+                      })}
+                  </div>
+                );
+              }}
+            />
+          ))
+          .withDefault(<></>)}
+      </div>
+    ))
+    .withDefault(<></>);
 }

@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import static com.pojosontheweb.selenium.Findrs.textEquals;
 
-public class TeaPopTest extends TeaPopTestBase {
+public class TeaPopMenuTest extends TeaPopTestBase {
 
     private Findr fDemo() {
         return findr().$(".demo");
