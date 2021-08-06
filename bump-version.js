@@ -26,9 +26,17 @@ withJsonFile("./menu/package.json", j => {
     j.peerDependencies['tea-pop-core'] = DEP_VERSION;
 });
 
+withJsonFile("./combobox/package.json", j => {
+    j.version = VERSION;
+    j.peerDependencies['tea-pop-core'] = DEP_VERSION;
+    j.peerDependencies['tea-pop-dropdown'] = DEP_VERSION;
+});
+
+
 withJsonFile("./demo/package.json", j => {
     j.dependencies['tea-pop-core'] = VERSION;
     j.dependencies['tea-pop-dropdown'] = VERSION;
     j.dependencies['tea-pop-menu'] = VERSION;
+    j.dependencies['tea-pop-combobox'] = VERSION;
 });
 
