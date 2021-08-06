@@ -41,12 +41,7 @@ fi
 git ci -a -m "bump versions $VERSION"
 git flow release finish $VERSION
 
-#echo "Pushing"
+echo "Pushing"
 #git push --follow-tags
-#git 
-
-
-
-
-
-
+#git push origin main
+#git push origin develop
