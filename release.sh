@@ -45,10 +45,3 @@ echo "Pushing"
 #git push --follow-tags
 #git push origin main
 #git push origin develop
-
-
-
-
-
-
-

@@ -5,6 +5,7 @@
         "core",
         "dropdown",
         "menu",
+        "combobox",
         "demo"
     ],
     "devDependencies": {

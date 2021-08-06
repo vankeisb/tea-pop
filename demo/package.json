@@ -11,10 +11,11 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "3.4.3",
-    "react-tea-cup": "^2.0.0",
-    "tea-cup-core": "^2.0.0",
+    "react-tea-cup": "^2.1.0",
+    "tea-cup-core": "^2.1.0",
     "tea-pop-core": "4.0.2",
     "tea-pop-dropdown": "4.0.2",
+    "tea-pop-combobox": "4.0.2",
     "tea-pop-menu": "4.0.2"
   },
   "scripts": {

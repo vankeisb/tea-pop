@@ -38,6 +38,8 @@ code {
   border-radius: 2px;
 }
 
+$active_color: #61dafb;
+
 .tm {
   background-color: white;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -54,7 +56,7 @@ code {
     }
 
     &.tm-active {
-      background-color: #61dafb;
+      background-color: $active_color;
     }
 
     .tm-item__submenu {
@@ -87,4 +89,49 @@ code {
   max-width: 200px;
   height: 200px;
 }
+
+.combo-page {
+
+  padding-left: 12px;
+
+}
+
+.tp-combobox {
+
+  .tm-drop-down {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background-color: white;
+
+    // hack for the scrollbar...
+    &.tm-placing {
+      padding-right: 16px;
+    }
+    &.tm-placed {
+      overflow: auto;
+    }
+
+    .tp-combobox-items {
+
+      max-height: 400px;
+      min-width: 300px;
+
+      .tp-combobox-item {
+
+        padding: 4px;
+
+        &.tp-selected {
+          background-color: $active_color;
+        }
+
+        &:hover {
+          background-color: darken($active_color, 20);
+          cursor: pointer;
+        }
+      }
+
+    }
+  }
+
+}
+
 
