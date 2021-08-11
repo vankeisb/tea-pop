@@ -14,7 +14,7 @@ import static com.pojosontheweb.selenium.Findrs.textEquals;
 public class TeaPopMenuTest extends TeaPopTestBase {
 
     private Findr fDemo() {
-        return findr().$(".demo");
+        return findr().$(".demo-menu");
     }
 
     @Before
