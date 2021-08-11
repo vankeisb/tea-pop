@@ -50,12 +50,14 @@ import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
 import { dim, Dim, Box, place } from 'tea-pop-core';
 import { OutMsg } from './OutMsg';
 import { DocumentEvents, WindowEvents } from 'react-tea-cup';
+import { log } from './Logger';
 
 export function open<T>(
   menu: Menu<T>,
   refBox: Box,
   selectFirst = false,
 ): [Model<T>, Cmd<Msg<T>>] {
+  log('teapop', 'open', 'refBox', refBox);
   return [
     initialModel(
       selectFirst ? menu.selectFirstItem() : menu.deselectAll(),
@@ -77,7 +79,10 @@ function postOpen<T>(model: Model<T>): [Model<T>, Cmd<Msg<T>>] {
   }
   const cmd: Cmd<Msg<T>> = Task.attempt(
     menuTask(model.uuid.value).map((e) => {
-      return Box.fromDomRect(e.getBoundingClientRect());
+      const rect = e.getBoundingClientRect();
+      const b = Box.fromDomRect(rect);
+      log('teapop', 'postOpen', 'menu box', b);
+      return b;
     }),
     (x) => gotMenuBox(x),
   );
@@ -120,14 +125,22 @@ export function update<T>(
             model.windowSize
               .map((windowSize) => {
                 const newModel: Model<T> = msg.r.match(
-                  (menuBox) =>
-                    ({
+                  (menuBox) => {
+                    log('teapop', 'got-menu-box', 'menuBox', menuBox);
+                    const placedBox = place(
+                      windowSize,
+                      state.refBox,
+                      menuBox.d,
+                    );
+                    log('teapop', 'got-menu-box', 'placedBox', placedBox);
+                    return {
                       ...model,
                       state: {
                         tag: 'open',
-                        box: place(windowSize, state.refBox, menuBox.d),
+                        box: placedBox,
                       },
-                    } as Model<T>),
+                    } as Model<T>;
+                  },
                   (err) => ({
                     ...model,
                     error: just(err),
@@ -139,6 +152,7 @@ export function update<T>(
           ),
         );
       }
+      log('teapop', 'got-menu-box', 'not placing');
       return withOut(noCmd(model));
     }
 

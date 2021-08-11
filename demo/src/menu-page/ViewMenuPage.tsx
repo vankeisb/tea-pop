@@ -9,12 +9,11 @@ const MyRenderer = defaultItemRenderer((s: string) => <span>{s}</span>);
 
 export function viewMenuPage(dispatch: Dispatcher<MenuPageMsg>, page: MenuPage) {
   return (
-      <>
-        <div
-            className="demo"
-            onContextMenu={stopEvent}
-            onMouseDown={e => dispatch({tag: 'mouse-down', button: e.button})}
-        >
+      <div className="demo-menu"
+           onContextMenu={stopEvent}
+           onMouseDown={e => dispatch({tag: 'mouse-down', button: e.button})}
+      >
+        <div className="demo-content">
           {page.menuModel
               .map(() => <span>Menu is open</span>)
               .withDefaultSupply(() =>
@@ -22,22 +21,22 @@ export function viewMenuPage(dispatch: Dispatcher<MenuPageMsg>, page: MenuPage) 
                       .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
                       .withDefaultSupply(() =>
                           <>
-                            <div>Right-click anywhere, or use the <code>≣</code> key.</div>
+                            <div className="stuff">Right-click anywhere, or use the <code>≣</code> key.</div>
                           </>
                       )
               )
           }
+          {page.menuModel
+              .map(menuModel =>
+                  <ViewMenu
+                      model={menuModel}
+                      dispatch={map(dispatch, menuMsg)}
+                      renderer={MyRenderer}
+                  />
+              )
+              .withDefault(<></>)
+          }
         </div>
-        {page.menuModel
-            .map(menuModel =>
-                <ViewMenu
-                    model={menuModel}
-                    dispatch={map(dispatch, menuMsg)}
-                    renderer={MyRenderer}
-                />
-            )
-            .withDefault(<></>)
-        }
-      </>
+      </div>
   )
 }
