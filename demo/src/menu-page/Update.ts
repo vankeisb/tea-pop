@@ -81,7 +81,7 @@ export function menuPageSubs(page: MenuPage): Sub<MenuPageMsg> {
       .map(mm => menuSubscriptions(mm).map(menuMsg))
       .withDefaultSupply(() => Sub.none());
   // mouse & key subs
-  const mouseMove: Sub<MenuPageMsg> = documentEvents.on('mousemove', e => onMouseMove(pos(e.pageX, e.pageY)));
+  const mouseMove: Sub<MenuPageMsg> = documentEvents.on('mousemove', e => onMouseMove(pos(e.clientX, e.clientY)));
   const keyDown: Sub<MenuPageMsg> = documentEvents.on('keydown', e => onKeyDown(e.key));
 
   return Sub.batch([menuSub, mouseMove, keyDown]);
