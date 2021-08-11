@@ -21,7 +21,7 @@ export function viewMenuPage(dispatch: Dispatcher<MenuPageMsg>, page: MenuPage) 
                       .map(lastClicked => <span>You selected <em>{lastClicked}</em></span>)
                       .withDefaultSupply(() =>
                           <>
-                            <div>Right-click anywhere, or use the <code>≣</code> key.</div>
+                            <div className="stuff">Right-click anywhere, or use the <code>≣</code> key.</div>
                           </>
                       )
               )

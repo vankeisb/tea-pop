@@ -25,12 +25,12 @@ public class TeaPopMenuTest extends TeaPopTestBase {
     }
 
     private void assertNoMenu() {
-        fDemo()
-                .$$("div")
-                .where(e -> e.getText().startsWith("Right-click anywhere"))
+        findr()
+                .$$("div.stuff")
                 .expectOne()
+                .where(e -> e.getText().startsWith("Right-click anywhere"))
                 .eval();
-        fDemo().$$(".tm").count(0).eval();
+        findMenus().count(0).eval();
     }
 
     private Findr.ListFindr findMenus() {
