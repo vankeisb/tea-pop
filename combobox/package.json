@@ -1,6 +1,6 @@
 {
   "name": "tea-pop-combobox",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Combobox menu for react-tea-cup",
   "author": "Rémi Van Keisbelck <remi@rvkb.com>",
   "license": "MIT",
@@ -30,8 +30,8 @@
     "react": "^16.7.0",
     "react-tea-cup": "^2.1.0",
     "tea-cup-core": "^2.1.0",
-    "tea-pop-core": "^4.1.1",
-    "tea-pop-dropdown": "^4.1.1"
+    "tea-pop-core": "^4.1.2",
+    "tea-pop-dropdown": "^4.1.2"
   },
   "devDependencies": {
     "@types/react": "^17.0.2",
