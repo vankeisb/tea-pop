@@ -27,7 +27,7 @@
     "tea-pop-dropdown": "^4.0.2"
   },
   "peerDependencies": {
-    "react": "^16.7.0",
+    "react": "^16.7.0 || ^17.0.1",
     "react-tea-cup": "^2.1.0",
     "tea-cup-core": "^2.1.0",
     "tea-pop-core": "^4.1.2",
