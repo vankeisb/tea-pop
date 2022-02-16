@@ -8,15 +8,15 @@
     "@types/react-dom": "16.0.11",
     "jest-enzyme": "^7.1.1",
     "node-sass": "4.14.1",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-scripts": "3.4.3",
     "react-tea-cup": "^2.1.0",
     "tea-cup-core": "^2.1.0",
-    "tea-pop-core": "4.1.2",
-    "tea-pop-dropdown": "4.1.2",
-    "tea-pop-combobox": "4.1.2",
-    "tea-pop-menu": "4.1.2"
+    "tea-pop-core": "4.2.0",
+    "tea-pop-dropdown": "4.2.0",
+    "tea-pop-combobox": "4.2.0",
+    "tea-pop-menu": "4.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
