@@ -24,4 +24,4 @@ Run the demo app (CRA) :
 
 # Contribute
 
-Please submit PRs on `develop`.
+Please submit PRs on `develop`
