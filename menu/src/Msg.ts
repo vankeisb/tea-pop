@@ -44,6 +44,7 @@ export type Msg<T> =
   | { tag: 'item-clicked'; item: MenuItem<T> }
   | { tag: 'child-msg'; m: Msg<T> }
   | { tag: 'doc-mouse-down' }
+  | { tag: 'window-blur' }
   | { tag: 'noop' };
 
 export function noop<T>(): Msg<T> {
@@ -54,6 +55,12 @@ export function gotWindowDimensions<T>(d: Dim): Msg<T> {
   return {
     tag: 'got-window-dimensions',
     d,
+  };
+}
+
+export function gotwindowBlur<T>(): Msg<T> {
+  return {
+    tag: 'window-blur',
   };
 }
 

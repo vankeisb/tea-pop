@@ -30,6 +30,7 @@ import {
   gotKeyDown,
   gotMenuBox,
   gotUuid,
+  gotwindowBlur,
   gotWindowDimensions,
   Msg,
   noop,
@@ -102,12 +103,18 @@ export function update<T>(
 ): [Model<T>, Cmd<Msg<T>>, Maybe<OutMsg<T>>] {
   switch (msg.tag) {
     case 'got-window-dimensions': {
+      if (model.state.tag === 'open') {
+        return withOut(noCmd(model), just({ tag: 'request-close' }));
+      }
       return withOut(
         postOpen({
           ...model,
           windowSize: just(msg.d),
         }),
       );
+    }
+    case 'window-blur': {
+      return withOut(noCmd(model), just({ tag: 'request-close' }));
     }
     case 'got-uuid': {
       return withOut(
@@ -312,6 +319,7 @@ export function subscriptions<T>(model: Model<T>): Sub<Msg<T>> {
     windowEvents.on('resize', () =>
       gotWindowDimensions(dim(window.innerWidth, window.innerHeight)),
     ),
+    windowEvents.on('blur', () => gotwindowBlur()),
     documentEvents.on('mousedown', (evt) => {
       if (evt.button === 2) {
         return noop();
