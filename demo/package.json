@@ -11,12 +11,12 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "3.4.3",
-    "react-tea-cup": "^2.1.0",
-    "tea-cup-core": "^2.1.0",
-    "tea-pop-core": "4.2.1",
-    "tea-pop-dropdown": "4.2.1",
-    "tea-pop-combobox": "4.2.1",
-    "tea-pop-menu": "4.2.1"
+    "react-tea-cup": "^2.2.1",
+    "tea-cup-core": "^2.2.1",
+    "tea-pop-core": "5.0.0",
+    "tea-pop-dropdown": "5.0.0",
+    "tea-pop-combobox": "5.0.0",
+    "tea-pop-menu": "5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
