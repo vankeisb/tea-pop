@@ -320,20 +320,24 @@ export function subscriptions<T>(model: Model<T>): Sub<Msg<T>> {
       gotWindowDimensions(dim(window.innerWidth, window.innerHeight)),
     ),
     windowEvents.on('blur', () => gotwindowBlur()),
-    documentEvents.on('mousedown', (evt) => {
-      if (evt.button === 2) {
-        return noop();
-      }
-      let t: HTMLElement | null = evt.target as HTMLElement;
-      while (t) {
-        // move up and try to find if we are inside a tea-pop Menu !
-        if (t.classList.contains('tm')) {
+    documentEvents.on(
+      'mousedown',
+      (evt) => {
+        if (evt.button === 2) {
           return noop();
         }
-        t = t.parentElement;
-      }
-      return docMouseDown();
-    }),
+        let t: HTMLElement | null = evt.target as HTMLElement;
+        while (t) {
+          // move up and try to find if we are inside a tea-pop Menu !
+          if (t.classList.contains('tm')) {
+            return noop();
+          }
+          t = t.parentElement;
+        }
+        return docMouseDown();
+      },
+      true,
+    ),
     model.state.tag === 'open'
       ? documentEvents.on('keydown', (e) => gotKeyDown(e.key))
       : Sub.none(),
