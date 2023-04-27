@@ -3,6 +3,7 @@
 echo "Building tea-pop"
 
 yarn install && \
+yarn bomlint && \
   cd core && \
   ./build.sh && \
   cd ../menu && \
