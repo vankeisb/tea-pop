@@ -19,6 +19,8 @@
     "compile": "rimraf dist && tsc",
     "lint": "eslint '**/*.{js,ts}'"
   },
-  "devDependencies": {
+  "peerDependencies": {
+    "tea-cup-core": "^2.2.3",
+    "tea-pop-core": "^5.0.0"
   }
 }
