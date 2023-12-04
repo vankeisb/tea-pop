@@ -160,7 +160,6 @@ export class Menu extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log("menu connected");
     const shadow = this.attachShadow({ mode: "closed" });
     const wrapper = div({}, slot({}));
     wrapper.style.position = 'absolute';
@@ -182,7 +181,6 @@ export class Menu extends HTMLElement {
         i.active = false;
       }
     });
-    console.log(item);
   }
 
   open(refBox: Box): void {    
@@ -281,7 +279,6 @@ export class MenuItem extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log("item connected");
     const shadow = this.attachShadow({ mode: "closed" });
     const dom = div({}, slot({}));
     shadow.appendChild(dom);
