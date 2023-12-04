@@ -4,7 +4,5 @@
   "tea-pop-dropdown": "5.0.0",
   "tea-pop-menu": "5.0.0",
   "react-tea-cup": "^2.2.1",
-  "tea-cup-core": "^2.2.1",
-  "@types/jest": "^26.0.20",
-  "ts-jest": "^24.1.0"
+  "tea-cup-core": "^2.2.1"
 }

@@ -1,0 +1,18 @@
+{
+  "name": "tea-pop-sandbox",
+  "version": "5.0.0",
+  "description": "Popup menu library",
+  "author": "Rémi Van Keisbelck <remi@rvkb.com>",
+  "private": "true",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack serve --open"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.3",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}

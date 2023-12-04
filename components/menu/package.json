@@ -1,7 +1,7 @@
 {
-  "name": "tea-pop-core",
+  "name": "tea-pop-menu",
   "version": "5.0.0",
-  "description": "Popup menu for react-tea-cup",
+  "description": "Popup menu library",
   "author": "Rémi Van Keisbelck <remi@rvkb.com>",
   "license": "MIT",
   "repository": {
@@ -20,10 +20,5 @@
     "lint": "eslint '**/*.{js,ts}'"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.10",
-    "ts-jest": "^29.1.1"
-  },
-  "dependencies": {
-    "tea-cup-core": "^2.2.3"
   }
 }
