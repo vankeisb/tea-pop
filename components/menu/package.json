@@ -17,6 +17,7 @@
     "prettify": "prettier --write src",
     "tsc": "tsc",
     "compile": "rimraf dist && tsc",
+    "watch": "tsc -w",
     "lint": "eslint '**/*.{js,ts}'"
   },
   "peerDependencies": {
