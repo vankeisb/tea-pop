@@ -261,10 +261,6 @@ export class MenuItem extends HTMLElement {
     this.setAttribute('mouse-over', String(mouseOver));
   }
 
-  // set active(active: boolean) {
-  //   this.setAttribute('active', String(active));
-  // }
-
   private repaint() {
     if (this.dom) {
       this.dom.style.border = this.active ? '1px solid black' : 'none';
