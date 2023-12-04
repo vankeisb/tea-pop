@@ -24,7 +24,7 @@
  */
 
 import { Box, dim, place } from 'tea-pop-core';
-import { div, input, slot, text } from './HtmlBuilder';
+import { div, slot } from './HtmlBuilder';
 
 function findWithParents(elem: HTMLElement | null, matcher: (p:HTMLElement) => boolean): HTMLElement | null {
   if (elem === null) {
