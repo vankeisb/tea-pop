@@ -228,13 +228,6 @@ export class MenuItem extends HTMLElement {
     super();
   }
 
-  // private readonly onClick = () => {
-  //   const menu = this.findMenu();
-  //   if (menu) {
-  //     menu.f
-  //   }
-  // }
-
   get active(): boolean {
     return this.getAttribute('active') === 'true';
   }
