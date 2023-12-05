@@ -106,6 +106,10 @@ export class Menu extends HTMLElement {
     this._active = active;
   }
 
+  get active(): boolean {
+    return this._active;
+  }
+
   get isOpen(): boolean {
     return this._dom?.style.visibility !== 'hidden';
   }
@@ -233,15 +237,21 @@ export class Menu extends HTMLElement {
   }
 
   close(): void {
+    this.closeAllSubMenus();
     if (this._dom) {
       this._dom.style.position = 'absolute';
       this._dom.style.visibility = 'hidden';
       this._dom.style.top = '0';
       this._dom.style.left = '0';
     }
+    this.active = false;
     this.removeListeners();
     this.findItems().forEach((i) => (i.active = false));
     this.fireEvent('close', { menu: this });
+  }
+
+  removeAllListeners() {
+    this.listeners.clear();
   }
 
   private installListeners() {

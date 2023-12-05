@@ -39,11 +39,9 @@ export class MenuItem extends HTMLElement {
 
   set mouseOver(mouseOver: boolean) {
     this.setAttribute('mouse-over', String(mouseOver));
-    // const parentMenu = this.findParentMenu();
-    // if (parentMenu) {
-    //   parentMenu.closeAllSubMenus();
-    //   this.openSubMenu();
-    // }
+    if (mouseOver) {
+      this.openSubMenu();
+    }
   }
 
   closeSubMenu() {
@@ -74,10 +72,11 @@ export class MenuItem extends HTMLElement {
     const dom = div({}, slotAnon, slotSubMenu);
     this._dom = dom;
     shadow.appendChild(dom);
-    dom.addEventListener('mouseenter', () => {
+    dom.addEventListener('mouseenter', (e) => {
+      console.log('mouseenter', this);
       this.mouseOver = true;
     });
-    dom.addEventListener('mouseleave', () => {
+    dom.addEventListener('mouseleave', (e) => {
       this.mouseOver = false;
     });
     this._dom?.addEventListener('click', (e) => {
@@ -112,14 +111,18 @@ export class MenuItem extends HTMLElement {
   }
 
   private openSubMenu() {
-    if (this._dom && this._subMenu) {
-      const r = this._dom.getBoundingClientRect();
-      this._subMenu.open(Box.fromDomRect(r));
-      const parentMenu = this.findParentMenu();
+    const parentMenu = this.findParentMenu();
+    if (parentMenu) {
+      parentMenu.closeAllSubMenus();
+    }
+    if (this._dom && this._subMenu && parentMenu) {
       if (parentMenu) {
         parentMenu.active = false;
       }
-      this._subMenu.addMenuListener('close', () => {
+      const r = this._dom.getBoundingClientRect();
+      this._subMenu.open(Box.fromDomRect(r));
+      this._subMenu.addMenuListener('close', (e) => {
+        e.menu.removeAllListeners();
         const parentMenu = this.findParentMenu();
         if (parentMenu && parentMenu.isOpen) {
           parentMenu.active = true;
@@ -127,10 +130,10 @@ export class MenuItem extends HTMLElement {
       });
       this._subMenu.addMenuListener('itemSelected', (e) => {
         e.menu.close();
-        const parentMenu = this.findParentMenu();
-        if (parentMenu && parentMenu.isOpen) {
-          parentMenu.menuItemSelected(e.item);
-        }
+        // const parentMenu = this.findParentMenu();
+        // if (parentMenu && parentMenu.isOpen) {
+        //   parentMenu.menuItemSelected(e.item);
+        // }
       });
     }
   }

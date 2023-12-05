@@ -35,10 +35,17 @@
       <tp-menu-item active="true">Yalla</tp-menu-item>
       <tp-menu-item>
         With sub
-        <tp-menu slot="subMenu">
+        <tp-menu id="sub1" slot="subMenu">
           <tp-menu-item>Sub1</tp-menu-item>
           <tp-menu-item>Sub2</tp-menu-item>
-          <tp-menu-item>Sub3</tp-menu-item>
+          <tp-menu-item>
+            Sub3 with sub too
+            <tp-menu id="sub2" slot="subMenu">
+              <tp-menu-item>Sub Sub1</tp-menu-item>
+              <tp-menu-item>Sub Sub2</tp-menu-item>
+              <tp-menu-item>Sub3 Sub3</tp-menu-item>
+            </tp-menu>
+          </tp-menu-item>
         </tp-menu>
       </tp-menu-item>
       <tp-menu-separator></tp-menu-separator>
