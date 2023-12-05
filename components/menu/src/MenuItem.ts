@@ -103,7 +103,6 @@ export class MenuItem extends HTMLElement {
     if (this._dom && this._subMenu) {
       const r = this._dom.getBoundingClientRect();
       this._subMenu.open(Box.fromDomRect(r));
-      this._subMenu.active = true;
       const parentMenu = this.findParentMenu();
       if (parentMenu) {
         parentMenu.active = false;
@@ -111,7 +110,6 @@ export class MenuItem extends HTMLElement {
       this._subMenu.addMenuListener('close', () => {
         const parentMenu = this.findParentMenu();
         if (parentMenu && parentMenu.isOpen) {
-          debugger;
           parentMenu.active = true;
         }
       });

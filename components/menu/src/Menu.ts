@@ -70,28 +70,30 @@ export class Menu extends HTMLElement {
   };
 
   private readonly docKeyPress = (e: KeyboardEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    switch (e.key) {
-      case 'Escape': {
-        this.close();
-        break;
-      }
-      case 'ArrowDown': {
-        this.moveToNextItem();
-        break;
-      }
-      case 'ArrowUp': {
-        this.moveToPrevItem();
-        break;
-      }
-      case 'Space':
-      case 'Enter': {
-        this.selectCurrentItem();
-        break;
-      }
-      default: {
-        break;
+    if (this._active) {
+      e.stopPropagation();
+      e.preventDefault();
+      switch (e.key) {
+        case 'Escape': {
+          this.close();
+          break;
+        }
+        case 'ArrowDown': {
+          this.moveToNextItem();
+          break;
+        }
+        case 'ArrowUp': {
+          this.moveToPrevItem();
+          break;
+        }
+        case 'Space':
+        case 'Enter': {
+          this.selectCurrentItem();
+          break;
+        }
+        default: {
+          break;
+        }
       }
     }
   };
@@ -105,7 +107,7 @@ export class Menu extends HTMLElement {
   }
 
   get isOpen(): boolean {
-    return this._dom?.style.display !== 'none';
+    return this._dom?.style.visibility !== 'hidden';
   }
 
   private selectCurrentItem() {
@@ -213,24 +215,26 @@ export class Menu extends HTMLElement {
     if (this._dom) {
       const viewportDim = dim(window.innerWidth, window.innerHeight);
       const menuBox = Box.fromDomRect(this._dom.getBoundingClientRect());
-      const scrollOffsets = pos(window.scrollX, window.scrollY);
-      const translatedRefBox = new Box(refBox.p.add(scrollOffsets), refBox.d);
-      const placedBox = place(viewportDim, translatedRefBox, menuBox.d);
+      //      const scrollOffsets = pos(window.scrollX, window.scrollY);
+      //      const translatedRefBox = new Box(refBox.p.add(scrollOffsets), refBox.d);
+      const placedBox = place(viewportDim, refBox, menuBox.d);
       this._dom.style.display = 'block';
       this._dom.style.position = 'fixed';
       this._dom.style.top = placedBox.p.y + 'px';
       this._dom.style.left = placedBox.p.x + 'px';
       this._dom.style.visibility = 'visible';
     }
+    this.active = true;
     this.installListeners();
     this.fireEvent('open', { menu: this });
   }
 
   close(): void {
     if (this._dom) {
-      this._dom.style.display = 'none';
+      this._dom.style.visibility = 'hidden';
     }
     this.removeListeners();
+    this.findItems().forEach((i) => (i.active = false));
     this.fireEvent('close', { menu: this });
   }
 
