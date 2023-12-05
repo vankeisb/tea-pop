@@ -220,7 +220,7 @@ export class Menu extends HTMLElement {
   }
 
   open(refBox: Box): void {
-    console.log('Menu open', this);
+    // console.log('Menu open', this);
     if (this._dom) {
       const viewportDim = dim(window.innerWidth, window.innerHeight);
       const menuBox = Box.fromDomRect(this._dom.getBoundingClientRect());
@@ -239,7 +239,7 @@ export class Menu extends HTMLElement {
   }
 
   close(): void {
-    console.log('Menu close', this);
+    // console.log('Menu close', this);
     this.closeAllSubMenus();
     if (this._dom) {
       this._dom.style.position = 'absolute';
