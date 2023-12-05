@@ -65,14 +65,14 @@ export class MenuItem extends HTMLElement {
     const dom = div({}, wrapper, slotSubMenu);
     this._dom = dom;
     shadow.appendChild(dom);
-    wrapper.addEventListener('mouseenter', (e) => {
+    wrapper.addEventListener('mouseenter', () => {
       const parentMenu = this.findParentMenu();
       if (parentMenu && parentMenu.isOpen) {
         // console.log('MOUSE ENTER', e.target);
         this.mouseOver = true;
       }
     });
-    wrapper.addEventListener('mouseleave', (e) => {
+    wrapper.addEventListener('mouseleave', () => {
       const parentMenu = this.findParentMenu();
       if (parentMenu && parentMenu.isOpen) {
         // console.log('MOUSE LEAVE', e.target);
@@ -119,7 +119,7 @@ export class MenuItem extends HTMLElement {
     }
   }
 
-  private onSubClose = (e: CloseEvent) => {
+  private onSubClose = () => {
     // console.log('sub close', e.menu);
     const parentMenu = this.findParentMenu();
     if (parentMenu && parentMenu.isOpen) {
