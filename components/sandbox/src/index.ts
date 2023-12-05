@@ -25,7 +25,6 @@ document.getElementById('declarative').addEventListener('contextmenu', (e) => {
 });
 
 myMenu.addMenuListener('itemSelected', (e) => {
-  debugger;
   console.log('[sandbox] declarative selected', e.item, e.menu);
   myMenu.close();
 });
