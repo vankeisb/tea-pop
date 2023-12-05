@@ -16,14 +16,12 @@
     "test-watch": "jest --watch",
     "prettify": "prettier --write src",
     "tsc": "tsc",
+    "watch": "tsc -w",
     "compile": "rimraf dist && tsc",
     "lint": "eslint '**/*.{js,ts}'"
   },
   "devDependencies": {
     "@types/jest": "^29.5.10",
     "ts-jest": "^29.1.1"
-  },
-  "dependencies": {
-    "tea-cup-core": "^2.2.3"
   }
 }

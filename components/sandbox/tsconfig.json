@@ -5,6 +5,7 @@
     "module": "es6",
     "outDir": "./dist",
     "sourceMap": true,
+    "inlineSources": true,
     "moduleResolution": "Node"
   },
   "exclude": ["node_modules", "dist"]
