@@ -23,7 +23,7 @@
  *
  */
 
-import { Box, dim, place, pos } from 'tea-pop-core';
+import { Box, dim, place } from 'tea-pop-core';
 import { div, findWithParents, slot } from './HtmlBuilder';
 import { MenuItem } from './MenuItem';
 
@@ -117,7 +117,7 @@ export class Menu extends HTMLElement {
   private selectCurrentItem() {
     const item = this.findItems().find((i) => i.active);
     if (item) {
-      this.menuItemSelected(item);
+      this.menuItemSelected(this, item);
     }
   }
 
@@ -166,6 +166,7 @@ export class Menu extends HTMLElement {
     let ls = this.listeners.get(type);
     if (ls) {
       ls = ls.filter((l) => l !== listener);
+      this.listeners.set(type, ls);
     }
   }
 
@@ -202,8 +203,8 @@ export class Menu extends HTMLElement {
     this._dom = wrapper;
   }
 
-  menuItemSelected(item: MenuItem) {
-    this.fireEvent('itemSelected', { menu: this, item });
+  menuItemSelected(menu: Menu, item: MenuItem) {
+    this.fireEvent('itemSelected', { menu, item });
   }
 
   menuItemActive(item: MenuItem) {
@@ -219,6 +220,7 @@ export class Menu extends HTMLElement {
   }
 
   open(refBox: Box): void {
+    console.log('Menu open', this);
     if (this._dom) {
       const viewportDim = dim(window.innerWidth, window.innerHeight);
       const menuBox = Box.fromDomRect(this._dom.getBoundingClientRect());
@@ -237,6 +239,7 @@ export class Menu extends HTMLElement {
   }
 
   close(): void {
+    console.log('Menu close', this);
     this.closeAllSubMenus();
     if (this._dom) {
       this._dom.style.position = 'absolute';
@@ -246,12 +249,10 @@ export class Menu extends HTMLElement {
     }
     this.active = false;
     this.removeListeners();
-    this.findItems().forEach((i) => (i.active = false));
+    this.findItems().forEach((i) => {
+      i.active = false;
+    });
     this.fireEvent('close', { menu: this });
-  }
-
-  removeAllListeners() {
-    this.listeners.clear();
   }
 
   private installListeners() {

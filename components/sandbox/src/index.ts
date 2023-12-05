@@ -3,9 +3,7 @@ import { Menu, MenuItem, defineCustomElements } from 'tea-pop-menu';
 
 defineCustomElements();
 
-function getMyMenu(): Menu {
-  return document.getElementById('my-menu') as Menu;
-}
+const myMenu: Menu = document.getElementById('my-menu') as Menu;
 
 function programmaticMenu(): Menu {
   const menu = new Menu();
@@ -23,15 +21,16 @@ function programmaticMenu(): Menu {
 document.getElementById('declarative').addEventListener('contextmenu', (e) => {
   e.preventDefault();
   e.stopPropagation();
-  getMyMenu().open(box(pos(e.clientX, e.clientY), Dim.zero));
+  myMenu.open(box(pos(e.clientX, e.clientY), Dim.zero));
 });
 
-getMyMenu().addMenuListener('itemSelected', (e) => {
+myMenu.addMenuListener('itemSelected', (e) => {
+  debugger;
   console.log('[sandbox] declarative selected', e.item, e.menu);
-  e.menu.close();
+  myMenu.close();
 });
 
-getMyMenu().addMenuListener('close', (e) => {
+myMenu.addMenuListener('close', (e) => {
   console.log('[sandbox] declarative closed', e.menu);
 });
 
@@ -49,6 +48,6 @@ document.getElementById('programmatic').addEventListener('contextmenu', (e) => {
   menu.open(box(pos(e.clientX, e.clientY), Dim.zero));
   menu.addMenuListener('itemSelected', (e) => {
     console.log('[sanbox] programmatic selected', e.item, 'in menu', e.menu);
-    e.menu.close();
+    menu.close();
   });
 });
