@@ -39,7 +39,17 @@ export class MenuItem extends HTMLElement {
 
   set mouseOver(mouseOver: boolean) {
     this.setAttribute('mouse-over', String(mouseOver));
-    this.openSubMenu();
+    // const parentMenu = this.findParentMenu();
+    // if (parentMenu) {
+    //   parentMenu.closeAllSubMenus();
+    //   this.openSubMenu();
+    // }
+  }
+
+  closeSubMenu() {
+    if (this._subMenu) {
+      this._subMenu.close();
+    }
   }
 
   connectedCallback() {
@@ -70,7 +80,9 @@ export class MenuItem extends HTMLElement {
     dom.addEventListener('mouseleave', () => {
       this.mouseOver = false;
     });
-    this._dom?.addEventListener('click', () => {
+    this._dom?.addEventListener('click', (e) => {
+      // because menus are nested !
+      e.stopPropagation();
       const menu = this.findParentMenu();
       if (menu) {
         menu.menuItemSelected(this);
@@ -111,6 +123,13 @@ export class MenuItem extends HTMLElement {
         const parentMenu = this.findParentMenu();
         if (parentMenu && parentMenu.isOpen) {
           parentMenu.active = true;
+        }
+      });
+      this._subMenu.addMenuListener('itemSelected', (e) => {
+        e.menu.close();
+        const parentMenu = this.findParentMenu();
+        if (parentMenu && parentMenu.isOpen) {
+          parentMenu.menuItemSelected(e.item);
         }
       });
     }

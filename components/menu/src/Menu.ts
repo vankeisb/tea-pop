@@ -200,7 +200,6 @@ export class Menu extends HTMLElement {
 
   menuItemSelected(item: MenuItem) {
     this.fireEvent('itemSelected', { menu: this, item });
-    this.close();
   }
 
   menuItemActive(item: MenuItem) {
@@ -209,6 +208,10 @@ export class Menu extends HTMLElement {
         i.active = false;
       }
     });
+  }
+
+  closeAllSubMenus() {
+    this.findItems().forEach((i) => i.closeSubMenu());
   }
 
   open(refBox: Box): void {
@@ -231,7 +234,10 @@ export class Menu extends HTMLElement {
 
   close(): void {
     if (this._dom) {
+      this._dom.style.position = 'absolute';
       this._dom.style.visibility = 'hidden';
+      this._dom.style.top = '0';
+      this._dom.style.left = '0';
     }
     this.removeListeners();
     this.findItems().forEach((i) => (i.active = false));
