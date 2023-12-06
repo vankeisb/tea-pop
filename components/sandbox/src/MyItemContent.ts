@@ -4,14 +4,14 @@ import PasteIcon from '@carbon/icons/es/paste/16';
 import { getAttributes, toSVG } from '@carbon/icon-helpers';
 import { div, style, text } from 'tea-pop-menu/dist/HtmlBuilder';
 
-type MenuAction = 'copy' | 'cut' | 'paste';
+type Action = 'copy' | 'cut' | 'paste';
 
 interface MyItemData {
   readonly label: string;
   readonly icon: any;
 }
 
-function getItemData(action: MenuAction): MyItemData {
+function getItemData(action: Action): MyItemData {
   switch (action) {
     case 'copy': {
       return {
@@ -34,7 +34,7 @@ function getItemData(action: MenuAction): MyItemData {
   }
 }
 
-function getAction(action: string): MenuAction | undefined {
+function getAction(action: string): Action | undefined {
   switch (action) {
     case 'copy':
     case 'cut':
