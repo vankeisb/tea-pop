@@ -1,7 +1,12 @@
 import { Dim, box, pos } from 'tea-pop-core';
-import { Menu, MenuItem, defineCustomElements } from 'tea-pop-menu';
+import { Menu, MenuItem } from 'tea-pop-menu';
+import * as TPM from 'tea-pop-menu';
 
-defineCustomElements();
+import './style.css';
+import { defineMyItemContent } from './MyItemContent';
+
+TPM.defineCustomElements();
+defineMyItemContent();
 
 const myMenu: Menu = document.getElementById('my-menu') as Menu;
 

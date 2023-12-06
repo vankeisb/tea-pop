@@ -9,13 +9,17 @@
     "start": "webpack serve --open"
   },
   "dependencies": {
+    "@carbon/icon-helpers": "^10.45.0",
+    "@carbon/icons": "^11.31.0",
     "tea-cup-core": "^2.2.3",
     "tea-pop-core": "^5.0.0",
     "tea-pop-menu": "^5.0.0"
   },
   "devDependencies": {
+    "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.5.3",
     "source-map-loader": "^4.0.1",
+    "style-loader": "^3.3.3",
     "ts-loader": "^9.5.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",

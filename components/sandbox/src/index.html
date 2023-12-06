@@ -31,9 +31,17 @@
     >
       Declarative
     </div>
-    <tp-menu id="my-menu">
-      <tp-menu-item>Foo</tp-menu-item>
-      <tp-menu-item>Bar</tp-menu-item>
+    <tp-menu id="my-menu" class="my-menu">
+      <tp-menu-item>
+        <my-item-content action="copy"></my-item-content>
+      </tp-menu-item>
+      <tp-menu-item>
+        <my-item-content action="cut"></my-item-content>
+      </tp-menu-item>
+      <tp-menu-item>
+        <my-item-content action="paste"></my-item-content>
+      </tp-menu-item>
+
       <tp-menu-item>Yalla</tp-menu-item>
       <tp-menu-item>
         With sub
@@ -50,8 +58,18 @@
           </tp-menu-item>
         </tp-menu>
       </tp-menu-item>
-      <tp-menu-separator></tp-menu-separator>
+      <hr/>
       <tp-menu-item>Yolo</tp-menu-item>
     </tp-menu>
+    <template id="my-item-template">
+      <div style="display: flex; flex-direction: row">
+        <div class="my-icon">
+          <slot name="myIcon">icon</slot>
+        </div>
+        <div class="my-label">
+          <slot name="myLabel">label</slot>
+        </div>
+      </div>
+    </template>
   </body>
 </html>
