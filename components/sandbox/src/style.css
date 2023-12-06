@@ -1,4 +1,9 @@
-.xxx {
-    display: flex;
-    flex-direction: row;
+.my-menu-wrapper {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border: 1px solid lightgray;
+}
+
+.my-item-content:hover {
+    cursor: pointer;
 }

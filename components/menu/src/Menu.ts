@@ -58,6 +58,7 @@ export class Menu extends HTMLElement {
 
   private _dom?: HTMLDivElement;
   private _active: boolean = false;
+  private _open: boolean = false;
 
   private readonly docMouseDown = (e: MouseEvent) => {
     const t = findWithParents(
@@ -111,7 +112,7 @@ export class Menu extends HTMLElement {
   }
 
   get isOpen(): boolean {
-    return this._dom?.style.visibility !== 'hidden';
+    return this._open;
   }
 
   private selectCurrentItem() {
@@ -183,8 +184,8 @@ export class Menu extends HTMLElement {
   }
 
   private findItems(): ReadonlyArray<MenuItem> {
-    return Array.from(this.childNodes).flatMap((n) => {
-      if (n instanceof MenuItem) {
+    return Array.from(this.querySelectorAll('tp-menu-item')).flatMap((n) => {
+      if (n instanceof MenuItem && n.findParentMenu() === this) {
         return [n];
       }
       return [];
@@ -241,6 +242,7 @@ export class Menu extends HTMLElement {
       this._dom.style.visibility = 'visible';
     }
     this.active = true;
+    this._open = true;
     this.installListeners();
     this.fireEvent('open', { menu: this });
   }
@@ -259,6 +261,7 @@ export class Menu extends HTMLElement {
     this.findItems().forEach((i) => {
       i.active = false;
     });
+    this._open = false;
     this.fireEvent('close', { menu: this });
   }
 

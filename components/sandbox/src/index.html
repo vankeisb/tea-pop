@@ -32,44 +32,50 @@
       Declarative
     </div>
     <tp-menu id="my-menu" class="my-menu">
-      <tp-menu-item>
-        <my-item-content action="copy"></my-item-content>
-      </tp-menu-item>
-      <tp-menu-item>
-        <my-item-content action="cut"></my-item-content>
-      </tp-menu-item>
-      <tp-menu-item>
-        <my-item-content action="paste"></my-item-content>
-      </tp-menu-item>
+      <div class="my-menu-wrapper">
+        <tp-menu-item>
+          <my-item-content icon="copy">Copy</my-item-content>
+        </tp-menu-item>
+        <tp-menu-item>
+          <my-item-content icon="cut">Cut</my-item-content>
+        </tp-menu-item>
+        <tp-menu-item>
+          <my-item-content icon="paste">Paste</my-item-content>
+        </tp-menu-item>
 
-      <tp-menu-item>Yalla</tp-menu-item>
-      <tp-menu-item>
-        With sub
-        <tp-menu id="sub1" slot="subMenu">
-          <tp-menu-item>Sub1</tp-menu-item>
-          <tp-menu-item>Sub2</tp-menu-item>
-          <tp-menu-item>
-            Sub3 with sub too
-            <tp-menu id="sub2" slot="subMenu">
-              <tp-menu-item>Sub Sub1</tp-menu-item>
-              <tp-menu-item>Sub Sub2</tp-menu-item>
-              <tp-menu-item>Sub3 Sub3</tp-menu-item>
-            </tp-menu>
-          </tp-menu-item>
-        </tp-menu>
-      </tp-menu-item>
-      <hr/>
-      <tp-menu-item>Yolo</tp-menu-item>
-    </tp-menu>
-    <template id="my-item-template">
-      <div style="display: flex; flex-direction: row">
-        <div class="my-icon">
-          <slot name="myIcon">icon</slot>
-        </div>
-        <div class="my-label">
-          <slot name="myLabel">label</slot>
-        </div>
+        <my-item-separator></my-item-separator>
+
+        <tp-menu-item>
+          <my-item-content sub-menu="true" icon="music">Music</my-item-content>
+          <tp-menu id="sub1" slot="subMenu">
+            <div class="my-menu-wrapper">
+              <tp-menu-item><my-item-content>Sub1</my-item-content></tp-menu-item>
+              <tp-menu-item><my-item-content>Sub2</my-item-content></tp-menu-item>
+              <tp-menu-item>
+                <my-item-content sub-menu="true">Sub3 with sub too</my-item-content>
+                <tp-menu id="sub2" slot="subMenu">
+                  <div class="my-menu-wrapper">
+                    <tp-menu-item><my-item-content>Sub Sub1</my-item-content></tp-menu-item>
+                    <tp-menu-item><my-item-content>Sub Sub2</my-item-content></tp-menu-item>
+                    <tp-menu-item><my-item-content>Sub3 Sub3</my-item-content></tp-menu-item>
+                  </div>
+                </tp-menu>
+              </tp-menu-item>
+            </div>
+          </tp-menu>
+        </tp-menu-item>
+
+        <tp-menu-item>
+          <my-item-content>We all live</my-item-content>
+        </tp-menu-item>
+        <tp-menu-item>
+          <my-item-content>In a yellow</my-item-content>
+        </tp-menu-item>
+        <tp-menu-item>
+          <my-item-content icon="ml">Submarine</my-item-content>
+        </tp-menu-item>
+
       </div>
-    </template>
+    </tp-menu>
   </body>
 </html>

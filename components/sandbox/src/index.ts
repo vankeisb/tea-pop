@@ -3,30 +3,28 @@ import { Menu, MenuItem } from 'tea-pop-menu';
 import * as TPM from 'tea-pop-menu';
 
 import './style.css';
-import { defineMyItemContent } from './MyItemContent';
+import { ItemSeparator } from './my-items/ItemSeparator';
+import { MyItemContent } from './my-items/MyItemContent';
 
+// custom elements from tea-pop
 TPM.defineCustomElements();
-defineMyItemContent();
 
-const myMenu: Menu = document.getElementById('my-menu') as Menu;
-
-function programmaticMenu(): Menu {
-  const menu = new Menu();
-  const item1 = new MenuItem();
-  item1.innerHTML = 'yalla prog';
-  menu.appendChild(item1);
-  const item2 = new MenuItem();
-  item2.innerHTML = 'yolo prog';
-  menu.appendChild(item2);
-  return menu;
-}
+// sandbox elements
+customElements.define('my-item-separator', ItemSeparator);
+customElements.define('my-item-content', MyItemContent);
 
 // declarative
+
+const myMenu: Menu = document.getElementById('my-menu') as Menu;
 
 document.getElementById('declarative').addEventListener('contextmenu', (e) => {
   e.preventDefault();
   e.stopPropagation();
   myMenu.open(box(pos(e.clientX, e.clientY), Dim.zero));
+});
+
+myMenu.addMenuListener('open', (e) => {
+  console.log('[sandbox] declarative open', e.menu);
 });
 
 myMenu.addMenuListener('itemSelected', (e) => {
@@ -39,6 +37,17 @@ myMenu.addMenuListener('close', (e) => {
 });
 
 // programmatic
+
+function programmaticMenu(): Menu {
+  const menu = new Menu();
+  const item1 = new MenuItem();
+  item1.innerHTML = 'yalla prog';
+  menu.appendChild(item1);
+  const item2 = new MenuItem();
+  item2.innerHTML = 'yolo prog';
+  menu.appendChild(item2);
+  return menu;
+}
 
 document.getElementById('programmatic').addEventListener('contextmenu', (e) => {
   e.preventDefault();

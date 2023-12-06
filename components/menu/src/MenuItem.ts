@@ -1,5 +1,5 @@
 import { attr, div, findWithParents, slot } from './HtmlBuilder';
-import { CloseEvent, ItemSelectedEvent, Menu } from './Menu';
+import { ItemSelectedEvent, Menu } from './Menu';
 import { Box } from 'tea-pop-core';
 
 export class MenuItem extends HTMLElement {
@@ -105,7 +105,7 @@ export class MenuItem extends HTMLElement {
     }
   }
 
-  private findParentMenu(): Menu | null {
+  findParentMenu(): Menu | null {
     return findWithParents(this, (e) => e instanceof Menu) as Menu;
   }
 
