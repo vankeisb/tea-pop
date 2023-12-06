@@ -1,4 +1,4 @@
-import { div, findWithParents, slot } from './HtmlBuilder';
+import { attr, div, findWithParents, slot } from './HtmlBuilder';
 import { CloseEvent, ItemSelectedEvent, Menu } from './Menu';
 import { Box } from 'tea-pop-core';
 
@@ -58,11 +58,8 @@ export class MenuItem extends HTMLElement {
     }
 
     const shadow = this.attachShadow({ mode: 'closed' });
-    const slotAnon = slot([]);
-    const wrapper = div([], slotAnon);
-    const slotSubMenu = slot([]);
-    slotSubMenu.setAttribute('name', 'subMenu');
-    const dom = div([], wrapper, slotSubMenu);
+    const wrapper = div([], slot([]));
+    const dom = div([], wrapper, slot([attr('name', 'subMenu')]));
     this._dom = dom;
     shadow.appendChild(dom);
     wrapper.addEventListener('mouseenter', () => {

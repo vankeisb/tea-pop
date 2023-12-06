@@ -25,7 +25,6 @@
 
 import { Menu } from './Menu';
 import { MenuItem } from './MenuItem';
-import { MenuSeparator } from './MenuSeparator';
 
 export * from './Menu';
 export * from './MenuItem';
@@ -33,5 +32,4 @@ export * from './MenuItem';
 export function defineCustomElements() {
   customElements.define('tp-menu', Menu);
   customElements.define('tp-menu-item', MenuItem);
-  customElements.define('tp-menu-separator', MenuSeparator);
 }

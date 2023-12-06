@@ -206,12 +206,6 @@ export class Menu extends HTMLElement {
       slot([]),
     );
 
-    // const slotAnon = slot({});
-    // const wrapper = div({}, slotAnon);
-    // wrapper.style.position = 'absolute';
-    // wrapper.style.top = '0';
-    // wrapper.style.left = '0';
-    // wrapper.style.visibility = 'hidden';
     shadow.appendChild(wrapper);
     this._dom = wrapper;
   }
