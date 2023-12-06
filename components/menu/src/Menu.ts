@@ -24,7 +24,7 @@
  */
 
 import { Box, dim, place } from 'tea-pop-core';
-import { div, findWithParents, slot } from './HtmlBuilder';
+import { div, findWithParents, slot, style } from './HtmlBuilder';
 import { MenuItem } from './MenuItem';
 
 export type MenuListener<K extends keyof MenuEventMap> = (
@@ -193,12 +193,25 @@ export class Menu extends HTMLElement {
 
   connectedCallback() {
     const shadow = this.attachShadow({ mode: 'closed' });
-    const slotAnon = slot({});
-    const wrapper = div({}, slotAnon);
-    wrapper.style.position = 'absolute';
-    wrapper.style.top = '0';
-    wrapper.style.left = '0';
-    wrapper.style.visibility = 'hidden';
+
+    const wrapper = div(
+      [
+        style({
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          visibility: 'hidden',
+        }),
+      ],
+      slot([]),
+    );
+
+    // const slotAnon = slot({});
+    // const wrapper = div({}, slotAnon);
+    // wrapper.style.position = 'absolute';
+    // wrapper.style.top = '0';
+    // wrapper.style.left = '0';
+    // wrapper.style.visibility = 'hidden';
     shadow.appendChild(wrapper);
     this._dom = wrapper;
   }

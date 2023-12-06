@@ -58,11 +58,11 @@ export class MenuItem extends HTMLElement {
     }
 
     const shadow = this.attachShadow({ mode: 'closed' });
-    const slotAnon = slot({});
-    const wrapper = div({}, slotAnon);
-    const slotSubMenu = slot({});
+    const slotAnon = slot([]);
+    const wrapper = div([], slotAnon);
+    const slotSubMenu = slot([]);
     slotSubMenu.setAttribute('name', 'subMenu');
-    const dom = div({}, wrapper, slotSubMenu);
+    const dom = div([], wrapper, slotSubMenu);
     this._dom = dom;
     shadow.appendChild(dom);
     wrapper.addEventListener('mouseenter', () => {

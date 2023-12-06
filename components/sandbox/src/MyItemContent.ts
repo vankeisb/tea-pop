@@ -56,15 +56,15 @@ export class MyItemContent extends HTMLElement {
     if (action !== undefined) {
       const itemData = getItemData(action);
       const wrapper = div(
-        {},
+        [],
         div(
-          {},
+          [],
           toSVG({
             ...itemData.icon,
             attrs: getAttributes(itemData.icon.attrs),
           }),
         ),
-        div({}, text(itemData.label)),
+        div([], text(itemData.label)),
       );
       wrapper.style.display = 'flex';
       wrapper.style.flexDirection = 'row';
