@@ -2,7 +2,7 @@ import CopyIcon from '@carbon/icons/es/copy/16';
 import CutIcon from '@carbon/icons/es/cut/16';
 import PasteIcon from '@carbon/icons/es/paste/16';
 import { getAttributes, toSVG } from '@carbon/icon-helpers';
-import { div, text } from 'tea-pop-menu/dist/HtmlBuilder';
+import { div, style, text } from 'tea-pop-menu/dist/HtmlBuilder';
 
 type MenuAction = 'copy' | 'cut' | 'paste';
 
@@ -56,19 +56,35 @@ export class MyItemContent extends HTMLElement {
     if (action !== undefined) {
       const itemData = getItemData(action);
       const wrapper = div(
-        [],
+        [
+          style({
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            height: '24px',
+          }),
+        ],
         div(
-          [],
+          [
+            style({
+              width: '16px',
+              paddingRight: '8px',
+            }),
+          ],
           toSVG({
             ...itemData.icon,
             attrs: getAttributes(itemData.icon.attrs),
           }),
         ),
-        div([], text(itemData.label)),
+        div(
+          [
+            style({
+              paddingRight: '8px',
+            }),
+          ],
+          text(itemData.label),
+        ),
       );
-      wrapper.style.display = 'flex';
-      wrapper.style.flexDirection = 'row';
-      wrapper.style.alignItems = 'center';
       shadow.appendChild(wrapper);
     }
   }
