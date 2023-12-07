@@ -32,6 +32,8 @@ export class MyItemContent extends HTMLElement {
   }
 
   private _dom?: HTMLElement;
+  private _parentItem?: MenuItem;
+
   private onMouseEnter = () => {
     if (this._dom) {
       this._dom.classList.add('highlighted');
@@ -40,6 +42,16 @@ export class MyItemContent extends HTMLElement {
   private onMouseLeave = () => {
     if (this._dom) {
       this._dom.classList.remove('highlighted');
+    }
+  };
+  private onFocus = () => {
+    if (this._dom) {
+      this._dom.classList.add('focused');
+    }
+  };
+  private onBlur = () => {
+    if (this._dom) {
+      this._dom.classList.remove('focused');
     }
   };
 
@@ -102,10 +114,16 @@ export class MyItemContent extends HTMLElement {
           padding-top: 4px;
           padding-bottom: 4px;
           padding-left: 4px;
+          border: 1px solid white;
+          box-sizing: border-box;
         }
         
         .highlighted {
           background-color: lightblue;
+        }
+        
+        .focused {
+          border: 1px solid black;
         }
     `),
     );
@@ -114,10 +132,21 @@ export class MyItemContent extends HTMLElement {
     shadow.appendChild(styleNode);
     shadow.appendChild(this._dom);
 
-    const parentItem = this.findParentItem();
-    if (parentItem) {
-      parentItem.addMenuItemListener('mouseenter', this.onMouseEnter);
-      parentItem.addMenuItemListener('mouseleave', this.onMouseLeave);
+    this._parentItem = this.findParentItem();
+    if (this._parentItem) {
+      this._parentItem.addMenuItemListener('mouseenter', this.onMouseEnter);
+      this._parentItem.addMenuItemListener('mouseleave', this.onMouseLeave);
+      this._parentItem.addMenuItemListener('focus', this.onFocus);
+      this._parentItem.addMenuItemListener('blur', this.onBlur);
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._parentItem) {
+      this._parentItem.removeMenuItemListener('mouseenter', this.onMouseEnter);
+      this._parentItem.removeMenuItemListener('mouseleave', this.onMouseLeave);
+      this._parentItem.removeMenuItemListener('focus', this.onFocus);
+      this._parentItem.removeMenuItemListener('blur', this.onBlur);
     }
   }
 

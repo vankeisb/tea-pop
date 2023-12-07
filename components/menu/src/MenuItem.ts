@@ -30,6 +30,7 @@ export class MenuItem extends HTMLElement {
   set focused(focused: boolean) {
     if (focused) {
       this.setAttribute('focused', 'true');
+      this.fireEvent('focus');
       const menu = this.findParentMenu();
       if (menu) {
         menu.menuItemFocused(this);
@@ -37,6 +38,7 @@ export class MenuItem extends HTMLElement {
       }
     } else {
       this.removeAttribute('focused');
+      this.fireEvent('blur');
     }
   }
 
