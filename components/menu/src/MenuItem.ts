@@ -1,11 +1,20 @@
 import { attr, div, findWithParents, slot } from './HtmlBuilder';
-import { ItemSelectedEvent, Menu } from './Menu';
+import { ItemSelectedEvent, Menu, MenuEventMap } from './Menu';
 import { Box } from 'tea-pop-core';
+
+export type MenuItemListener = (item: MenuItem) => void;
+
+export type MenuItemEventType = 'focus' | 'blur' | 'mouseenter' | 'mouseleave';
 
 export class MenuItem extends HTMLElement {
   static get observedAttributes() {
     return ['active', 'mouse-over'];
   }
+
+  private readonly listeners: Map<
+    MenuItemEventType,
+    MenuItemListener[]
+  > = new Map();
 
   private _dom?: HTMLElement;
   private _subMenu?: Menu;
@@ -38,7 +47,10 @@ export class MenuItem extends HTMLElement {
   set mouseOver(mouseOver: boolean) {
     this.setAttribute('mouse-over', String(mouseOver));
     if (mouseOver) {
+      this.fireEvent('mouseenter');
       this.openSubMenu();
+    } else {
+      this.fireEvent('mouseleave');
     }
   }
 
@@ -148,6 +160,32 @@ export class MenuItem extends HTMLElement {
       this._subMenu.open(Box.fromDomRect(r));
       this._subMenu.addMenuListener('close', this.onSubClose);
       this._subMenu.addMenuListener('itemSelected', this.onItemSelected);
+    }
+  }
+
+  addMenuItemListener(type: MenuItemEventType, listener: MenuItemListener) {
+    let ls = this.listeners.get(type);
+    if (!ls) {
+      ls = [];
+      this.listeners.set(type, ls);
+    }
+    ls.push(listener);
+  }
+
+  removeMenuItemListener(type: MenuItemEventType, listener: MenuItemListener) {
+    let ls = this.listeners.get(type);
+    if (ls) {
+      ls = ls.filter((l) => l !== listener);
+      this.listeners.set(type, ls);
+    }
+  }
+
+  private fireEvent(type: MenuItemEventType) {
+    const handlers = this.listeners.get(type);
+    if (handlers) {
+      handlers.forEach((h) => {
+        h(this);
+      });
     }
   }
 }
