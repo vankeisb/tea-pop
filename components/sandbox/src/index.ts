@@ -5,6 +5,7 @@ import * as TPM from 'tea-pop-menu';
 import './style.scss';
 import { ItemSeparator } from './my-items/ItemSeparator';
 import { MyItemContent } from './my-items/MyItemContent';
+import { className, div, text } from 'tea-pop-menu/dist/HtmlBuilder';
 
 // custom elements from tea-pop
 TPM.defineCustomElements();
@@ -92,14 +93,40 @@ document.addEventListener(
 );
 
 function programmaticMenu(): Menu {
-  const menu = new Menu();
-  const item1 = new MenuItem();
-  item1.innerHTML = 'yalla prog';
-  menu.appendChild(item1);
-  const item2 = new MenuItem();
-  item2.innerHTML = 'yolo prog';
-  menu.appendChild(item2);
-  return menu;
+  return menu(
+    menuItem('I am programmatic', 'ml'),
+    menuItem(
+      'I can have sub menus',
+      undefined,
+      menu(menuItem('Sub 1'), menuItem('Sub 2')),
+    ),
+    menuItem('Sitting on'),
+    menuItem('The dock'),
+    menuItem('Of the bay'),
+  );
+}
+
+function menu(...items: MenuItem[]): Menu {
+  const m = new Menu();
+  const w = div([className('my-menu-wrapper')]);
+  items.forEach((i) => w.appendChild(i));
+  m.appendChild(w);
+  return m;
+}
+
+function menuItem(label: string, icon?: string, subMenu?: Menu): MenuItem {
+  const content = new MyItemContent();
+  if (icon) {
+    content.setAttribute('icon', icon);
+  }
+  content.appendChild(text(label));
+  const item = new MenuItem();
+  item.appendChild(content);
+  if (subMenu) {
+    content.setAttribute('sub-menu', 'true');
+    item.appendChild(subMenu);
+  }
+  return item;
 }
 
 function addScroll(scroll: boolean) {
