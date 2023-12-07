@@ -1,0 +1,16 @@
+@import '@carbon/type/scss/reset';
+
+@include reset();
+
+.my-menu-wrapper {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border: 1px solid lightgray;
+}
+
+#scroller {
+    width: 3000px;
+    height: 3000px;
+    background-color: gray;
+    display: none;
+}

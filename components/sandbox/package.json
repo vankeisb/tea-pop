@@ -11,6 +11,7 @@
   "dependencies": {
     "@carbon/icon-helpers": "^10.45.0",
     "@carbon/icons": "^11.31.0",
+    "@carbon/type": "^11.25.0",
     "tea-cup-core": "^2.2.3",
     "tea-pop-core": "^5.0.0",
     "tea-pop-menu": "^5.0.0"
@@ -18,6 +19,8 @@
   "devDependencies": {
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.5.3",
+    "sass": "^1.69.5",
+    "sass-loader": "^13.3.2",
     "source-map-loader": "^4.0.1",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.5.1",
