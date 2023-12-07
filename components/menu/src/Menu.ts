@@ -57,7 +57,7 @@ export class Menu extends HTMLElement {
   > = new Map();
 
   private _dom?: HTMLDivElement;
-  private _active: boolean = false;
+  private _focused: boolean = false;
   private _open: boolean = false;
 
   private readonly docMouseDown = (e: MouseEvent) => {
@@ -71,7 +71,7 @@ export class Menu extends HTMLElement {
   };
 
   private readonly docKeyPress = (e: KeyboardEvent) => {
-    if (this._active) {
+    if (this._focused) {
       e.stopPropagation();
       e.preventDefault();
       switch (e.key) {
@@ -103,12 +103,12 @@ export class Menu extends HTMLElement {
     super();
   }
 
-  set active(active: boolean) {
-    this._active = active;
+  set focused(active: boolean) {
+    this._focused = active;
   }
 
-  get active(): boolean {
-    return this._active;
+  get focused(): boolean {
+    return this._focused;
   }
 
   get isOpen(): boolean {
@@ -116,7 +116,7 @@ export class Menu extends HTMLElement {
   }
 
   private selectCurrentItem() {
-    const item = this.findItems().find((i) => i.active);
+    const item = this.findItems().find((i) => i.focused);
     if (item) {
       this.menuItemSelected(this, item);
     }
@@ -125,26 +125,26 @@ export class Menu extends HTMLElement {
   private moveToNextItem() {
     const items = this.findItems();
     if (items.length > 0) {
-      let activeIndex = items.findIndex((i) => i.active);
+      let activeIndex = items.findIndex((i) => i.focused);
       if (activeIndex < items.length - 1) {
         activeIndex++;
       } else {
         activeIndex = 0;
       }
-      items[activeIndex].active = true;
+      items[activeIndex].focused = true;
     }
   }
 
   private moveToPrevItem() {
     const items = this.findItems();
     if (items.length > 0) {
-      let activeIndex = items.findIndex((i) => i.active);
+      let activeIndex = items.findIndex((i) => i.focused);
       if (activeIndex > 0) {
         activeIndex--;
       } else {
         activeIndex = items.length - 1;
       }
-      items[activeIndex].active = true;
+      items[activeIndex].focused = true;
     }
   }
 
@@ -215,10 +215,10 @@ export class Menu extends HTMLElement {
     this.fireEvent('itemSelected', { menu, item });
   }
 
-  menuItemActive(item: MenuItem) {
+  menuItemFocused(item: MenuItem) {
     this.findItems().forEach((i) => {
       if (i !== item) {
-        i.active = false;
+        i.focused = false;
       }
     });
   }
@@ -241,7 +241,7 @@ export class Menu extends HTMLElement {
       this._dom.style.left = placedBox.p.x + 'px';
       this._dom.style.visibility = 'visible';
     }
-    this.active = true;
+    this.focused = true;
     this._open = true;
     this.installListeners();
     this.fireEvent('open', { menu: this });
@@ -256,10 +256,10 @@ export class Menu extends HTMLElement {
       this._dom.style.top = '0';
       this._dom.style.left = '0';
     }
-    this.active = false;
+    this.focused = false;
     this.removeListeners();
     this.findItems().forEach((i) => {
-      i.active = false;
+      i.focused = false;
     });
     this._open = false;
     this.fireEvent('close', { menu: this });

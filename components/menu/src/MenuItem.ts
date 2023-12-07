@@ -14,20 +14,20 @@ export class MenuItem extends HTMLElement {
     super();
   }
 
-  get active(): boolean {
-    return this.getAttribute('active') === 'true';
+  get focused(): boolean {
+    return this.getAttribute('focused') === 'true';
   }
 
-  set active(active: boolean) {
-    if (active) {
-      this.setAttribute('active', 'true');
+  set focused(focused: boolean) {
+    if (focused) {
+      this.setAttribute('focused', 'true');
       const menu = this.findParentMenu();
       if (menu) {
-        menu.menuItemActive(this);
+        menu.menuItemFocused(this);
         this.openSubMenu();
       }
     } else {
-      this.removeAttribute('active');
+      this.removeAttribute('focused');
     }
   }
 
@@ -86,24 +86,23 @@ export class MenuItem extends HTMLElement {
         parentMenu.menuItemSelected(parentMenu, this);
       }
     });
-    this.repaint();
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (
-      oldValue !== newValue &&
-      MenuItem.observedAttributes.indexOf(name) !== -1
-    ) {
-      this.repaint();
-    }
-  }
+  // attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+  //   if (
+  //     oldValue !== newValue &&
+  //     MenuItem.observedAttributes.indexOf(name) !== -1
+  //   ) {
+  //     this.repaint();
+  //   }
+  // }
 
-  private repaint() {
-    if (this._dom) {
-      this._dom.style.border = this.active ? '1px solid black' : 'none';
-      this._dom.style.backgroundColor = this.mouseOver ? 'lightblue' : 'white';
-    }
-  }
+  // private repaint() {
+  //   if (this._dom) {
+  //     this._dom.style.border = this.focused ? '1px solid black' : 'none';
+  //     this._dom.style.backgroundColor = this.mouseOver ? 'lightblue' : 'white';
+  //   }
+  // }
 
   findParentMenu(): Menu | null {
     return findWithParents(this, (e) => e instanceof Menu) as Menu;
@@ -120,7 +119,7 @@ export class MenuItem extends HTMLElement {
     // console.log('sub close', e.menu);
     const parentMenu = this.findParentMenu();
     if (parentMenu && parentMenu.isOpen) {
-      parentMenu.active = true;
+      parentMenu.focused = true;
     }
     if (this._subMenu) {
       this._subMenu.removeMenuListener('close', this.onSubClose);
@@ -143,7 +142,7 @@ export class MenuItem extends HTMLElement {
     }
     if (this._dom && this._subMenu && parentMenu) {
       if (parentMenu) {
-        parentMenu.active = false;
+        parentMenu.focused = false;
       }
       const r = this._dom.getBoundingClientRect();
       this._subMenu.open(Box.fromDomRect(r));
