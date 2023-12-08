@@ -78,6 +78,7 @@ export class MyItemContent extends HTMLElement {
       div(
         [
           style({
+            display: 'flex',
             width: '16px',
             paddingRight: '8px',
           }),
@@ -98,6 +99,7 @@ export class MyItemContent extends HTMLElement {
             position: 'absolute',
             width: '16px',
             right: '0',
+            display: 'flex',
           }),
         ],
         subMenuNode,
@@ -116,6 +118,7 @@ export class MyItemContent extends HTMLElement {
           padding-left: 4px;
           border: 1px solid white;
           box-sizing: border-box;
+          align-items: center;
         }
         
         .highlighted {
