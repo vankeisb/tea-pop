@@ -1,5 +1,5 @@
 import { attr, div, findWithParents, slot } from './HtmlBuilder';
-import { ItemSelectedEvent, Menu, MenuEventMap } from './Menu';
+import { ItemSelectedEvent, Menu } from './Menu';
 import { Box } from 'tea-pop-core';
 
 export type MenuItemListener = (item: MenuItem) => void;
@@ -101,22 +101,6 @@ export class MenuItem extends HTMLElement {
       }
     });
   }
-
-  // attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-  //   if (
-  //     oldValue !== newValue &&
-  //     MenuItem.observedAttributes.indexOf(name) !== -1
-  //   ) {
-  //     this.repaint();
-  //   }
-  // }
-
-  // private repaint() {
-  //   if (this._dom) {
-  //     this._dom.style.border = this.focused ? '1px solid black' : 'none';
-  //     this._dom.style.backgroundColor = this.mouseOver ? 'lightblue' : 'white';
-  //   }
-  // }
 
   findParentMenu(): Menu | null {
     return findWithParents(this, (e) => e instanceof Menu) as Menu;

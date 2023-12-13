@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-echo "*** core ***"
+echo "*** menu ***"
 
 npm run compile && npm run lint && npm run test

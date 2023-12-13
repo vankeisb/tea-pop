@@ -1,16 +1,26 @@
 #!/usr/bin/env bash
 
+set -e
+
 echo "Building tea-pop"
 
-yarn install && \
-yarn bomlint && \
+npm install && \
   cd core && \
   ./build.sh && \
-  cd ../menu && \
+  cd ../components/menu && \
   ./build.sh && \
-  cd ../dropdown && \
-  ./build.sh && \
-  cd ../combobox && \
-  ./build.sh && \
-  cd ../demo && \
+  cd ../sandbox && \
   ./build.sh
+
+#yarn install && \
+#yarn bomlint && \
+#  cd core && \
+#  ./build.sh && \
+#  cd ../menu && \
+#  ./build.sh && \
+#  cd ../dropdown && \
+#  ./build.sh && \
+#  cd ../combobox && \
+#  ./build.sh && \
+#  cd ../demo && \
+#  ./build.sh
