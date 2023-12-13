@@ -12,6 +12,7 @@
     "@carbon/icon-helpers": "^10.45.0",
     "@carbon/icons": "^11.31.0",
     "@carbon/type": "^11.25.0",
+    "mini-css-extract-plugin": "^2.7.6",
     "tea-cup-core": "^2.2.3",
     "tea-pop-core": "^5.0.0",
     "tea-pop-menu": "^5.0.0"

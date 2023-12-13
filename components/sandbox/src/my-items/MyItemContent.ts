@@ -1,10 +1,10 @@
 import {
+  attr,
   className,
   div,
   findWithParents,
   node,
   slot,
-  style,
   text,
 } from 'tea-pop-menu/dist/HtmlBuilder';
 
@@ -58,81 +58,38 @@ export class MyItemContent extends HTMLElement {
   connectedCallback() {
     const iconStr = this.getAttribute('icon');
     const icon = iconStr && ICONS[iconStr];
-    const iconNode = icon
-      ? toSVG({
-          ...icon,
-          attrs: getAttributes(icon.attrs),
-        })
-      : text('');
-
     const hasSubMenu = this.getAttribute('sub-menu') === 'true';
-    const subMenuNode = hasSubMenu
-      ? toSVG({
-          ...CaretRight,
-          attrs: getAttributes(CaretRight.attrs),
-        })
-      : text('');
 
     this._dom = div(
       [className('my-content-wrapper')],
       div(
-        [
-          style({
-            display: 'flex',
-            width: '16px',
-            paddingRight: '8px',
-          }),
-        ],
-        iconNode,
+        [className('my-icon')],
+        icon
+          ? toSVG({
+              ...icon,
+              attrs: getAttributes(icon.attrs),
+            })
+          : text(''),
       ),
+      div([className('my-label')], slot([], text('no content'))),
       div(
-        [
-          style({
-            paddingRight: '16px',
-          }),
-        ],
-        slot([], text('no content')),
+        [className('my-sub')],
+        hasSubMenu
+          ? toSVG({
+              ...CaretRight,
+              attrs: getAttributes(CaretRight.attrs),
+            })
+          : text(''),
       ),
-      div(
-        [
-          style({
-            position: 'absolute',
-            width: '16px',
-            right: '0',
-            display: 'flex',
-          }),
-        ],
-        subMenuNode,
-      ),
-    );
-
-    const styleNode = node('style')(
-      [],
-      text(`
-        .my-content-wrapper {
-          position: relative;
-          display: flex;
-          flex-direction: row;
-          padding-top: 4px;
-          padding-bottom: 4px;
-          padding-left: 4px;
-          border: 1px solid white;
-          box-sizing: border-box;
-          align-items: center;
-        }
-        
-        .highlighted {
-          background-color: lightblue;
-        }
-        
-        .focused {
-          border: 1px solid black;
-        }
-    `),
     );
 
     const shadow = this.attachShadow({ mode: 'closed' });
-    shadow.appendChild(styleNode);
+
+    const link = node('link')([
+      attr('rel', 'stylesheet'),
+      attr('href', 'style.css'),
+    ]);
+    shadow.appendChild(link);
     shadow.appendChild(this._dom);
 
     this._parentItem = this.findParentItem();

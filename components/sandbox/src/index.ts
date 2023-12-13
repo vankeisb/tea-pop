@@ -2,7 +2,6 @@ import { Dim, box, pos } from 'tea-pop-core';
 import { Menu, MenuItem } from 'tea-pop-menu';
 import * as TPM from 'tea-pop-menu';
 
-import './style.scss';
 import { ItemSeparator } from './my-items/ItemSeparator';
 import { MyItemContent } from './my-items/MyItemContent';
 import { className, div, text } from 'tea-pop-menu/dist/HtmlBuilder';

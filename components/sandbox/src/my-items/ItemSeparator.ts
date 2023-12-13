@@ -1,4 +1,4 @@
-import { div, style } from 'tea-pop-menu/dist/HtmlBuilder';
+import { attr, className, div, node } from 'tea-pop-menu/dist/HtmlBuilder';
 
 export class ItemSeparator extends HTMLElement {
   constructor() {
@@ -6,13 +6,12 @@ export class ItemSeparator extends HTMLElement {
   }
 
   connectedCallback() {
-    this.attachShadow({ mode: 'closed' }).appendChild(
-      div([
-        style({
-          backgroundColor: 'lightgray',
-          height: '1px',
-        }),
-      ]),
-    );
+    const shadow = this.attachShadow({ mode: 'closed' });
+    const link = node('link')([
+      attr('rel', 'stylesheet'),
+      attr('href', 'style.css'),
+    ]);
+    shadow.appendChild(link);
+    shadow.appendChild(div([className('my-separator')]));
   }
 }
