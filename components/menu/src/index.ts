@@ -23,13 +23,4 @@
  *
  */
 
-import { Menu } from './Menu';
-import { MenuItem } from './MenuItem';
-
 export * from './Menu';
-export * from './MenuItem';
-
-export function defineCustomElements() {
-  customElements.define('tp-menu', Menu);
-  customElements.define('tp-menu-item', MenuItem);
-}

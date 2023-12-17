@@ -33,7 +33,7 @@ export function className<
   N extends HTMLElementTagNameMap[K]
 >(className: string): Attr<K, N> {
   return (n) => {
-    n.className = className;
+    n.classList.add(className);
   };
 }
 
