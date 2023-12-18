@@ -3,18 +3,52 @@
 @include reset();
 
 #scroller {
-    width: 3000px;
-    height: 3000px;
-    background-color: gray;
-    display: none;
+  width: 3000px;
+  height: 3000px;
+  background-color: gray;
+  display: none;
 }
 
 .tp-menu {
-    border: 1px solid lightgray;
-    //box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid lightgray;
 }
 
 .my-item:hover {
-    background-color: lightblue;
+  background-color: lightblue;
+  cursor: pointer;
+}
+
+.my-separator {
+  height: 1px;
+  background-color: lightgray;
+}
+
+.my-item-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+
+  &:hover {
+    background-color: lightgray;
     cursor: pointer;
+  }
+
+  .my-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+  }
+
+  .my-label {
+    flex-grow: 1;
+    padding-right: 16px;
+  }
+
+  .my-sub-icon {
+    position: absolute;
+    width: 16px;
+    right: 0;
+    display: flex;
+  }
 }

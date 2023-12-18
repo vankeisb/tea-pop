@@ -6,7 +6,9 @@
   "private": "true",
   "scripts": {
     "build": "webpack",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open",
+    "lint": "eslint '**/*.{js,ts}'",
+    "prettify": "prettier --write src"
   },
   "dependencies": {
     "@carbon/icon-helpers": "^10.45.0",

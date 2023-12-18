@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Rémi Van Keisbelck
+ * Copyright (c) 2023 Rémi Van Keisbelck
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,42 @@
  *
  */
 
-import {className, div} from "./HtmlBuilder";
-import {Box, dim, place} from "tea-pop-core";
+import { className, div } from './HtmlBuilder';
+import { Box, dim, place } from 'tea-pop-core';
+
+export interface MenuEventMap<T> {
+  open: OpenEvent<T>;
+  close: CloseEvent<T>;
+  itemSelected: ItemSelectedEvent<T>;
+}
+
+export type MenuListener<T, K extends keyof MenuEventMap<T>> = (evt: MenuEventMap<T>[K]) => void;
+
+export interface CloseEvent<T> {
+  readonly menu: Menu<T>;
+}
+
+export interface OpenEvent<T> {
+  readonly menu: Menu<T>;
+}
+
+export interface ItemSelectedEvent<T> {
+  readonly menu: Menu<T>;
+  readonly item: MenuItem<T>;
+}
 
 export type ElementRenderer<T> = (element: MenuElement<T>) => HTMLDivElement;
 
 class Handle<K extends keyof HTMLElementEventMap> {
   readonly elem: HTMLElement;
   readonly type: K;
-  readonly listener: (evt:HTMLElementEventMap[K]) => void;
+  readonly listener: (evt: HTMLElementEventMap[K]) => void;
 
-  constructor(elem: HTMLElement, type: K, listener: (evt:HTMLElementEventMap[K]) => void) {
+  constructor(
+    elem: HTMLElement,
+    type: K,
+    listener: (evt: HTMLElementEventMap[K]) => void,
+  ) {
     this.elem = elem;
     this.type = type;
     this.listener = listener;
@@ -46,29 +71,52 @@ class Handle<K extends keyof HTMLElementEventMap> {
 }
 
 export type MenuElement<T> =
-  | { tag: 'item', item: MenuItem<T> }
-  | { tag: 'separator' }
+  | { tag: 'item'; item: MenuItem<T> }
+  | { tag: 'separator' };
 
 export class Menu<T> {
-
   private _elements: readonly MenuElement<T>[] = [];
   private _itemElems: HTMLElement[] = [];
   private _elem?: HTMLElement;
   private readonly _renderer: ElementRenderer<T>;
   private _subMenu?: Menu<T>;
-
   private _handles: Handle<any>[] = [];
+  private _listeners: Map<keyof MenuEventMap<T>, MenuListener<T, any>[]> = new Map();
 
-  constructor(renderer: ElementRenderer<T>, elements: readonly MenuElement<T>[]) {
+  constructor(
+    renderer: ElementRenderer<T>,
+    elements: readonly MenuElement<T>[],
+  ) {
     this._renderer = renderer;
     this._elements = elements;
   }
 
-  private readonly docMouseDown = (e: MouseEvent) => {
-    this.close();
+  private isInsideMenu(e: EventTarget | null): boolean {
+    if (e instanceof HTMLElement) {
+      if (e.classList.contains("tp-menu")) {
+        return true;
+      }
+      if (e.parentElement) {
+        return this.isInsideMenu(e.parentElement);
+      }
+    }
+    return false;
   }
 
-  private own<K extends keyof HTMLElementEventMap>(elem: HTMLElement, type: K, listener: (e: HTMLElementEventMap[K]) => void): (e:HTMLElementEventMap[K]) => void {
+  private readonly docMouseDown = (e: MouseEvent) => {
+    if (this._elem) {
+      if (!this.isInsideMenu(e.target)) {
+        debugger;
+        this.close();
+      }
+    }
+  };
+
+  private own<K extends keyof HTMLElementEventMap>(
+    elem: HTMLElement,
+    type: K,
+    listener: (e: HTMLElementEventMap[K]) => void,
+  ): (e: HTMLElementEventMap[K]) => void {
     const h = new Handle(elem, type, listener);
     this._handles.push(h);
     return listener;
@@ -80,11 +128,14 @@ export class Menu<T> {
     }
     this._itemElems = [];
     const elem = div([className('tp-menu')]);
-    this._elements.forEach((item, itemIndex) => {
+    this._elements.forEach((item) => {
       const itemElem = this._renderer(item);
-      if (item.tag === "item") {
+      if (item.tag === 'item') {
         this.own(itemElem, 'mouseenter', () => {
           this.openSubMenu(item.item, itemElem);
+        });
+        this.own(itemElem, 'click', (e) => {
+          this.fireEvent('itemSelected', { menu: this, item: item.item });
         });
       }
       this._itemElems.push(itemElem);
@@ -106,14 +157,15 @@ export class Menu<T> {
     elem.style.top = placedBox.p.y + 'px';
     elem.style.left = placedBox.p.x + 'px';
     elem.style.visibility = 'visible';
-    elem.classList.add("tp-open");
+    elem.classList.add('tp-open');
     document.addEventListener('mousedown', this.docMouseDown);
+    this.fireEvent('open', { menu: this });
   }
 
   close() {
     this.closeSubMenu();
-    this._handles.forEach(h => h.remove());
-    this._itemElems.forEach(ie => {
+    this._handles.forEach((h) => h.remove());
+    this._itemElems.forEach((ie) => {
       ie.remove();
     });
     this._itemElems = [];
@@ -121,8 +173,20 @@ export class Menu<T> {
       this._elem.remove();
     }
     this._elem = undefined;
-
     document.removeEventListener('mousedown', this.docMouseDown);
+    this.fireEvent('close', { menu: this });
+  }
+
+  addEventListener<K extends keyof MenuEventMap<T>>(
+    type: K,
+    listener: (evt:MenuEventMap<T>[K]) => void,
+  ) {
+    let l = this._listeners.get(type);
+    if (!l) {
+      l = [];
+      this._listeners.set(type, l);
+    }
+    l.push(listener);
   }
 
   private openSubMenu(item: MenuItem<T>, itemElem: HTMLElement) {
@@ -142,10 +206,17 @@ export class Menu<T> {
     }
   }
 
+  private fireEvent<K extends keyof MenuEventMap<T>>(type: K, evt: MenuEventMap<T>[K]) {
+    const listeners = this._listeners.get(type);
+    if (listeners) {
+      listeners.forEach((l) => {
+        l(evt);
+      });
+    }
+  }
 }
 
 export class MenuItem<T> {
-
   readonly data: T;
   readonly subMenu?: () => Menu<T>;
 
@@ -153,10 +224,12 @@ export class MenuItem<T> {
     this.data = data;
     this.subMenu = subMenu;
   }
-
 }
 
-export function menu<T>(renderer: ElementRenderer<T>, ...items: readonly MenuElement<T>[]): Menu<T> {
+export function menu<T>(
+  renderer: ElementRenderer<T>,
+  ...items: readonly MenuElement<T>[]
+): Menu<T> {
   return new Menu<T>(renderer, items);
 }
 
@@ -165,38 +238,16 @@ export function item<T>(data: T, subMenu?: () => Menu<T>): MenuElement<T> {
 }
 
 function toElem<T>(item: MenuItem<T>): MenuElement<T> {
-  return { tag: "item", item };
+  return { tag: 'item', item };
 }
 
-export const separator: MenuElement<never> = { tag: "separator" }
+export const separator: MenuElement<never> = { tag: 'separator' };
 
 //
 // import { Box, dim, place } from 'tea-pop-core';
 // import { div, findWithParents, slot, style } from './HtmlBuilder';
 // import { MenuItem } from './MenuItem';
 //
-// export type MenuListener<K extends keyof MenuEventMap> = (
-//   evt: MenuEventMap[K],
-// ) => void;
-//
-// export interface MenuEventMap {
-//   open: OpenEvent;
-//   close: CloseEvent;
-//   itemSelected: ItemSelectedEvent;
-// }
-//
-// export interface CloseEvent {
-//   readonly menu: Menu;
-// }
-//
-// export interface OpenEvent {
-//   readonly menu: Menu;
-// }
-//
-// export interface ItemSelectedEvent {
-//   readonly menu: Menu;
-//   readonly item: MenuItem;
-// }
 //
 // export class Menu extends HTMLElement {
 //   private readonly listeners: Map<
