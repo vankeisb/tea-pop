@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 echo "Publishing tea-pop-core..."
-yarn --cwd core publish
+cd core && npm publish
 echo "Publishing tea-pop-menu..."
-yarn --cwd menu publish
+cd menu && npm publish
 echo "Publishing tea-pop-dropdown..."
-yarn --cwd dropdown publish
+cd dropdown && npm publish
 echo "Publishing tea-pop-combobox..."
-yarn --cwd combobox publish
+cd combobox && publish
