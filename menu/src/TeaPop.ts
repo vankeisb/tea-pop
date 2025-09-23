@@ -45,7 +45,7 @@ import {
   Task,
   Tuple,
   uuid,
-} from 'tea-cup-core';
+} from 'tea-cup-fp';
 import { initialModel, keyboardNavigated, Model } from './Model';
 import { Menu, MenuItem, menuItemTask, menuTask } from './Menu';
 import { dim, Dim, Box, place } from 'tea-pop-core';

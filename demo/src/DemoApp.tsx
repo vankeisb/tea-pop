@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple } from "tea-cup-core";
+import { Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple } from "tea-cup-fp";
 import { homeModel, Model, Page } from "./Model";
 import {
   comboPageMsg,

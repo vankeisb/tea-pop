@@ -18,6 +18,6 @@
   "scripts": {
     "release:gh": "gren release",
     "release:changelog": "gren changelog --tags all --generate --override",
-    "bomlint": "bomlint --allow-conflicts react package.json ./combobox/package.json ./core/package.json ./demo/package.json ./dropdown/package.json ./menu/package.json"
+    "bomlint": "bomlint package.json ./combobox/package.json ./core/package.json ./demo/package.json ./dropdown/package.json ./menu/package.json"
   }
 }

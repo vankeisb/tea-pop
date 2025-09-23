@@ -35,7 +35,7 @@ import {
   Sub,
   Task,
   uuid,
-} from 'tea-cup-core';
+} from 'tea-cup-fp';
 import { DocumentEvents } from 'react-tea-cup';
 
 export type Model =
