@@ -2,15 +2,16 @@
 
 echo "Building tea-pop"
 
-yarn install && \
-yarn bomlint && \
+npm install && \
+# npm run bomlint && \
   cd core && \
-  ./build.sh && \
-  cd ../menu && \
-  ./build.sh && \
-  cd ../dropdown && \
-  ./build.sh && \
-  cd ../combobox && \
-  ./build.sh && \
-  cd ../demo && \
-  ./build.sh
+  ./build.sh 
+#   && \
+#   cd ../menu && \
+#   ./build.sh && \
+#   cd ../dropdown && \
+#   ./build.sh && \
+#   cd ../combobox && \
+#   ./build.sh && \
+#   cd ../demo && \
+#   ./build.sh

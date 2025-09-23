@@ -26,7 +26,7 @@
 export class Dim {
   constructor(readonly w: number, readonly h: number) {}
 
-  static zero: Dim = dim(0);
+  static zero: Dim = new Dim(0, 0);
 }
 
 export function dim(w: number, h?: number): Dim {

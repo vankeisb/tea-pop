@@ -9,7 +9,7 @@
     "jest-enzyme": "^7.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "3.4.3",
+    "react-scripts": "^5.0.1",
     "react-tea-cup": "^2.2.1",
     "tea-cup-core": "^2.2.1",
     "tea-pop-combobox": "5.0.0",
