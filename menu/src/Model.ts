@@ -24,7 +24,7 @@
  */
 
 import { Menu } from './Menu';
-import { Maybe, nothing } from 'tea-cup-core';
+import { Maybe, nothing } from 'tea-cup-fp';
 import { Box, Dim } from 'tea-pop-core';
 
 export interface Model<T> {

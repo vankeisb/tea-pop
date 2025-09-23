@@ -35,7 +35,7 @@ import {
   Tuple,
   updatePiped,
   uuid,
-} from 'tea-cup-core';
+} from 'tea-cup-fp';
 import { Box } from 'tea-pop-core';
 import { dropDownOpen, dropDownUpdate } from 'tea-pop-dropdown';
 import { Provider } from './Provider';

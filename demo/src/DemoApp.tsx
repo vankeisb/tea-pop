@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple } from "tea-cup-core";
+import { Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple } from "tea-cup-fp";
 import { homeModel, Model, Page } from "./Model";
 import {
   comboPageMsg,
@@ -217,6 +217,8 @@ export function onUrlChange(l: Location): Msg {
   };
 }
 
+const devTools = new DevTools<Model, Msg>().setVerbose(true).asGlobal();
+
 export const DemoApp = () => (
   <ProgramWithNav
     onUrlChange={onUrlChange}
@@ -224,6 +226,6 @@ export const DemoApp = () => (
     view={view}
     update={update}
     subscriptions={subscriptions}
-    devTools={DevTools.init<Model, Msg>(window)}
+    {...devTools.getProgramProps()}
   />
 );

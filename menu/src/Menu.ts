@@ -30,7 +30,7 @@ import {
   maybeOf,
   nothing,
   Task,
-} from 'tea-cup-core';
+} from 'tea-cup-fp';
 
 export class Menu<T> {
   constructor(private readonly elements: ListWithSelection<MenuElement<T>>) {}

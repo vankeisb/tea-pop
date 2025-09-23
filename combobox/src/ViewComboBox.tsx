@@ -24,7 +24,7 @@
  */
 
 import * as React from 'react';
-import { Dispatcher } from 'tea-cup-core';
+import { Dispatcher } from 'tea-cup-fp';
 import { ViewDropDown } from 'tea-pop-dropdown';
 import { Renderer } from './Renderer';
 import { comboHtmlId, comboItemHtmlId, Model } from './Model';
