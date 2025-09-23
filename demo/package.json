@@ -8,10 +8,10 @@
     "react-dom": "^19.0.0",
     "react-tea-cup": "^5.0.0",
     "tea-cup-fp": "^1.0.0",
-    "tea-pop-combobox": "5.0.0",
-    "tea-pop-core": "5.0.0",
-    "tea-pop-dropdown": "5.0.0",
-    "tea-pop-menu": "5.0.0"
+    "tea-pop-combobox": "6.0.0",
+    "tea-pop-core": "6.0.0",
+    "tea-pop-dropdown": "6.0.0",
+    "tea-pop-menu": "6.0.0"
   },
   "scripts": {
     "start": "vite",

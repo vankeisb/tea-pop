@@ -1,6 +1,6 @@
 {
   "name": "tea-pop-core",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Popup menu for react-tea-cup",
   "author": "Rémi Van Keisbelck <remi@rvkb.com>",
   "license": "MIT",
