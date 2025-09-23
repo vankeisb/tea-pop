@@ -2,4 +2,4 @@
 
 echo "*** menu ***"
 
-yarn compile
+npm run compile

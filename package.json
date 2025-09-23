@@ -2,7 +2,11 @@
   "name": "tea-pop-parent",
   "private": true,
   "workspaces": [
-    "core"
+    "core",
+    "menu",
+    "dropdown",
+    "combobox",
+    "demo"
   ],
   "devDependencies": {
     "github-release-notes": "0.17.2",

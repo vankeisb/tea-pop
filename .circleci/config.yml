@@ -5,7 +5,7 @@ orbs:
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:gallium
+    - image: circleci/node:jod
 
 jobs:
   build:
@@ -56,7 +56,7 @@ jobs:
       - run: git config user.name "vankeisb-ci"
       - run:
           name: Deploy docs to gh-pages branch
-          command: cd demo && yarn gh-pages
+          command: cd demo && npm run gh-pages
 
   deploy:
     <<: *defaults
@@ -95,4 +95,3 @@ workflows:
               only: /\d+\.\d+\.\d+/
             branches:
               only: main
-
