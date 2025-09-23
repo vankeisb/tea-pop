@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.0 (26/09/2022)
+*No changelog for this release.*
+
+---
+
 ## 4.2.1 (26/09/2022)
 *No changelog for this release.*
 

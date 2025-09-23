@@ -30,7 +30,7 @@ export class Pos {
     return new Pos(this.x + p.x, this.y + p.y);
   }
 
-  static origin: Pos = pos(0, 0);
+  static origin: Pos = new Pos(0, 0);
 }
 
 export function pos(x: number, y: number): Pos {

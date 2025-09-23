@@ -24,7 +24,7 @@
  */
 
 import { Dim, Box } from 'tea-pop-core';
-import { Result } from 'tea-cup-core';
+import { Result } from 'tea-cup-fp';
 import { MenuItem } from './Menu';
 
 export type Msg<T> =

@@ -1,11 +1,11 @@
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.1.1
+  browser-tools: circleci/browser-tools@1.4.6
 
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:erbium
+    - image: cimg/node:22.19.0
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
   webtests:
     working_directory: ~/repo
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: cimg/openjdk:17.0-browsers
     environment:
       DISPLAY: :99
 
@@ -56,7 +56,7 @@ jobs:
       - run: git config user.name "vankeisb-ci"
       - run:
           name: Deploy docs to gh-pages branch
-          command: cd demo && yarn gh-pages
+          command: cd demo && npm run gh-pages
 
   deploy:
     <<: *defaults
@@ -95,4 +95,3 @@ workflows:
               only: /\d+\.\d+\.\d+/
             branches:
               only: main
-

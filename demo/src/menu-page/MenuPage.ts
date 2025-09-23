@@ -1,12 +1,12 @@
 // just to avoid too much typing
-import {item, menu, Menu, Model as MenuModel, separator} from "tea-pop-menu";
-import {Maybe} from "tea-cup-core";
-import {Pos} from "tea-pop-core";
+import { item, menu, Menu, Model as MenuModel, separator } from "tea-pop-menu";
+import { Maybe } from "tea-cup-fp";
+import { Pos } from "tea-pop-core";
 
-export type MyMenuModel = MenuModel<string>
+export type MyMenuModel = MenuModel<string>;
 
 export interface MenuPage {
-  tag: 'menu';
+  tag: "menu";
   readonly mousePos: Pos;
   // ref to the tea-pop model
   readonly menuModel: Maybe<MyMenuModel>;
@@ -14,17 +14,14 @@ export interface MenuPage {
   readonly lastClicked: Maybe<string>;
 }
 
-export const mySubMenu2: Menu<string> = menu([
-  item("Try"),
-  item("Finally")
-])
+export const mySubMenu2: Menu<string> = menu([item("Try"), item("Finally")]);
 
 export const mySubMenu1: Menu<string> = menu([
   item("Do this"),
   item("Do that"),
   separator,
-  item("Another sub menu...", mySubMenu2)
-])
+  item("Another sub menu...", mySubMenu2),
+]);
 
 export const myMenu: Menu<string> = menu([
   item("Yalla", mySubMenu1),
@@ -33,5 +30,5 @@ export const myMenu: Menu<string> = menu([
   item("Cut"),
   item("Paste"),
   separator,
-  item("I am a bit longer")
+  item("I am a bit longer"),
 ]);

@@ -23,7 +23,7 @@
  *
  */
 
-import { Result } from 'tea-cup-core';
+import { Result } from 'tea-cup-fp';
 import { DropDownMsg } from 'tea-pop-dropdown';
 
 export type Msg<T> =

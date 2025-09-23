@@ -2,4 +2,4 @@
 
 echo "*** dropdown ***"
 
-yarn compile
+npm run compile

@@ -26,7 +26,7 @@
 import * as React from 'react';
 import { Menu, menuId, MenuItem, menuItemId } from './Menu';
 import { childMsg, Msg } from './Msg';
-import { Dispatcher, map } from 'tea-cup-core';
+import { Dispatcher, map } from 'tea-cup-fp';
 import { ItemRenderer } from './ItemRenderer';
 import { Model } from './Model';
 import { stopEvent } from 'tea-pop-core';

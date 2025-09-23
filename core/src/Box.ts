@@ -23,7 +23,7 @@
  *
  */
 
-import { pos, Pos } from './Pos';
+import { Pos, pos } from './Pos';
 import { dim, Dim } from './Dim';
 
 export class Box {
@@ -68,7 +68,9 @@ export class Box {
   }
 
   isBoxInside(box: Box): boolean {
-    return this.isPointInside(box.topLeft) && this.isPointInside(box.bottomRight);
+    return (
+      this.isPointInside(box.topLeft) && this.isPointInside(box.bottomRight)
+    );
   }
 }
 

@@ -23,7 +23,7 @@
  *
  */
 
-import { ListWithSelection, Maybe, nothing, Result } from 'tea-cup-core';
+import { ListWithSelection, Maybe, nothing, Result } from 'tea-cup-fp';
 import { DropDownModel } from 'tea-pop-dropdown';
 
 export interface Model<T> {

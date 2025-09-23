@@ -4,25 +4,18 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@types/node": "10.12.19",
-    "@types/react-dom": "16.0.11",
-    "jest-enzyme": "^7.1.1",
-    "node-sass": "4.14.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "3.4.3",
-    "react-tea-cup": "^2.2.1",
-    "tea-cup-core": "^2.2.1",
-    "tea-pop-core": "5.0.0",
-    "tea-pop-dropdown": "5.0.0",
-    "tea-pop-combobox": "5.0.0",
-    "tea-pop-menu": "5.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-tea-cup": "^5.0.0",
+    "tea-cup-fp": "^1.0.0",
+    "tea-pop-combobox": "6.0.0",
+    "tea-pop-core": "6.0.0",
+    "tea-pop-dropdown": "6.0.0",
+    "tea-pop-menu": "6.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
     "gh-pages": "gh-pages -d build -m 'demo [ci skip]'"
   },
   "eslintConfig": {},
@@ -33,8 +26,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@types/jest": "^23.3.14",
+    "@types/react-dom": "^19.0.0",
     "gh-pages": "^3.1.0",
-    "ts-jest": "^24.1.0"
+    "sass-embedded": "^1.93.1"
   }
 }
