@@ -27,6 +27,7 @@ import { dim, Dim } from './Dim';
 import { Box, box } from './Box';
 import { pos } from './Pos';
 import { place } from './Popover';
+import { describe, expect, test } from 'vitest';
 
 describe('popover 2 tests', () => {
   const viewport: Dim = dim(100);

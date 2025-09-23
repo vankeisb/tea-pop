@@ -2,4 +2,4 @@
 
 echo "*** core ***"
 
-yarn compile && yarn test
+npm run compile && npm run test

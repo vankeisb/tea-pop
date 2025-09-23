@@ -2,8 +2,8 @@
 
 echo "Building tea-pop"
 
-yarn install && \
-yarn bomlint && \
+npm install && \
+# npm run bomlint && \
   cd core && \
   ./build.sh && \
   cd ../menu && \

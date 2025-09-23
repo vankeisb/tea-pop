@@ -2,4 +2,4 @@
 
 echo "*** combo-box ***"
 
-yarn compile
+npm run compile

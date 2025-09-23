@@ -1,63 +1,86 @@
 import * as React from "react";
-import {Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple} from "tea-cup-core";
-import {homeModel, Model, Page} from "./Model";
-import {comboPageMsg, dropDownPageMsg, menuPageMsg, Msg, navigate, noop, placementPageMsg} from "./Msg";
-import {Route, router, routeToUrl} from "./routes";
-import {viewMenuPage} from "./menu-page/ViewMenuPage";
-import {menuPageInit, menuPageSubs, menuPageUpdate} from "./menu-page/Update";
+import { Cmd, Dispatcher, map, noCmd, Sub, Task, Tuple } from "tea-cup-core";
+import { homeModel, Model, Page } from "./Model";
+import {
+  comboPageMsg,
+  dropDownPageMsg,
+  menuPageMsg,
+  Msg,
+  navigate,
+  noop,
+  placementPageMsg,
+} from "./Msg";
+import { Route, router, routeToUrl } from "./routes";
+import { viewMenuPage } from "./menu-page/ViewMenuPage";
+import { menuPageInit, menuPageSubs, menuPageUpdate } from "./menu-page/Update";
 
-import './App.scss';
-import {viewDropDownPage} from "./dropdown-page/ViewDropDownPage";
-import {dropDownPageInit, dropDownPageSubs, dropDownPageUpdate} from "./dropdown-page/Update";
-import {placementPageInit, placementPageSubs, placementPageUpdate} from "./placement-page/Update";
-import {viewPlacementPage} from "./placement-page/ViewPlacementPage";
-import {DevTools, newUrl, ProgramWithNav} from "react-tea-cup";
-import { comboPageInit, comboPageSubs, comboPageUpdate } from "./combo-page/Update";
+import "./App.scss";
+import { viewDropDownPage } from "./dropdown-page/ViewDropDownPage";
+import {
+  dropDownPageInit,
+  dropDownPageSubs,
+  dropDownPageUpdate,
+} from "./dropdown-page/Update";
+import {
+  placementPageInit,
+  placementPageSubs,
+  placementPageUpdate,
+} from "./placement-page/Update";
+import { viewPlacementPage } from "./placement-page/ViewPlacementPage";
+import { DevTools, newUrl, ProgramWithNav } from "react-tea-cup";
+import {
+  comboPageInit,
+  comboPageSubs,
+  comboPageUpdate,
+} from "./combo-page/Update";
 import { viewComboPage } from "./combo-page/ViewComboPage";
 
 function init(l: Location): [Model, Cmd<Msg>] {
-  return router.parseLocation(l)
+  return (
+    router
+      .parseLocation(l)
       // eslint-disable-next-line array-callback-return
-      .map(route => {
+      .map((route) => {
         switch (route) {
           case "home": {
             return initHome();
           }
           case "menu": {
             return Tuple.fromNative(menuPageInit())
-                .mapFirst(page => ({
-                  page
-                }))
-                .mapSecond(c => c.map(menuPageMsg))
-                .toNative();
+              .mapFirst((page) => ({
+                page,
+              }))
+              .mapSecond((c) => c.map(menuPageMsg))
+              .toNative();
           }
           case "dropdown": {
             return Tuple.fromNative(dropDownPageInit())
-                .mapFirst(page => ({
-                  page
-                }))
-                .mapSecond(c => c.map(dropDownPageMsg))
-                .toNative();
+              .mapFirst((page) => ({
+                page,
+              }))
+              .mapSecond((c) => c.map(dropDownPageMsg))
+              .toNative();
           }
           case "placement": {
             return Tuple.fromNative(placementPageInit())
-                .mapFirst(page => ({
-                  page
-                }))
-                .mapSecond(c => c.map(placementPageMsg))
-                .toNative();
+              .mapFirst((page) => ({
+                page,
+              }))
+              .mapSecond((c) => c.map(placementPageMsg))
+              .toNative();
           }
-          case "combo": { 
+          case "combo": {
             return Tuple.fromNative(comboPageInit())
-                .mapFirst(page => ({
-                  page
-                }))
-                .mapSecond(c => c.map(comboPageMsg))
-                .toNative();
+              .mapFirst((page) => ({
+                page,
+              }))
+              .mapSecond((c) => c.map(comboPageMsg))
+              .toNative();
           }
         }
       })
       .withDefaultSupply(() => initHome())
+  );
 }
 
 function initHome(): [Model, Cmd<Msg>] {
@@ -65,13 +88,17 @@ function initHome(): [Model, Cmd<Msg>] {
 }
 
 function link(dispatch: Dispatcher<Msg>, route: Route, text: string) {
-  // eslint-disable-next-line jsx-a11y/anchor-is-valid
-  return <a href={'#'} onClick={e => {
-    e.preventDefault();
-    dispatch(navigate(route));
-  }}>
-    {text}
-  </a>
+  return (
+    <a
+      href={"#"}
+      onClick={(e) => {
+        e.preventDefault();
+        dispatch(navigate(route));
+      }}
+    >
+      {text}
+    </a>
+  );
 }
 
 function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
@@ -79,24 +106,16 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
   switch (page.tag) {
     case "home": {
       return (
-          <>
-            <h1>tea-pop demo app</h1>
-            <ul>
-              <li>
-                {link(dispatch, 'menu', "Context menu")}
-              </li>
-              <li>
-                {link(dispatch, 'dropdown', "Drop-down")}
-              </li>
-              <li>
-                {link(dispatch, 'combo', "Combobox")}
-              </li>
-              <li>
-                {link(dispatch, 'placement', "Live placement")}
-              </li>
-            </ul>
-          </>
-      )
+        <>
+          <h1>tea-pop demo app</h1>
+          <ul>
+            <li>{link(dispatch, "menu", "Context menu")}</li>
+            <li>{link(dispatch, "dropdown", "Drop-down")}</li>
+            <li>{link(dispatch, "combo", "Combobox")}</li>
+            <li>{link(dispatch, "placement", "Live placement")}</li>
+          </ul>
+        </>
+      );
     }
     case "menu": {
       return viewMenuPage(map(dispatch, menuPageMsg), page);
@@ -113,18 +132,17 @@ function view(dispatch: Dispatcher<Msg>, model: Model): React.ReactNode {
   }
 }
 
-function updatePage<P extends Page,M>(
-  msg: M, 
-  page: P, 
-  updateF: (m:M, p:P) => [P, Cmd<M>],
-  liftF: (m:M) => Msg
+function updatePage<P extends Page, M>(
+  msg: M,
+  page: P,
+  updateF: (m: M, p: P) => [P, Cmd<M>],
+  liftF: (m: M) => Msg
 ): [Model, Cmd<Msg>] {
   const mac: [P, Cmd<M>] = updateF(msg, page);
   const newModel: Model = { page: mac[0] };
   const cmd: Cmd<Msg> = mac[1].map(liftF);
   return Tuple.t2n(newModel, cmd);
 }
-
 
 function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
   switch (msg.tag) {
@@ -160,7 +178,10 @@ function update(msg: Msg, model: Model): [Model, Cmd<Msg>] {
       return updatePage(msg.msg, page, comboPageUpdate, comboPageMsg);
     }
     case "navigate": {
-      return Tuple.t2n(model, Task.perform(newUrl(routeToUrl(msg.route)), () => noop));
+      return Tuple.t2n(
+        model,
+        Task.perform(newUrl(routeToUrl(msg.route)), () => noop)
+      );
     }
     case "noop": {
       return noCmd(model);
@@ -186,24 +207,23 @@ function subscriptions(model: Model): Sub<Msg> {
     default: {
       return Sub.none();
     }
-    
   }
 }
 
 export function onUrlChange(l: Location): Msg {
   return {
     tag: "url-change",
-    l
-  }
+    l,
+  };
 }
 
 export const DemoApp = () => (
-    <ProgramWithNav
-        onUrlChange={onUrlChange}
-        init={init}
-        view={view}
-        update={update}
-        subscriptions={subscriptions}
-        devTools={DevTools.init<Model, Msg>(window)}
-    />
-)
+  <ProgramWithNav
+    onUrlChange={onUrlChange}
+    init={init}
+    view={view}
+    update={update}
+    subscriptions={subscriptions}
+    devTools={DevTools.init<Model, Msg>(window)}
+  />
+);
