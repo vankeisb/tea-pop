@@ -3,7 +3,7 @@
 echo "Building tea-pop"
 
 npm install && \
-# npm run bomlint && \
+  npm run bomlint && \
   cd core && \
   ./build.sh && \
   cd ../menu && \
