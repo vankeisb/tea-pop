@@ -16,7 +16,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "gh-pages": "gh-pages -d build -m 'demo [ci skip]'"
+    "gh-pages": "gh-pages -d dist -m 'demo [ci skip]'"
   },
   "eslintConfig": {},
   "browserslist": [
