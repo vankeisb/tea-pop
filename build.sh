@@ -4,6 +4,8 @@ echo "Building tea-pop"
 
 npm cache clean --force
 
+node -v
+
 npm install && \
   npm run bomlint && \
   cd core && \
