@@ -1,8 +1,8 @@
 {
-  "tea-pop-combobox": "6.0.0",
-  "tea-pop-core": "6.0.0",
-  "tea-pop-dropdown": "6.0.0",
-  "tea-pop-menu": "6.0.0",
+  "tea-pop-combobox": "6.0.1",
+  "tea-pop-core": "6.0.1",
+  "tea-pop-dropdown": "6.0.1",
+  "tea-pop-menu": "6.0.1",
   "react-tea-cup": "^5.0.2",
   "tea-cup-fp": "^1.0.2",
   "react": "^19.0.0",
