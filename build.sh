@@ -2,6 +2,8 @@
 
 echo "Building tea-pop"
 
+npm cache clean --force
+
 node -v
 
 npm i
