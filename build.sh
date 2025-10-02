@@ -7,7 +7,10 @@ npm cache clean --force
 node -v
 
 npm i
-ll node_modules
+
+echo "node modules :"
+
+ls -la node_modules
 
 npm install && \
   npm run bomlint && \
