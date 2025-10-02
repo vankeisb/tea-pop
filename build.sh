@@ -13,6 +13,6 @@ npm ci && \
   cd ../dropdown && \
   ./build.sh && \
   cd ../combobox && \
-  ./build.sh && \
-  cd ../demo && \
-  ./build.sh
+  ./build.sh && cd .. 
+
+cd ./demo && npm i && ./build.sh
