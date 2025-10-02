@@ -13,7 +13,14 @@ jobs:
 
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: ./build.sh
+      - save_cache:
+          key: *cache-v1
+          paths:
+            - node_modules
       - persist_to_workspace:
           root: ~/repo
           paths: .
