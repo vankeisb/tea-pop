@@ -15,10 +15,10 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - &mykey
       - run: ./build.sh
       - save_cache:
-          key: *cache-v1
+          key: *mykey
           paths:
             - node_modules
       - persist_to_workspace:
