@@ -1,26 +1,22 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "esnext",
-        "resolveJsonModule": true,
-        "moduleResolution": "bundler",
-        "noEmit": true,
-        "jsx": "preserve",
-        "inlineSourceMap": true,
-        "inlineSources": true
-    },
     "include": [
         "src"
+    ],
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "declaration": true,
+        "outDir": "./build",
+        "strict": true,
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "esModuleInterop": true,
+        "jsx": "react"
+    },
+    "compileOnSave": true,
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.test.ts"
     ]
 }
