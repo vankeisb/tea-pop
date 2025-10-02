@@ -2,9 +2,10 @@
 
 echo "Building tea-pop"
 
-npm cache clean --force
-
 node -v
+
+npm i
+ll node_modules
 
 npm install && \
   npm run bomlint && \
