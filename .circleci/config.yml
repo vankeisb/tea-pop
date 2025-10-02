@@ -13,7 +13,18 @@ jobs:
 
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - &gem-cache gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - gem-cache-v1-{{ arch }}-{{ .Branch }}
+            - gem-cache-v1
       - run: ./build.sh
+
+      - save_cache:
+          key: *gem-cache
+          paths:
+            - node_modules
+
       - persist_to_workspace:
           root: ~/repo
           paths: .
