@@ -16,9 +16,8 @@
   "scripts": {
     "start": "vite",
     "compile": "tsc",
-    "build": "vite build",
-    "webpack": "webpack",
-    "webpack:dev": "webpack serve",
+    "build:vite": "vite build",
+    "build": "webpack",
     "gh-pages": "gh-pages -d dist -m 'demo [ci skip]'"
   },
   "eslintConfig": {},
