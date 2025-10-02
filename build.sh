@@ -4,6 +4,8 @@ echo "Building tea-pop"
 
 node -v
 
+find . -type d -name node_modules -exec rm -rf {} \;
+
 npm ci && \
   npm run bomlint && \
   cd core && \
