@@ -85,6 +85,8 @@ workflows:
     jobs:
       - build:
           filters:
+            tags:
+              only: /\d+\.\d+\.\d+/
             branches:
               ignore: /^gh-pages$/
       - webtests:
