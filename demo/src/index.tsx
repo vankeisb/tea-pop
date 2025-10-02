@@ -1,9 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import "./index.scss";
 import { DemoApp } from "./DemoApp";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+let elem = document.getElementById("root") as HTMLElement;
+if (!elem) {
+  elem = document.createElement("div");
+  elem.id = "root";
+  document.body.appendChild(elem);
+}
+
+const root = ReactDOM.createRoot(elem);
 root.render(<DemoApp />);

@@ -20,7 +20,6 @@
     "lint": "eslint '**/*.{js,ts}'"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "vitest": "^3.2.4"
+    "@types/node": "*"
   }
 }

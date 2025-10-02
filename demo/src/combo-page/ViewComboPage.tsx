@@ -4,10 +4,10 @@ import { ComboPage } from "./ComboPage";
 import { comboBoxMsg, ComboPageMsg } from "./ComboPageMsg";
 import {
   ComboBoxRenderer,
+  ComboBoxRenderInputProps,
   ComboBoxRenderItemProps,
   ViewComboBox,
 } from "tea-pop-combobox";
-import { ComboBoxRenderInputProps } from "../../../combobox/src";
 
 class MyComboRenderer implements ComboBoxRenderer<string> {
   renderItem(props: ComboBoxRenderItemProps<string>): React.ReactElement {

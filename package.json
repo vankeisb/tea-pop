@@ -9,11 +9,13 @@
     "demo"
   ],
   "devDependencies": {
+    "bomlint": "^1.2.3",
     "github-release-notes": "0.17.2",
     "prettier": "2.0.5",
     "rimraf": "^6.0.1",
     "typescript": "~5.5.3",
-    "bomlint": "^1.2.3"
+    "vite": "^6.0.1",
+    "vitest": "^2.1.8"
   },
   "scripts": {
     "release:gh": "gren release",
