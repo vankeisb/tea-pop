@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const VERSION = process.env.VERSION;
-const DEP_VERSION = "^" + VERSION;
+const DEP_VERSION = VERSION;
 
 console.log("Bumping to " + VERSION);
 

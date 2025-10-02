@@ -6,7 +6,7 @@ node -v
 
 find . -type d -name node_modules -exec rm -rf {} \;
 
-npm ci && \
+npm install && \
   npm run bomlint && \
   cd core && \
   ./build.sh && \
