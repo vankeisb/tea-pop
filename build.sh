@@ -4,7 +4,7 @@ echo "Building tea-pop"
 
 node -v
 
-npm install && \
+npm ci && \
   npm run bomlint && \
   cd core && \
   ./build.sh && \
