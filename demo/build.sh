@@ -2,4 +2,4 @@
 
 echo "*** demo ***"
 
-npm run webpack
+npm run build
