@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "esnext",
         "lib": [
             "dom",
             "dom.iterable",
@@ -12,8 +12,9 @@
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
-        "module": "commonjs",
+        "module": "esnext",
         "resolveJsonModule": true,
+        "moduleResolution": "bundler",
         "noEmit": true,
         "jsx": "preserve",
         "inlineSourceMap": true,
